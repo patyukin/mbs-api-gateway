@@ -1,4 +1,59 @@
+definitions:
+  request.SignUpV1Request:
+    properties:
+      address:
+        type: string
+      date_of_birth:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      password:
+        type: string
+      patronymic:
+        type: string
+      phone:
+        type: string
+      telegram_login:
+        type: string
+    type: object
+  response.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
 info:
   contact: {}
-paths: {}
+paths:
+  /v1/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user in the system
+      parameters:
+      - description: Запрос пользователя на регистрацию
+        in: body
+        name: SignUpRequest
+        required: true
+        schema:
+          $ref: '#/definitions/request.SignUpV1Request'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Пользователь успешно зарегистрирован
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Register a new user
+      tags:
+      - Auth
 swagger: "2.0"

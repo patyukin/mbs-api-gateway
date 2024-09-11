@@ -10,11 +10,12 @@ import (
 
 type Config struct {
 	MinLogLevel string `yaml:"min_log_level"`
-	Server      struct {
+	HttpServer  struct {
 		Port         int `yaml:"port"`
 		ReadTimeout  int `yaml:"read_timeout"`
 		WriteTimeout int `yaml:"write_timeout"`
 	} `yaml:"server"`
+	JwtSecret string `yaml:"jwt_secret"`
 }
 
 func LoadConfig() (*Config, error) {

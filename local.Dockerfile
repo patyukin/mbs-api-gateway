@@ -7,7 +7,6 @@ WORKDIR /app
 COPY . /app
 
 ENV YAML_CONFIG_FILE_PATH=config.yaml
-ENV ENV_CONFIG_FILE_PATH=.env
 
 RUN go mod tidy && \
     go mod download && \
