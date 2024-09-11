@@ -1,11 +1,15 @@
 package usecase
 
-type Usecase struct {
+type UseCase struct {
 	jwtSecret []byte
 }
 
-func New(jwtSecret []byte) *Usecase {
-	return &Usecase{
+func New(jwtSecret []byte) *UseCase {
+	return &UseCase{
 		jwtSecret: jwtSecret,
 	}
+}
+
+func (uc *UseCase) GetJWTToken() []byte {
+	return uc.jwtSecret
 }

@@ -8,6 +8,7 @@ import (
 	"github.com/patyukin/mbs-api-gateway/internal/server"
 	"github.com/patyukin/mbs-api-gateway/internal/server/router"
 	"github.com/patyukin/mbs-api-gateway/internal/usecase"
+	rateLimiter "github.com/patyukin/mbs-api-gateway/pkg/rate_limiter"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"os"
@@ -29,9 +30,14 @@ func main() {
 	}
 
 	srvAddress := fmt.Sprintf(":%d", cfg.HttpServer.Port)
+
 	uc := usecase.New([]byte(cfg.JwtSecret))
 	h := handler.New(uc)
-	r := router.Init(h, srvAddress)
+
+	// set limiter
+	lmtr := rateLimiter.New(ctx, cfg.HttpServer.RateLimit, time.Second)
+
+	r := router.Init(h, lmtr, srvAddress)
 	srv := server.New(r)
 
 	errCh := make(chan error)

@@ -20,4 +20,4 @@ rebuild:
 	docker compose up -d --build
 
 gen:
-	go run github.com/swaggo/swag/cmd/swag@latest init -g cmd/api_gateway/main.go -o ./docs/
+	go run github.com/swaggo/swag/cmd/swag@latest init -g cmd/api_gateway/main.go -o docs/

@@ -1,52 +1,45 @@
 package handler
 
 import (
+	"encoding/json"
+	"github.com/patyukin/mbs-api-gateway/internal/dto/response"
+	"github.com/rs/zerolog/log"
 	"net/http"
 )
 
+const (
+	HeaderAuthorization = "Authorization"
+	HeaderUserID        = "X-User-ID"
+	HeaderRequestUUID   = "X-RequestUUID"
+)
+
+//go:generate go run github.com/vektra/mockery/v2@v2.45.1 --name=UseCase
 type UseCase interface {
+	GetJWTToken() []byte
 }
 
 type Handler struct {
 	uc UseCase
 }
 
-func (h *Handler) RefreshTokenV1(w http.ResponseWriter, r *http.Request) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (h *Handler) SignInV1(w http.ResponseWriter, r *http.Request) {
-	//TODO implement me
-	panic("implement me")
-}
-
-// SignUpV1 docs
-// @Summary Register a new user
-// @Description Register a new user in the system
-// @Tags Auth
-// @Accept json
-// @Produce json
-// @Param SignUpRequest body request.SignUpV1Request true "Запрос пользователя на регистрацию"
-// @Success 201 "Пользователь успешно зарегистрирован"
-// @Failure 400 {object} response.ErrorResponse "Invalid request"
-// @Failure 500 {object} response.ErrorResponse "Internal server error"
-// @Router /v1/sign-up [post]
-func (h *Handler) SignUpV1(w http.ResponseWriter, r *http.Request) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (h *Handler) GetUserProfileV1(w http.ResponseWriter, r *http.Request) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (h *Handler) UpdateUserProfileV1(w http.ResponseWriter, r *http.Request) {
-	//TODO implement me
-	panic("implement me")
-}
-
 func New(uc UseCase) *Handler {
 	return &Handler{uc: uc}
+}
+
+func (h *Handler) HandleError(w http.ResponseWriter, code int, message string) {
+	log.Error().Msgf("Error: %s", message)
+
+	w.WriteHeader(code)
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(response.ErrorResponse{Error: message}); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func (h *Handler) HealthCheck(w http.ResponseWriter, _ *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	if _, err := w.Write([]byte("OK")); err != nil {
+		h.HandleError(w, http.StatusInternalServerError, err.Error())
+	}
 }
