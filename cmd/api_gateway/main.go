@@ -3,14 +3,19 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/patyukin/mbs-api-gateway/internal/auth"
 	"github.com/patyukin/mbs-api-gateway/internal/config"
 	"github.com/patyukin/mbs-api-gateway/internal/handler"
+	"github.com/patyukin/mbs-api-gateway/internal/metrics"
 	"github.com/patyukin/mbs-api-gateway/internal/server"
 	"github.com/patyukin/mbs-api-gateway/internal/server/router"
 	"github.com/patyukin/mbs-api-gateway/internal/usecase"
+	"github.com/patyukin/mbs-api-gateway/pkg/grpc_client"
 	rateLimiter "github.com/patyukin/mbs-api-gateway/pkg/rate_limiter"
+	"github.com/patyukin/mbs-api-gateway/pkg/tracer"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"google.golang.org/grpc"
 	"os"
 	"os/signal"
 	"syscall"
@@ -31,13 +36,38 @@ func main() {
 
 	srvAddress := fmt.Sprintf(":%d", cfg.HttpServer.Port)
 
-	uc := usecase.New([]byte(cfg.JwtSecret))
+	// register metrics
+	err = metrics.RegisterMetrics()
+	if err != nil {
+		log.Fatal().Msgf("failed to register metrics: %v", err)
+	}
+
+	traceProvider, err := tracer.Init(fmt.Sprintf("%s/api/traces", cfg.TracerHost), "Api Gateway")
+	if err != nil {
+		log.Fatal().Msgf("failed init tracer, err: %v", err)
+	}
+
+	authUseCase := auth.New()
+	uc := usecase.New(authUseCase, []byte(cfg.JwtSecret))
 	h := handler.New(uc)
 
 	// set limiter
 	lmtr := rateLimiter.New(ctx, cfg.HttpServer.RateLimit, time.Second)
 
-	r := router.Init(h, lmtr, srvAddress)
+	r := router.InitRouterWithTrace(h, lmtr, srvAddress)
+
+	// auth service init
+	authConn, err := grpc_client.NewGRPCClientServiceConn(cfg.GRPC.AuthServicePort)
+	if err != nil {
+		log.Fatal().Msgf("failed to connect to auth service: %v", err)
+	}
+
+	defer func(authConn *grpc.ClientConn) {
+		if err = authConn.Close(); err != nil {
+			log.Error().Msgf("failed to close auth service connection: %v", err)
+		}
+	}(authConn)
+
 	srv := server.New(r)
 
 	errCh := make(chan error)
@@ -68,5 +98,9 @@ func main() {
 
 	if err = srv.Shutdown(ctx); err != nil {
 		log.Error().Msgf("failed server shutting down: %s", err.Error())
+	}
+
+	if err = traceProvider.Shutdown(ctx); err != nil {
+		log.Error().Msgf("Error shutting down tracer provider: %v", err)
 	}
 }

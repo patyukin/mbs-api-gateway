@@ -6,12 +6,4 @@ server:
 telegram:
   token: "token"
 jwt_secret: "jwt_secret"
-postgresql:
-  host: "db"
-  port: 5432
-  user: "user"
-  password: "1234"
-  name: "auth"
-redis:
-  host: "redis"
-  port: 6379
+

@@ -3,17 +3,18 @@ package handler
 import "net/http"
 
 func (h *Handler) CORS(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(resp http.ResponseWriter, req *http.Request) {
-		if req.Method == http.MethodOptions {
-			resp.Header().Set("Access-Control-Allow-Origin", "*")
-			resp.Header().Add("Access-Control-Allow-Methods", "POST")
-			resp.Header().Add("Access-Control-Allow-Methods", "GET")
-			resp.Header().Add("Access-Control-Allow-Headers", "Authorization")
-			resp.Header().Add("Access-Control-Allow-Headers", "Content-Type")
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodOptions {
+			w.Header().Set("Access-Control-Allow-Origin", "*")
+			w.Header().Add("Access-Control-Allow-Methods", "POST")
+			w.Header().Add("Access-Control-Allow-Methods", "GET")
+			w.Header().Add("Access-Control-Allow-Headers", "Authorization")
+			w.Header().Add("Access-Control-Allow-Headers", "Content-Type")
 
 			return
 		}
-		resp.Header().Add("Content-Type", "application/json")
-		next.ServeHTTP(resp, req)
+
+		w.Header().Add("Content-Type", "application/json")
+		next.ServeHTTP(w, r)
 	})
 }

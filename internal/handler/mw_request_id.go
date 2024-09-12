@@ -1,14 +1,16 @@
 package handler
 
 import (
+	"context"
 	"github.com/google/uuid"
 	"net/http"
 )
 
 func (h *Handler) RequestIDMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set(HeaderRequestUUID, uuid.New().String())
+		requestUUID := uuid.New().String()
+		ctx := context.WithValue(r.Context(), HeaderRequestUUID, requestUUID)
 
-		next.ServeHTTP(w, r)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

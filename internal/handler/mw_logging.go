@@ -34,12 +34,17 @@ func (h *Handler) LoggingMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		log.Info().Msgf("Request ID: %s, Path: %s, Query Params: %s, Body: %s", r.Header.Get(HeaderRequestUUID), path, queryParams, body)
+		requestUUID := "request-uuid"
+		if tempRequestUUID, ok := r.Context().Value(HeaderRequestUUID).(string); ok {
+			requestUUID = tempRequestUUID
+		}
+
+		log.Info().Msgf("Request ID: %s, Path: %s, Query Params: %s, Body: %s", requestUUID, path, queryParams, body)
 
 		startTime := time.Now()
 		next.ServeHTTP(w, r)
 		duration := time.Since(startTime)
 
-		log.Info().Msgf("Completed Request ID: %s in %v", r.Header.Get(HeaderRequestUUID), duration)
+		log.Info().Msgf("Completed Request ID: %s in %v", requestUUID, duration)
 	})
 }

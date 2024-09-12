@@ -4,8 +4,9 @@ import (
 	"fmt"
 	_ "github.com/patyukin/mbs-api-gateway/docs"
 	"github.com/patyukin/mbs-api-gateway/pkg/rate_limiter"
-	"github.com/rs/zerolog/log"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	httpSwagger "github.com/swaggo/http-swagger"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"net/http"
 	"net/http/pprof"
 )
@@ -17,10 +18,21 @@ type Handler interface {
 	RecoverMiddleware(next http.Handler) http.Handler
 	RequestIDMiddleware(next http.Handler) http.Handler
 	RateLimitMiddleware(limiter *rate_limiter.TokenBucketLimiter, next http.Handler) http.Handler
+	TracingMiddleware(next http.Handler) http.Handler
 	HandleError(w http.ResponseWriter, code int, message string)
 	HealthCheck(w http.ResponseWriter, r *http.Request)
 	SignUpV1(w http.ResponseWriter, r *http.Request)
 	SignInV1(w http.ResponseWriter, r *http.Request)
+}
+
+func InitRouterWithTrace(h Handler, limiter *rate_limiter.TokenBucketLimiter, srvAddress string) http.Handler {
+	r := Init(h, limiter, srvAddress)
+
+	tracedRouter := otelhttp.NewHandler(r, "request",
+		otelhttp.WithMessageEvents(otelhttp.ReadEvents, otelhttp.WriteEvents),
+	)
+
+	return tracedRouter
 }
 
 // Init docs
@@ -31,7 +43,9 @@ type Handler interface {
 // @BasePath /
 func Init(h Handler, limiter *rate_limiter.TokenBucketLimiter, srvAddress string) http.Handler {
 	mux := http.NewServeMux()
-	log.Info().Msgf("server address: %s", srvAddress)
+
+	// metrics
+	mux.Handle("/metrics", promhttp.Handler())
 
 	// swagger route
 	mux.Handle("/swagger/", httpSwagger.Handler(
@@ -58,11 +72,12 @@ func Init(h Handler, limiter *rate_limiter.TokenBucketLimiter, srvAddress string
 	mux.Handle("/debug/pprof/threadcreate", pprof.Handler("goroutine"))
 
 	// required middlewares
-	withMiddlewareMux := h.RateLimitMiddleware(limiter, mux)
-	withMiddlewareMux = h.RecoverMiddleware(mux)
-	withMiddlewareMux = h.RequestIDMiddleware(withMiddlewareMux)
+	withMiddlewareMux := h.TracingMiddleware(mux)
 	withMiddlewareMux = h.LoggingMiddleware(withMiddlewareMux)
 	withMiddlewareMux = h.CORS(withMiddlewareMux)
+	withMiddlewareMux = h.RateLimitMiddleware(limiter, withMiddlewareMux)
+	withMiddlewareMux = h.RequestIDMiddleware(withMiddlewareMux)
+	withMiddlewareMux = h.RecoverMiddleware(withMiddlewareMux)
 
-	return mux
+	return withMiddlewareMux
 }

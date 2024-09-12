@@ -1,8 +1,11 @@
 package handler
 
 import (
+	"context"
 	"encoding/json"
+	dtoRequest "github.com/patyukin/mbs-api-gateway/internal/dto/request"
 	"github.com/patyukin/mbs-api-gateway/internal/dto/response"
+	"github.com/patyukin/mbs-api-gateway/internal/metrics"
 	"github.com/rs/zerolog/log"
 	"net/http"
 )
@@ -10,11 +13,12 @@ import (
 const (
 	HeaderAuthorization = "Authorization"
 	HeaderUserID        = "X-User-ID"
-	HeaderRequestUUID   = "X-RequestUUID"
+	HeaderRequestUUID   = "X-Request-UUID"
 )
 
 //go:generate go run github.com/vektra/mockery/v2@v2.45.1 --name=UseCase
 type UseCase interface {
+	SignUpV1(ctx context.Context, in dtoRequest.SignUpV1Request) error
 	GetJWTToken() []byte
 }
 
@@ -38,8 +42,6 @@ func (h *Handler) HandleError(w http.ResponseWriter, code int, message string) {
 }
 
 func (h *Handler) HealthCheck(w http.ResponseWriter, _ *http.Request) {
+	metrics.IncomingTraffic.Inc()
 	w.WriteHeader(http.StatusOK)
-	if _, err := w.Write([]byte("OK")); err != nil {
-		h.HandleError(w, http.StatusInternalServerError, err.Error())
-	}
 }

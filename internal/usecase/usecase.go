@@ -1,10 +1,13 @@
 package usecase
 
+type AuthUseCase interface {
+}
+
 type UseCase struct {
 	jwtSecret []byte
 }
 
-func New(jwtSecret []byte) *UseCase {
+func New(auth AuthUseCase, jwtSecret []byte) *UseCase {
 	return &UseCase{
 		jwtSecret: jwtSecret,
 	}
