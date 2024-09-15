@@ -1,4 +1,4 @@
-.PHONY: start stop rebuild gen up down restart deps tidy
+.PHONY: start stop rebuild gen up down restart deps tidy test
 
 up:
 	docker compose up -d
@@ -28,3 +28,6 @@ deps:
 
 tidy:
 	go mod tidy
+
+test:
+	go test ./...

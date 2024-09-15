@@ -3,16 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/patyukin/mbs-api-gateway/internal/auth"
 	"github.com/patyukin/mbs-api-gateway/internal/config"
 	"github.com/patyukin/mbs-api-gateway/internal/handler"
 	"github.com/patyukin/mbs-api-gateway/internal/metrics"
 	"github.com/patyukin/mbs-api-gateway/internal/server"
-	"github.com/patyukin/mbs-api-gateway/internal/server/router"
-	"github.com/patyukin/mbs-api-gateway/internal/usecase"
+	"github.com/patyukin/mbs-api-gateway/internal/usecase/auth"
 	"github.com/patyukin/mbs-api-gateway/pkg/grpc_client"
-	rateLimiter "github.com/patyukin/mbs-api-gateway/pkg/rate_limiter"
 	"github.com/patyukin/mbs-api-gateway/pkg/tracer"
+	authpb "github.com/patyukin/mbs-api-gateway/proto/auth"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
@@ -47,15 +45,6 @@ func main() {
 		log.Fatal().Msgf("failed init tracer, err: %v", err)
 	}
 
-	authUseCase := auth.New()
-	uc := usecase.New(authUseCase, []byte(cfg.JwtSecret))
-	h := handler.New(uc)
-
-	// set limiter
-	lmtr := rateLimiter.New(ctx, cfg.HttpServer.RateLimit, time.Second)
-
-	r := router.InitRouterWithTrace(h, lmtr, srvAddress)
-
 	// auth service init
 	authConn, err := grpc_client.NewGRPCClientServiceConn(cfg.GRPC.AuthServicePort)
 	if err != nil {
@@ -68,6 +57,11 @@ func main() {
 		}
 	}(authConn)
 
+	authClient := authpb.NewAuthServiceClient(authConn)
+	authUseCase := auth.New([]byte(cfg.JwtSecret), authClient)
+
+	h := handler.New(authUseCase)
+	r := server.InitRouterWithTrace(h, cfg, srvAddress)
 	srv := server.New(r)
 
 	errCh := make(chan error)

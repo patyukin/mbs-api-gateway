@@ -21,10 +21,10 @@ func (h *Handler) Auth(next http.Handler) http.Handler {
 				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 			}
 
-			return h.uc.GetJWTToken(), nil
+			return h.auc.GetJWTToken(), nil
 		})
 
-		if err != nil || !token.Valid {
+		if err != nil || !token.Valid { // expires checks,
 			h.HandleError(w, http.StatusUnauthorized, err.Error())
 			return
 		}
@@ -43,13 +43,11 @@ func GetBearerToken(r *http.Request) (string, error) {
 		return "", fmt.Errorf("authorization header is missing")
 	}
 
-	// Проверяем, что заголовок начинается с "Bearer "
 	const bearerPrefix = "Bearer "
 	if !strings.HasPrefix(authHeader, bearerPrefix) {
 		return "", fmt.Errorf("authorization header does not start with 'Bearer '")
 	}
 
-	// Извлекаем токен, удаляя префикс "Bearer "
 	token := strings.TrimPrefix(authHeader, bearerPrefix)
 	return token, nil
 }

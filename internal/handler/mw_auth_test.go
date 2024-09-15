@@ -10,7 +10,7 @@ import (
 
 // TestAuthMiddleware тестирует middleware Auth
 func TestAuthMiddleware(t *testing.T) {
-	mockUseCase := &mocks.UseCase{}
+	mockUseCase := &mocks.AuthUseCase{}
 	handler := New(mockUseCase)
 
 	// Тестовый nextHandler

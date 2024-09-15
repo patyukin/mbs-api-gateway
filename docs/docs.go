@@ -17,7 +17,7 @@ const docTemplate = `{
     "paths": {
         "/v1/sign-up": {
             "post": {
-                "description": "Register a new user in the system",
+                "description": "Регистрация нового пользователя в системе",
                 "consumes": [
                     "application/json"
                 ],
@@ -27,7 +27,7 @@ const docTemplate = `{
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Register a new user",
+                "summary": "Регистрация нового пользователя",
                 "parameters": [
                     {
                         "description": "Запрос пользователя на регистрацию",
@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.SignUpV1Request"
+                            "$ref": "#/definitions/model.SignUpV1Request"
                         }
                     }
                 ],
@@ -46,13 +46,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid request",
                         "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     }
                 }
@@ -60,7 +60,15 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "request.SignUpV1Request": {
+        "model.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.SignUpV1Request": {
             "type": "object",
             "properties": {
                 "address": {
@@ -88,14 +96,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "telegram_login": {
-                    "type": "string"
-                }
-            }
-        },
-        "response.ErrorResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
                     "type": "string"
                 }
             }

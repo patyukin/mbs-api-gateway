@@ -14,7 +14,10 @@ type Config struct {
 		Port         int `yaml:"port" validate:"min=1,max=65535"`
 		ReadTimeout  int `yaml:"read_timeout" validate:"min=1,max=65535"`
 		WriteTimeout int `yaml:"write_timeout" validate:"min=1,max=65535"`
-		RateLimit    int `yaml:"rate_limit" validate:"min=1,max=65535"`
+		RateLimit    struct {
+			Rps   float64 `yaml:"rps" validate:"min=1,max=65535"`
+			Burst int     `yaml:"burst" validate:"min=1,max=65535"`
+		} `yaml:"rate_limit"`
 	} `yaml:"server"`
 	JwtSecret  string `yaml:"jwt_secret" validate:"required"`
 	TracerHost string `yaml:"tracer_host" validate:"required"`

@@ -2,8 +2,8 @@ package handler
 
 import (
 	"encoding/json"
-	dtoRequest "github.com/patyukin/mbs-api-gateway/internal/dto/request"
 	"github.com/patyukin/mbs-api-gateway/internal/metrics"
+	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"github.com/rs/zerolog/log"
 	"net/http"
 )
@@ -14,14 +14,14 @@ import (
 // @Tags Auth
 // @Accept json
 // @Produce json
-// @Param SignUpRequest body request.SignUpV1Request true "Запрос пользователя на регистрацию"
+// @Param SignUpRequest body model.SignUpV1Request true "Запрос пользователя на регистрацию"
 // @Success 201 "Пользователь успешно зарегистрирован"
-// @Failure 400 {object} response.ErrorResponse "Invalid request"
-// @Failure 500 {object} response.ErrorResponse "Internal server error"
+// @Failure 400 {object} model.ErrorResponse "Invalid request"
+// @Failure 500 {object} model.ErrorResponse "Internal server error"
 // @Router /v1/sign-up [post]
 func (h *Handler) SignUpV1(w http.ResponseWriter, r *http.Request) {
 	metrics.TotalRegistrations.Inc()
-	var in dtoRequest.SignUpV1Request
+	var in model.SignUpV1Request
 
 	if err := json.NewDecoder(r.Body).Decode(&in); err != nil {
 		metrics.FailedRegistrations.Inc()
@@ -37,7 +37,7 @@ func (h *Handler) SignUpV1(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := h.uc.SignUpV1(r.Context(), in); err != nil {
+	if err := h.auc.SignUpV1(r.Context(), in); err != nil {
 		metrics.FailedRegistrations.Inc()
 		log.Error().Msgf("SignUpV1 UseCaseError: %v", err)
 		h.HandleError(w, http.StatusInternalServerError, err.Error())

@@ -1,4 +1,4 @@
-package request
+package model
 
 import (
 	"errors"
@@ -6,9 +6,22 @@ import (
 	"time"
 )
 
+type Email string
+
+func (e Email) Validate() bool {
+	re := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
+	return re.MatchString(string(e))
+}
+
+type Secret string
+
+func (s Secret) String() string {
+	return "***"
+}
+
 type SignUpV1Request struct {
-	Email         string `json:"email"`
-	Password      string `json:"password"`
+	Email         Email  `json:"email"`
+	Password      Secret `json:"password"`
 	LastName      string `json:"last_name"`
 	FirstName     string `json:"first_name"`
 	Patronymic    string `json:"patronymic"`
@@ -18,14 +31,9 @@ type SignUpV1Request struct {
 	TelegramLogin string `json:"telegram_login"`
 }
 
-func isValidEmail(email string) bool {
-	re := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
-	return re.MatchString(email)
-}
-
 func (req *SignUpV1Request) Validate() error {
-	if req.Email == "" || !isValidEmail(req.Email) {
-		return errors.New("невалидный email")
+	if req.Email == "" || !req.Email.Validate() {
+		return errors.New("не валидный email")
 	}
 
 	if len(req.Password) < 6 {

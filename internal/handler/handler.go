@@ -3,9 +3,8 @@ package handler
 import (
 	"context"
 	"encoding/json"
-	dtoRequest "github.com/patyukin/mbs-api-gateway/internal/dto/request"
-	"github.com/patyukin/mbs-api-gateway/internal/dto/response"
 	"github.com/patyukin/mbs-api-gateway/internal/metrics"
+	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"github.com/rs/zerolog/log"
 	"net/http"
 )
@@ -16,18 +15,18 @@ const (
 	HeaderRequestUUID   = "X-Request-UUID"
 )
 
-//go:generate go run github.com/vektra/mockery/v2@v2.45.1 --name=UseCase
-type UseCase interface {
-	SignUpV1(ctx context.Context, in dtoRequest.SignUpV1Request) error
+//go:generate go run github.com/vektra/mockery/v2@v2.45.1 --name=AuthUseCase
+type AuthUseCase interface {
+	SignUpV1(ctx context.Context, in model.SignUpV1Request) error
 	GetJWTToken() []byte
 }
 
 type Handler struct {
-	uc UseCase
+	auc AuthUseCase
 }
 
-func New(uc UseCase) *Handler {
-	return &Handler{uc: uc}
+func New(auc AuthUseCase) *Handler {
+	return &Handler{auc: auc}
 }
 
 func (h *Handler) HandleError(w http.ResponseWriter, code int, message string) {
@@ -35,7 +34,7 @@ func (h *Handler) HandleError(w http.ResponseWriter, code int, message string) {
 
 	w.WriteHeader(code)
 	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(response.ErrorResponse{Error: message}); err != nil {
+	if err := json.NewEncoder(w).Encode(model.ErrorResponse{Error: message}); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

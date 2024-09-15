@@ -1,9 +1,9 @@
-package router
+package server
 
 import (
 	"fmt"
 	_ "github.com/patyukin/mbs-api-gateway/docs"
-	"github.com/patyukin/mbs-api-gateway/pkg/rate_limiter"
+	"github.com/patyukin/mbs-api-gateway/internal/config"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	httpSwagger "github.com/swaggo/http-swagger"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
@@ -17,7 +17,7 @@ type Handler interface {
 	LoggingMiddleware(next http.Handler) http.Handler
 	RecoverMiddleware(next http.Handler) http.Handler
 	RequestIDMiddleware(next http.Handler) http.Handler
-	RateLimitMiddleware(limiter *rate_limiter.TokenBucketLimiter, next http.Handler) http.Handler
+	RateLimitMiddleware(next http.Handler, rps float64, burst int) http.Handler
 	TracingMiddleware(next http.Handler) http.Handler
 	HandleError(w http.ResponseWriter, code int, message string)
 	HealthCheck(w http.ResponseWriter, r *http.Request)
@@ -25,8 +25,8 @@ type Handler interface {
 	SignInV1(w http.ResponseWriter, r *http.Request)
 }
 
-func InitRouterWithTrace(h Handler, limiter *rate_limiter.TokenBucketLimiter, srvAddress string) http.Handler {
-	r := Init(h, limiter, srvAddress)
+func InitRouterWithTrace(h Handler, cfg *config.Config, srvAddress string) http.Handler {
+	r := Init(h, cfg, srvAddress)
 
 	tracedRouter := otelhttp.NewHandler(r, "request",
 		otelhttp.WithMessageEvents(otelhttp.ReadEvents, otelhttp.WriteEvents),
@@ -41,7 +41,7 @@ func InitRouterWithTrace(h Handler, limiter *rate_limiter.TokenBucketLimiter, sr
 // @description Auth API for microservices
 // @host http://0.0.0.0:5001
 // @BasePath /
-func Init(h Handler, limiter *rate_limiter.TokenBucketLimiter, srvAddress string) http.Handler {
+func Init(h Handler, cfg *config.Config, srvAddress string) http.Handler {
 	mux := http.NewServeMux()
 
 	// metrics
@@ -75,7 +75,7 @@ func Init(h Handler, limiter *rate_limiter.TokenBucketLimiter, srvAddress string
 	withMiddlewareMux := h.TracingMiddleware(mux)
 	withMiddlewareMux = h.LoggingMiddleware(withMiddlewareMux)
 	withMiddlewareMux = h.CORS(withMiddlewareMux)
-	withMiddlewareMux = h.RateLimitMiddleware(limiter, withMiddlewareMux)
+	withMiddlewareMux = h.RateLimitMiddleware(withMiddlewareMux, cfg.HttpServer.RateLimit.Rps, cfg.HttpServer.RateLimit.Burst)
 	withMiddlewareMux = h.RequestIDMiddleware(withMiddlewareMux)
 	withMiddlewareMux = h.RecoverMiddleware(withMiddlewareMux)
 

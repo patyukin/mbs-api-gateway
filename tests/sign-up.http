@@ -1,0 +1,15 @@
+### SignUp user
+POST http://0.0.0.0:5001/v1/sign-up
+Content-Type: application/json
+
+{
+  "email": "john.doe@example.com",
+  "password": "securepassword123",
+  "telegram_login": "johndoe_telegram",
+  "first_name": "John",
+  "last_name": "Doe",
+  "patronymic": "Jonathan",
+  "date_of_birth": "1990-01-01",
+  "phone": "79000000000",
+  "address": "Moscow, Russia, 1, 1, 1"
+}

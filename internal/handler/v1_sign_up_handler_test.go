@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	dtoRequest "github.com/patyukin/mbs-api-gateway/internal/dto/request"
 	"github.com/patyukin/mbs-api-gateway/internal/handler/mocks"
 	"github.com/patyukin/mbs-api-gateway/internal/metrics"
+	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -18,7 +18,7 @@ import (
 type SignUpV1TestSuite struct {
 	suite.Suite
 	handler                     *Handler
-	mockUC                      *mocks.UseCase
+	mockUC                      *mocks.AuthUseCase
 	mockTotalRegistrations      *mocks.Counter
 	mockFailedRegistrations     *mocks.Counter
 	mockSuccessfulRegistrations *mocks.Counter
@@ -26,7 +26,7 @@ type SignUpV1TestSuite struct {
 
 // SetupTest выполняется перед каждым тестом
 func (suite *SignUpV1TestSuite) SetupTest() {
-	suite.mockUC = &mocks.UseCase{}
+	suite.mockUC = &mocks.AuthUseCase{}
 	suite.handler = New(suite.mockUC)
 
 	suite.mockTotalRegistrations = new(mocks.Counter)
@@ -51,7 +51,7 @@ func (suite *SignUpV1TestSuite) TearDownTest() {
 func (suite *SignUpV1TestSuite) TestSignUpV1_Success() {
 	suite.mockUC.On("SignUpV1", mock.Anything, mock.Anything).Return(nil)
 
-	requestData := dtoRequest.SignUpV1Request{
+	requestData := model.SignUpV1Request{
 		Email:         "john.doe@example.com",
 		Password:      "securepassword123",
 		TelegramLogin: "johndoe_telegram",
@@ -64,7 +64,7 @@ func (suite *SignUpV1TestSuite) TestSignUpV1_Success() {
 	}
 
 	body, _ := json.Marshal(requestData)
-	req, err := http.NewRequest(http.MethodPost, "/signup", bytes.NewReader(body))
+	req, err := http.NewRequest(http.MethodPost, "/sign-up", bytes.NewReader(body))
 	suite.NoError(err)
 
 	rr := httptest.NewRecorder()
@@ -77,7 +77,7 @@ func (suite *SignUpV1TestSuite) TestSignUpV1_Success() {
 }
 
 func (suite *SignUpV1TestSuite) TestSignUpV1_DecodeError() {
-	req, err := http.NewRequest(http.MethodPost, "/signup", bytes.NewReader([]byte("invalid json")))
+	req, err := http.NewRequest(http.MethodPost, "/sign-up", bytes.NewReader([]byte("invalid json")))
 	suite.NoError(err)
 
 	rr := httptest.NewRecorder()
@@ -90,7 +90,7 @@ func (suite *SignUpV1TestSuite) TestSignUpV1_DecodeError() {
 }
 
 func (suite *SignUpV1TestSuite) TestSignUpV1_ValidationError() {
-	requestData := dtoRequest.SignUpV1Request{
+	requestData := model.SignUpV1Request{
 		Email:         "john.doeexample.com",
 		Password:      "securepassword123",
 		TelegramLogin: "johndoe_telegram",
@@ -103,7 +103,7 @@ func (suite *SignUpV1TestSuite) TestSignUpV1_ValidationError() {
 	}
 
 	body, _ := json.Marshal(requestData)
-	req, err := http.NewRequest(http.MethodPost, "/signup", bytes.NewReader(body))
+	req, err := http.NewRequest(http.MethodPost, "/sign-up", bytes.NewReader(body))
 	suite.NoError(err)
 
 	rr := httptest.NewRecorder()
@@ -116,7 +116,7 @@ func (suite *SignUpV1TestSuite) TestSignUpV1_ValidationError() {
 func (suite *SignUpV1TestSuite) TestSignUpV1_UseCaseError() {
 	suite.mockUC.On("SignUpV1", mock.Anything, mock.Anything).Return(errors.New("use case error"))
 
-	requestData := dtoRequest.SignUpV1Request{
+	requestData := model.SignUpV1Request{
 		Email:         "john.doe@example.com",
 		Password:      "securepassword123",
 		TelegramLogin: "johndoe_telegram",
@@ -129,7 +129,7 @@ func (suite *SignUpV1TestSuite) TestSignUpV1_UseCaseError() {
 	}
 
 	body, _ := json.Marshal(requestData)
-	req, err := http.NewRequest(http.MethodPost, "/signup", bytes.NewReader(body))
+	req, err := http.NewRequest(http.MethodPost, "/sign-up", bytes.NewReader(body))
 	suite.NoError(err)
 
 	rr := httptest.NewRecorder()

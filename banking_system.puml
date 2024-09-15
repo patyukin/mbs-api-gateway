@@ -1,0 +1,20 @@
+@startuml
+actor "Front" as front
+
+autonumber
+
+box "API Gateway" #LightBlue
+participant "API Gateway service" as agw
+end box
+
+box "External Service" #LightYellow
+participant "Yandex" as yandex
+end box
+front -> atm++: Запрос на получение \nсписка банкоматов и отделений
+atm -> db++:  Получение списка банкоматов \nи отделений из БД
+db -> db:  Получение данных
+db --> atm--:  Данные банков и отделений
+atm --> yandex++:  Получение адресного перечня \nпо сохраненным координатам
+yandex -> atm--: Адресный перечень
+atm ->  front--:  Список банкоматов и отделений с адресами
+@enduml

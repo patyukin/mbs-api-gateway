@@ -1,5 +1,10 @@
 definitions:
-  request.SignUpV1Request:
+  model.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  model.SignUpV1Request:
     properties:
       address:
         type: string
@@ -20,11 +25,6 @@ definitions:
       telegram_login:
         type: string
     type: object
-  response.ErrorResponse:
-    properties:
-      error:
-        type: string
-    type: object
 info:
   contact: {}
 paths:
@@ -32,14 +32,14 @@ paths:
     post:
       consumes:
       - application/json
-      description: Register a new user in the system
+      description: Регистрация нового пользователя в системе
       parameters:
       - description: Запрос пользователя на регистрацию
         in: body
         name: SignUpRequest
         required: true
         schema:
-          $ref: '#/definitions/request.SignUpV1Request'
+          $ref: '#/definitions/model.SignUpV1Request'
       produces:
       - application/json
       responses:
@@ -48,12 +48,12 @@ paths:
         "400":
           description: Invalid request
           schema:
-            $ref: '#/definitions/response.ErrorResponse'
+            $ref: '#/definitions/model.ErrorResponse'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/response.ErrorResponse'
-      summary: Register a new user
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Регистрация нового пользователя
       tags:
       - Auth
 swagger: "2.0"
