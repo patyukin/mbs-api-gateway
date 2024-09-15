@@ -5,12 +5,39 @@ API Gateway Service — это микросервис, реализованны�
 Визуализация API Gateway и внутренних сервисов
 ![Services](img.png)
 
+```plantuml
+@startuml
+actor User
+database auth
+database reports
+database accounts
+database credits
+database notifies
+
+
+[User] --> [API Gateway]
+[API Gateway] --> [Auth service]
+[Auth service] --> auth
+[Auth service] --> [Notifier service]
+[API Gateway] --> [Credit service]
+[Credit service] --> credits
+[Credit service] --> [Notifier service]
+[API Gateway] --> [Account service]
+[Account service] --> accounts
+[Account service] --> [Notifier service]
+[API Gateway] --> [Report service]
+[Report service] --> reports
+[Report service] --> [Notifier service]
+
+[Notifier service] --> notifies
+@enduml
+```
+
 ## Содержание
 
 - [Функциональность](#функциональность)
 - [Технологии](#технологии)
 - [Установка](#установка)
-- [Конфигурация](#конфигурация)
 - [Запуск](#запуск)
 - [Использование](#использование)
 - [Тестирование](#тестирование)
@@ -29,6 +56,8 @@ API Gateway Service — это микросервис, реализованны�
 - net/http — для маршрутизации HTTP-запросов
 - [swagger](https://github.com/swaggo/swag) — для автогенерации Swagger-документации
 - Docker (для контейнеризации)
+
+# Установка
 
 1. **Клонируйте репозиторий:**
 
@@ -75,9 +104,10 @@ curl -X POST http://localhost:5000/v1/sign-up \
 
 # Тестирование
 
-Запуск тестов
+1. Запуск go тестов
 
-```bash
-make test
-```
+   ```bash
+   make test
+   ```
 
+2. В папке `tests` запускать тесты HTTP запросов
