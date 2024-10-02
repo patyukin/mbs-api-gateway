@@ -7,7 +7,7 @@ RUN go mod download
 RUN go mod tidy
 RUN go build -o ./bin/api_gateway cmd/api_gateway/main.go
 
-FROM alpine:3.19
+FROM alpine3.20
 
 WORKDIR /app
 COPY --from=builder /app/bin/api_gateway .

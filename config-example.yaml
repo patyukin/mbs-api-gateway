@@ -3,15 +3,10 @@ server:
   port: 5001
   read_timeout: 10
   write_timeout: 5
-telegram:
-  token: "token"
+  rate_limit:
+    rps: 5
+    burst: 10
 jwt_secret: "jwt_secret"
-postgresql:
-  host: "db"
-  port: 5432
-  user: "user"
-  password: "1234"
-  name: "auth"
-redis:
-  host: "redis"
-  port: 6379
+tracer_host: "http://tracer_host:14268"
+grpc:
+  auth_service_port: 5010
