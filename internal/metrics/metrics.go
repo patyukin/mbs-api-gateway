@@ -13,51 +13,85 @@ type Counter interface {
 var (
 	IncomingTraffic         Counter
 	SuccessfulRegistrations Counter
+	SuccessfulLogin         Counter
 	TotalRegistrations      Counter
 	FailedRegistrations     Counter
+	FailedLogin             Counter
 )
 
 func RegisterMetrics() error {
 	var err error
 
-	IncomingTraffic = prometheus.NewCounter(prometheus.CounterOpts{
-		Name: "incoming_traffic",
-		Help: "Incoming traffic to the application",
-	})
+	IncomingTraffic = prometheus.NewCounter(
+		prometheus.CounterOpts{
+			Name: "incoming_traffic",
+			Help: "Incoming traffic to the application",
+		},
+	)
 
 	err = prometheus.Register(IncomingTraffic.(prometheus.Collector))
 	if err != nil {
 		return fmt.Errorf("failed to register incoming traffic: %w", err)
 	}
 
-	SuccessfulRegistrations = prometheus.NewCounter(prometheus.CounterOpts{
-		Name: "successful_sign_up_v1",
-		Help: "Successful Registrations",
-	})
+	SuccessfulRegistrations = prometheus.NewCounter(
+		prometheus.CounterOpts{
+			Name: "successful_sign_up_v1",
+			Help: "Successful Registrations",
+		},
+	)
 
 	err = prometheus.Register(SuccessfulRegistrations.(prometheus.Collector))
 	if err != nil {
 		return fmt.Errorf("failed to register successful registrations: %w", err)
 	}
 
-	TotalRegistrations = prometheus.NewCounter(prometheus.CounterOpts{
-		Name: "total_sign_up_v1",
-		Help: "Total registrations",
-	})
+	TotalRegistrations = prometheus.NewCounter(
+		prometheus.CounterOpts{
+			Name: "total_sign_up_v1",
+			Help: "Total registrations",
+		},
+	)
 
 	err = prometheus.Register(TotalRegistrations.(prometheus.Collector))
 	if err != nil {
 		return fmt.Errorf("failed to register total registrations: %w", err)
 	}
 
-	FailedRegistrations = prometheus.NewCounter(prometheus.CounterOpts{
-		Name: "failed_sign_up_v1",
-		Help: "Failed registrations",
-	})
+	FailedRegistrations = prometheus.NewCounter(
+		prometheus.CounterOpts{
+			Name: "failed_sign_up_v1",
+			Help: "Failed registrations",
+		},
+	)
 
 	err = prometheus.Register(FailedRegistrations.(prometheus.Collector))
 	if err != nil {
 		return fmt.Errorf("failed to register failed registrations: %w", err)
+	}
+
+	SuccessfulLogin = prometheus.NewCounter(
+		prometheus.CounterOpts{
+			Name: "successful_sign_in_v1",
+			Help: "Successful login",
+		},
+	)
+
+	err = prometheus.Register(SuccessfulLogin.(prometheus.Collector))
+	if err != nil {
+		return fmt.Errorf("failed to Successful login: %w", err)
+	}
+
+	FailedLogin = prometheus.NewCounter(
+		prometheus.CounterOpts{
+			Name: "failed_sign_in_v1",
+			Help: "Failed login",
+		},
+	)
+
+	err = prometheus.Register(FailedLogin.(prometheus.Collector))
+	if err != nil {
+		return fmt.Errorf("failed to login failed login: %w", err)
 	}
 
 	return nil

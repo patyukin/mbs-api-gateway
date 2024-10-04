@@ -1,6 +1,13 @@
 package auth
 
+import (
+	"context"
+	authpb "github.com/patyukin/mbs-api-gateway/proto/auth"
+)
+
 type ProtoClient interface {
+	SignUp(ctx context.Context, in *authpb.SignUpRequest) (*authpb.SignUpResponse, error)
+	SignIn(ctx context.Context, in *authpb.SignInRequest) (*authpb.SignInResponse, error)
 }
 
 type UseCase struct {

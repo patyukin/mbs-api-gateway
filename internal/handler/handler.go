@@ -18,6 +18,7 @@ const (
 //go:generate go run github.com/vektra/mockery/v2@v2.45.1 --name=AuthUseCase
 type AuthUseCase interface {
 	SignUpV1(ctx context.Context, in model.SignUpV1Request) error
+	SignInV1(ctx context.Context, in model.SignInV1Request) (model.SignInV1Response, error)
 	GetJWTToken() []byte
 }
 
