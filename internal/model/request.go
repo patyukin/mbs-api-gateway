@@ -80,8 +80,6 @@ type UpdateUserProfileV1Request struct {
 }
 
 type SignInV1Response struct {
-	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token"`
 }
 
 type SignInV1Request struct {
@@ -99,4 +97,8 @@ func (req *SignInV1Request) Validate() error {
 	}
 
 	return nil
+}
+
+type SignInVerifyV1Request struct {
+	Code string `json:"code"`
 }

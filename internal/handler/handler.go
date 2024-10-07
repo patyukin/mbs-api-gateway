@@ -19,6 +19,7 @@ const (
 type AuthUseCase interface {
 	SignUpV1(ctx context.Context, in model.SignUpV1Request) error
 	SignInV1(ctx context.Context, in model.SignInV1Request) (model.SignInV1Response, error)
+	SignInVerifyV1(ctx context.Context, in model.SignInVerifyV1Request) (model.SignInVerifyV1Response, error)
 	GetJWTToken() []byte
 }
 

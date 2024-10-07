@@ -19,9 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AuthService_SignUp_FullMethodName        = "/auth.AuthService/SignUp"
-	AuthService_SignIn_FullMethodName        = "/auth.AuthService/SignIn"
-	AuthService_GetUserByUUID_FullMethodName = "/auth.AuthService/GetUserByUUID"
+	AuthService_SignUp_FullMethodName               = "/auth_v1.AuthService/SignUp"
+	AuthService_SignIn_FullMethodName               = "/auth_v1.AuthService/SignIn"
+	AuthService_SignInVerify_FullMethodName         = "/auth_v1.AuthService/SignInVerify"
+	AuthService_GetUserByUUID_FullMethodName        = "/auth_v1.AuthService/GetUserByUUID"
+	AuthService_GetUsersWithTokens_FullMethodName   = "/auth_v1.AuthService/GetUsersWithTokens"
+	AuthService_GetUsersWithProfiles_FullMethodName = "/auth_v1.AuthService/GetUsersWithProfiles"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -30,7 +33,10 @@ const (
 type AuthServiceClient interface {
 	SignUp(ctx context.Context, in *SignUpRequest, opts ...grpc.CallOption) (*SignUpResponse, error)
 	SignIn(ctx context.Context, in *SignInRequest, opts ...grpc.CallOption) (*SignInResponse, error)
+	SignInVerify(ctx context.Context, in *SignInVerifyRequest, opts ...grpc.CallOption) (*SignInVerifyResponse, error)
 	GetUserByUUID(ctx context.Context, in *GetUserByUUIDRequest, opts ...grpc.CallOption) (*GetUserByUUIDResponse, error)
+	GetUsersWithTokens(ctx context.Context, in *GetUsersWithTokensRequest, opts ...grpc.CallOption) (*GetUsersWithTokensResponse, error)
+	GetUsersWithProfiles(ctx context.Context, in *GetUsersWithProfilesRequest, opts ...grpc.CallOption) (*GetUsersWithProfilesResponse, error)
 }
 
 type authServiceClient struct {
@@ -61,10 +67,40 @@ func (c *authServiceClient) SignIn(ctx context.Context, in *SignInRequest, opts 
 	return out, nil
 }
 
+func (c *authServiceClient) SignInVerify(ctx context.Context, in *SignInVerifyRequest, opts ...grpc.CallOption) (*SignInVerifyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SignInVerifyResponse)
+	err := c.cc.Invoke(ctx, AuthService_SignInVerify_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *authServiceClient) GetUserByUUID(ctx context.Context, in *GetUserByUUIDRequest, opts ...grpc.CallOption) (*GetUserByUUIDResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetUserByUUIDResponse)
 	err := c.cc.Invoke(ctx, AuthService_GetUserByUUID_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) GetUsersWithTokens(ctx context.Context, in *GetUsersWithTokensRequest, opts ...grpc.CallOption) (*GetUsersWithTokensResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetUsersWithTokensResponse)
+	err := c.cc.Invoke(ctx, AuthService_GetUsersWithTokens_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) GetUsersWithProfiles(ctx context.Context, in *GetUsersWithProfilesRequest, opts ...grpc.CallOption) (*GetUsersWithProfilesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetUsersWithProfilesResponse)
+	err := c.cc.Invoke(ctx, AuthService_GetUsersWithProfiles_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +113,10 @@ func (c *authServiceClient) GetUserByUUID(ctx context.Context, in *GetUserByUUID
 type AuthServiceServer interface {
 	SignUp(context.Context, *SignUpRequest) (*SignUpResponse, error)
 	SignIn(context.Context, *SignInRequest) (*SignInResponse, error)
+	SignInVerify(context.Context, *SignInVerifyRequest) (*SignInVerifyResponse, error)
 	GetUserByUUID(context.Context, *GetUserByUUIDRequest) (*GetUserByUUIDResponse, error)
+	GetUsersWithTokens(context.Context, *GetUsersWithTokensRequest) (*GetUsersWithTokensResponse, error)
+	GetUsersWithProfiles(context.Context, *GetUsersWithProfilesRequest) (*GetUsersWithProfilesResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -94,8 +133,17 @@ func (UnimplementedAuthServiceServer) SignUp(context.Context, *SignUpRequest) (*
 func (UnimplementedAuthServiceServer) SignIn(context.Context, *SignInRequest) (*SignInResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SignIn not implemented")
 }
+func (UnimplementedAuthServiceServer) SignInVerify(context.Context, *SignInVerifyRequest) (*SignInVerifyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SignInVerify not implemented")
+}
 func (UnimplementedAuthServiceServer) GetUserByUUID(context.Context, *GetUserByUUIDRequest) (*GetUserByUUIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserByUUID not implemented")
+}
+func (UnimplementedAuthServiceServer) GetUsersWithTokens(context.Context, *GetUsersWithTokensRequest) (*GetUsersWithTokensResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUsersWithTokens not implemented")
+}
+func (UnimplementedAuthServiceServer) GetUsersWithProfiles(context.Context, *GetUsersWithProfilesRequest) (*GetUsersWithProfilesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUsersWithProfiles not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 func (UnimplementedAuthServiceServer) testEmbeddedByValue()                     {}
@@ -154,6 +202,24 @@ func _AuthService_SignIn_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_SignInVerify_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SignInVerifyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).SignInVerify(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_SignInVerify_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).SignInVerify(ctx, req.(*SignInVerifyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _AuthService_GetUserByUUID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetUserByUUIDRequest)
 	if err := dec(in); err != nil {
@@ -172,11 +238,47 @@ func _AuthService_GetUserByUUID_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_GetUsersWithTokens_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUsersWithTokensRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).GetUsersWithTokens(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_GetUsersWithTokens_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).GetUsersWithTokens(ctx, req.(*GetUsersWithTokensRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_GetUsersWithProfiles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUsersWithProfilesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).GetUsersWithProfiles(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_GetUsersWithProfiles_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).GetUsersWithProfiles(ctx, req.(*GetUsersWithProfilesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var AuthService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "auth.AuthService",
+	ServiceName: "auth_v1.AuthService",
 	HandlerType: (*AuthServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -188,8 +290,20 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AuthService_SignIn_Handler,
 		},
 		{
+			MethodName: "SignInVerify",
+			Handler:    _AuthService_SignInVerify_Handler,
+		},
+		{
 			MethodName: "GetUserByUUID",
 			Handler:    _AuthService_GetUserByUUID_Handler,
+		},
+		{
+			MethodName: "GetUsersWithTokens",
+			Handler:    _AuthService_GetUsersWithTokens_Handler,
+		},
+		{
+			MethodName: "GetUsersWithProfiles",
+			Handler:    _AuthService_GetUsersWithProfiles_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

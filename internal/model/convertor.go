@@ -18,6 +18,12 @@ func ToProtoSignUpFromRequest(in SignUpV1Request) authpb.SignUpRequest {
 	}
 }
 
+func ToProtoSignInVerifyFromRequest(in SignInVerifyV1Request) authpb.SignInVerifyRequest {
+	return authpb.SignInVerifyRequest{
+		Code: in.Code,
+	}
+}
+
 func ToProtoSignInFromRequest(in SignInV1Request) authpb.SignInRequest {
 	return authpb.SignInRequest{
 		Email:    in.Login,
@@ -25,8 +31,8 @@ func ToProtoSignInFromRequest(in SignInV1Request) authpb.SignInRequest {
 	}
 }
 
-func FromProtoSignInToResponse(in *authpb.SignInResponse) SignInV1Response {
-	return SignInV1Response{
+func FromProtoSignInVerifyToResponse(in *authpb.SignInVerifyResponse) SignInVerifyV1Response {
+	return SignInVerifyV1Response{
 		AccessToken:  in.AccessToken,
 		RefreshToken: in.RefreshToken,
 	}
