@@ -79,7 +79,26 @@ type UpdateUserProfileV1Request struct {
 	Patronymic  string `json:"patronymic"`
 }
 
+type SignInV1Response struct {
+}
+
 type SignInV1Request struct {
 	Login    string `json:"login"`
 	Password string `json:"password"`
+}
+
+func (req *SignInV1Request) Validate() error {
+	if req.Login == "" {
+		return errors.New("логин не может быть пустым")
+	}
+
+	if len(req.Password) < 6 {
+		return errors.New("пароль должен содержать не менее 6 символов")
+	}
+
+	return nil
+}
+
+type SignInVerifyV1Request struct {
+	Code string `json:"code"`
 }

@@ -23,6 +23,7 @@ type Handler interface {
 	HealthCheck(w http.ResponseWriter, r *http.Request)
 	SignUpV1(w http.ResponseWriter, r *http.Request)
 	SignInV1(w http.ResponseWriter, r *http.Request)
+	SignInVerifyHandler(w http.ResponseWriter, r *http.Request)
 }
 
 func InitRouterWithTrace(h Handler, cfg *config.Config, srvAddress string) http.Handler {
@@ -58,6 +59,7 @@ func Init(h Handler, cfg *config.Config, srvAddress string) http.Handler {
 	// api gateway routes
 	mux.Handle("POST /v1/sign-up", http.HandlerFunc(h.SignUpV1))
 	mux.Handle("POST /v1/sign-in", http.HandlerFunc(h.SignInV1))
+	mux.Handle("POST /v1/sign-in-verify", http.HandlerFunc(h.SignInVerifyHandler))
 
 	// pprof routes
 	mux.Handle("/debug/pprof/", http.HandlerFunc(pprof.Index))

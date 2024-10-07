@@ -1,13 +1,16 @@
 syntax = "proto3";
 
-package auth;
+package auth_v1;
 
 option go_package = ".;authService";
 
 service AuthService {
   rpc SignUp(SignUpRequest) returns (SignUpResponse);
   rpc SignIn(SignInRequest) returns (SignInResponse);
+  rpc SignInVerify(SignInVerifyRequest) returns (SignInVerifyResponse);
   rpc GetUserByUUID(GetUserByUUIDRequest) returns (GetUserByUUIDResponse);
+  rpc GetUsersWithTokens (GetUsersWithTokensRequest) returns (GetUsersWithTokensResponse);
+  rpc GetUsersWithProfiles (GetUsersWithProfilesRequest) returns (GetUsersWithProfilesResponse);
 }
 
 message SignUpRequest {
@@ -33,8 +36,6 @@ message SignInRequest {
 }
 
 message SignInResponse {
-  string access_token = 1;
-  string refresh_token = 2;
 }
 
 message GetUserByUUIDRequest {
@@ -56,4 +57,62 @@ message GetUserByUUIDResponse {
   string role = 12;
   string created_at = 13;
   string updated_at = 14;
+}
+
+message TokenGUWR {
+  string token = 1;
+  string expires_at = 2;
+}
+
+message UserGUWR {
+  string id = 1;
+  string email = 2;
+  string role = 3;
+  repeated TokenGUWR tokens = 4;
+}
+
+message GetUsersWithTokensRequest {
+  int32 page = 1;
+  int32 limit = 2;
+}
+
+message GetUsersWithTokensResponse {
+  repeated UserGUWR users = 1;
+  int32 total = 2;
+}
+
+message ProfileGUWP {
+  string first_name = 1;
+  string last_name = 2;
+  string patronymic = 3;
+  string date_of_birth = 4;
+  string email = 5;
+  string phone = 6;
+  string address = 7;
+}
+
+message UserGUWP {
+  string id = 1;
+  string email = 2;
+  string role = 3;
+  ProfileGUWP profile = 4;
+}
+
+message GetUsersWithProfilesRequest {
+  int32 page = 1;
+  int32 limit = 2;
+}
+
+message GetUsersWithProfilesResponse {
+  repeated UserGUWP users = 1;
+  int32 total = 2;
+}
+
+message SignInVerifyRequest {
+  string code = 1;
+}
+
+message SignInVerifyResponse {
+  string access_token = 1;
+  string refresh_token = 2;
 }
