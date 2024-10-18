@@ -57,6 +57,52 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/v2/sign-in-verify": {
+            "post": {
+                "description": "Окончание регистрации нового пользователя. Пользователь должен прислать токен для подтверждения его регистрации",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Окончание регистрации нового пользователя",
+                "parameters": [
+                    {
+                        "description": "SignInVerifyData Request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.SignInVerifyV1Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Registration successfully",
+                        "schema": {
+                            "$ref": "#/definitions/model.TokensResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -64,6 +110,14 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.SignInVerifyV1Request": {
+            "type": "object",
+            "properties": {
+                "code": {
                     "type": "string"
                 }
             }
@@ -94,8 +148,16 @@ const docTemplate = `{
                 },
                 "phone": {
                     "type": "string"
+                }
+            }
+        },
+        "model.TokensResponse": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
                 },
-                "telegram_login": {
+                "refresh_token": {
                     "type": "string"
                 }
             }

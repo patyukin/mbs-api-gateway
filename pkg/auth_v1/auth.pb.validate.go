@@ -61,8 +61,6 @@ func (m *SignUpRequest) validate(all bool) error {
 
 	// no validation rules for Password
 
-	// no validation rules for TelegramLogin
-
 	// no validation rules for FirstName
 
 	// no validation rules for LastName
@@ -1883,3 +1881,215 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = SignInVerifyResponseValidationError{}
+
+// Validate checks the field values on ResendSignUpCodeRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *ResendSignUpCodeRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ResendSignUpCodeRequest with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// ResendSignUpCodeRequestMultiError, or nil if none found.
+func (m *ResendSignUpCodeRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ResendSignUpCodeRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Email
+
+	// no validation rules for Password
+
+	if len(errors) > 0 {
+		return ResendSignUpCodeRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// ResendSignUpCodeRequestMultiError is an error wrapping multiple validation
+// errors returned by ResendSignUpCodeRequest.ValidateAll() if the designated
+// constraints aren't met.
+type ResendSignUpCodeRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ResendSignUpCodeRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ResendSignUpCodeRequestMultiError) AllErrors() []error { return m }
+
+// ResendSignUpCodeRequestValidationError is the validation error returned by
+// ResendSignUpCodeRequest.Validate if the designated constraints aren't met.
+type ResendSignUpCodeRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ResendSignUpCodeRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ResendSignUpCodeRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ResendSignUpCodeRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ResendSignUpCodeRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ResendSignUpCodeRequestValidationError) ErrorName() string {
+	return "ResendSignUpCodeRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e ResendSignUpCodeRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sResendSignUpCodeRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ResendSignUpCodeRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ResendSignUpCodeRequestValidationError{}
+
+// Validate checks the field values on ResendSignUpCodeResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *ResendSignUpCodeResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ResendSignUpCodeResponse with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// ResendSignUpCodeResponseMultiError, or nil if none found.
+func (m *ResendSignUpCodeResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ResendSignUpCodeResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for UserId
+
+	// no validation rules for Message
+
+	if len(errors) > 0 {
+		return ResendSignUpCodeResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// ResendSignUpCodeResponseMultiError is an error wrapping multiple validation
+// errors returned by ResendSignUpCodeResponse.ValidateAll() if the designated
+// constraints aren't met.
+type ResendSignUpCodeResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ResendSignUpCodeResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ResendSignUpCodeResponseMultiError) AllErrors() []error { return m }
+
+// ResendSignUpCodeResponseValidationError is the validation error returned by
+// ResendSignUpCodeResponse.Validate if the designated constraints aren't met.
+type ResendSignUpCodeResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ResendSignUpCodeResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ResendSignUpCodeResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ResendSignUpCodeResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ResendSignUpCodeResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ResendSignUpCodeResponseValidationError) ErrorName() string {
+	return "ResendSignUpCodeResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e ResendSignUpCodeResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sResendSignUpCodeResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ResendSignUpCodeResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ResendSignUpCodeResponseValidationError{}

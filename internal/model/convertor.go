@@ -1,20 +1,19 @@
 package model
 
 import (
-	authpb "github.com/patyukin/mbs-api-gateway/proto/auth"
+	authpb "github.com/patyukin/mbs-api-gateway/pkg/auth_v1"
 )
 
 func ToProtoSignUpFromRequest(in SignUpV1Request) authpb.SignUpRequest {
 	return authpb.SignUpRequest{
-		Email:         string(in.Email),
-		Password:      string(in.Password),
-		TelegramLogin: in.TelegramLogin,
-		FirstName:     in.FirstName,
-		LastName:      in.LastName,
-		Patronymic:    in.Patronymic,
-		DateOfBirth:   in.DateOfBirth,
-		Phone:         in.Phone,
-		Address:       in.Address,
+		Email:       string(in.Email),
+		Password:    string(in.Password),
+		FirstName:   in.FirstName,
+		LastName:    in.LastName,
+		Patronymic:  in.Patronymic,
+		DateOfBirth: in.DateOfBirth,
+		Phone:       in.Phone,
+		Address:     in.Address,
 	}
 }
 

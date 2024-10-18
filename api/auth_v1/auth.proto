@@ -6,6 +6,7 @@ option go_package = ".;authService";
 
 service AuthService {
   rpc SignUp(SignUpRequest) returns (SignUpResponse);
+  rpc ResendSignUpCode(ResendSignUpCodeRequest) returns (ResendSignUpCodeResponse);
   rpc SignIn(SignInRequest) returns (SignInResponse);
   rpc SignInVerify(SignInVerifyRequest) returns (SignInVerifyResponse);
   rpc GetUserByUUID(GetUserByUUIDRequest) returns (GetUserByUUIDResponse);
@@ -16,13 +17,12 @@ service AuthService {
 message SignUpRequest {
   string email = 1;
   string password = 2;
-  string telegram_login = 3;
-  string first_name = 4;
-  string last_name = 5;
-  string patronymic = 6;
-  string date_of_birth = 7;
-  string phone = 8;
-  string address = 9;
+  string first_name = 3;
+  string last_name = 4;
+  string patronymic = 5;
+  string date_of_birth = 6;
+  string phone = 7;
+  string address = 8;
 }
 
 message SignUpResponse {
@@ -115,4 +115,14 @@ message SignInVerifyRequest {
 message SignInVerifyResponse {
   string access_token = 1;
   string refresh_token = 2;
+}
+
+message ResendSignUpCodeRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message ResendSignUpCodeResponse {
+  string user_id = 1;
+  string message = 2;
 }

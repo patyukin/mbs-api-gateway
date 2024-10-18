@@ -9,6 +9,7 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"net/http"
 	"net/http/pprof"
+	"os"
 )
 
 type Handler interface {
@@ -60,6 +61,9 @@ func Init(h Handler, cfg *config.Config, srvAddress string) http.Handler {
 	mux.Handle("POST /v1/sign-up", http.HandlerFunc(h.SignUpV1))
 	mux.Handle("POST /v1/sign-in", http.HandlerFunc(h.SignInV1))
 	mux.Handle("POST /v1/sign-in-verify", http.HandlerFunc(h.SignInVerifyHandler))
+	mux.Handle("GET /crash", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		os.Exit(1)
+	}))
 
 	// pprof routes
 	mux.Handle("/debug/pprof/", http.HandlerFunc(pprof.Index))

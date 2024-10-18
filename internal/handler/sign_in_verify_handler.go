@@ -13,10 +13,10 @@ import (
 // @Tags         Auth
 // @Accept       json
 // @Produce      json
-// @Param        body  body model.SignInVerifyData true "SignInVerifyData Request"
-// @Success      200   {object}  dto.TokensResponse "Registration successfully"
-// @Failure      400   {object}  ErrorResponse "Invalid request body"
-// @Failure      500   {object}  ErrorResponse "Internal server error"
+// @Param        body  body model.SignInVerifyV1Request true "SignInVerifyData Request"
+// @Success      200   {object}  model.TokensResponse "Registration successfully"
+// @Failure      400   {object}  model.ErrorResponse "Invalid request body"
+// @Failure      500   {object}  model.ErrorResponse "Internal server error"
 // @Router       /v2/sign-in-verify [post]
 func (h *Handler) SignInVerifyHandler(w http.ResponseWriter, r *http.Request) {
 	var signInVerifyV1Request model.SignInVerifyV1Request

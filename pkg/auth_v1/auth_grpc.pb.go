@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	AuthService_SignUp_FullMethodName               = "/auth_v1.AuthService/SignUp"
+	AuthService_ResendSignUpCode_FullMethodName     = "/auth_v1.AuthService/ResendSignUpCode"
 	AuthService_SignIn_FullMethodName               = "/auth_v1.AuthService/SignIn"
 	AuthService_SignInVerify_FullMethodName         = "/auth_v1.AuthService/SignInVerify"
 	AuthService_GetUserByUUID_FullMethodName        = "/auth_v1.AuthService/GetUserByUUID"
@@ -32,6 +33,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthServiceClient interface {
 	SignUp(ctx context.Context, in *SignUpRequest, opts ...grpc.CallOption) (*SignUpResponse, error)
+	ResendSignUpCode(ctx context.Context, in *ResendSignUpCodeRequest, opts ...grpc.CallOption) (*ResendSignUpCodeResponse, error)
 	SignIn(ctx context.Context, in *SignInRequest, opts ...grpc.CallOption) (*SignInResponse, error)
 	SignInVerify(ctx context.Context, in *SignInVerifyRequest, opts ...grpc.CallOption) (*SignInVerifyResponse, error)
 	GetUserByUUID(ctx context.Context, in *GetUserByUUIDRequest, opts ...grpc.CallOption) (*GetUserByUUIDResponse, error)
@@ -51,6 +53,16 @@ func (c *authServiceClient) SignUp(ctx context.Context, in *SignUpRequest, opts 
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(SignUpResponse)
 	err := c.cc.Invoke(ctx, AuthService_SignUp_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) ResendSignUpCode(ctx context.Context, in *ResendSignUpCodeRequest, opts ...grpc.CallOption) (*ResendSignUpCodeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ResendSignUpCodeResponse)
+	err := c.cc.Invoke(ctx, AuthService_ResendSignUpCode_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -112,6 +124,7 @@ func (c *authServiceClient) GetUsersWithProfiles(ctx context.Context, in *GetUse
 // for forward compatibility.
 type AuthServiceServer interface {
 	SignUp(context.Context, *SignUpRequest) (*SignUpResponse, error)
+	ResendSignUpCode(context.Context, *ResendSignUpCodeRequest) (*ResendSignUpCodeResponse, error)
 	SignIn(context.Context, *SignInRequest) (*SignInResponse, error)
 	SignInVerify(context.Context, *SignInVerifyRequest) (*SignInVerifyResponse, error)
 	GetUserByUUID(context.Context, *GetUserByUUIDRequest) (*GetUserByUUIDResponse, error)
@@ -129,6 +142,9 @@ type UnimplementedAuthServiceServer struct{}
 
 func (UnimplementedAuthServiceServer) SignUp(context.Context, *SignUpRequest) (*SignUpResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SignUp not implemented")
+}
+func (UnimplementedAuthServiceServer) ResendSignUpCode(context.Context, *ResendSignUpCodeRequest) (*ResendSignUpCodeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ResendSignUpCode not implemented")
 }
 func (UnimplementedAuthServiceServer) SignIn(context.Context, *SignInRequest) (*SignInResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SignIn not implemented")
@@ -180,6 +196,24 @@ func _AuthService_SignUp_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuthServiceServer).SignUp(ctx, req.(*SignUpRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_ResendSignUpCode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ResendSignUpCodeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).ResendSignUpCode(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_ResendSignUpCode_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).ResendSignUpCode(ctx, req.(*ResendSignUpCodeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -284,6 +318,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SignUp",
 			Handler:    _AuthService_SignUp_Handler,
+		},
+		{
+			MethodName: "ResendSignUpCode",
+			Handler:    _AuthService_ResendSignUpCode_Handler,
 		},
 		{
 			MethodName: "SignIn",

@@ -20,15 +20,14 @@ func (s Secret) String() string {
 }
 
 type SignUpV1Request struct {
-	Email         Email  `json:"email"`
-	Password      Secret `json:"password"`
-	LastName      string `json:"last_name"`
-	FirstName     string `json:"first_name"`
-	Patronymic    string `json:"patronymic"`
-	Phone         string `json:"phone"`
-	Address       string `json:"address"`
-	DateOfBirth   string `json:"date_of_birth"`
-	TelegramLogin string `json:"telegram_login"`
+	Email       Email  `json:"email"`
+	Password    Secret `json:"password"`
+	LastName    string `json:"last_name"`
+	FirstName   string `json:"first_name"`
+	Patronymic  string `json:"patronymic"`
+	Phone       string `json:"phone"`
+	Address     string `json:"address"`
+	DateOfBirth string `json:"date_of_birth"`
 }
 
 func (req *SignUpV1Request) Validate() error {
@@ -38,10 +37,6 @@ func (req *SignUpV1Request) Validate() error {
 
 	if len(req.Password) < 6 {
 		return errors.New("пароль должен содержать не менее 6 символов")
-	}
-
-	if req.TelegramLogin == "" {
-		return errors.New("логин телеграм не может быть пустым")
 	}
 
 	if req.FirstName == "" {
