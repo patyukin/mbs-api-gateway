@@ -4,6 +4,11 @@ definitions:
       error:
         type: string
     type: object
+  model.SignInVerifyV1Request:
+    properties:
+      code:
+        type: string
+    type: object
   model.SignUpV1Request:
     properties:
       address:
@@ -22,7 +27,12 @@ definitions:
         type: string
       phone:
         type: string
-      telegram_login:
+    type: object
+  model.TokensResponse:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
         type: string
     type: object
 info:
@@ -54,6 +64,37 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Регистрация нового пользователя
+      tags:
+      - Auth
+  /v2/sign-in-verify:
+    post:
+      consumes:
+      - application/json
+      description: Окончание регистрации нового пользователя. Пользователь должен
+        прислать токен для подтверждения его регистрации
+      parameters:
+      - description: SignInVerifyData Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.SignInVerifyV1Request'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Registration successfully
+          schema:
+            $ref: '#/definitions/model.TokensResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Окончание регистрации нового пользователя
       tags:
       - Auth
 swagger: "2.0"
