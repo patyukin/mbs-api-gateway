@@ -29,14 +29,15 @@ func (h *Handler) SignInVerifyHandler(w http.ResponseWriter, r *http.Request) {
 
 	tokens, err := h.auc.SignInVerifyV1(r.Context(), signInVerifyV1Request)
 	if err != nil {
-		log.Error().Err(err).Msgf("failed to sign in verify, error: %v", err)
+		log.Error().Msgf("failed to sign in verify, error: %v", err.Description)
+		h.HandleError(w, int(err.Code), err.Message)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
-	if err = json.NewEncoder(w).Encode(tokens); err != nil {
-		log.Error().Err(err).Msgf("failed to encode tokens, error: %v", err)
+	if encodeErr := json.NewEncoder(w).Encode(tokens); encodeErr != nil {
+		log.Error().Msgf("failed to encode tokens, error: %v", encodeErr)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

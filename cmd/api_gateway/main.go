@@ -8,9 +8,11 @@ import (
 	"github.com/patyukin/mbs-api-gateway/internal/metrics"
 	"github.com/patyukin/mbs-api-gateway/internal/server"
 	"github.com/patyukin/mbs-api-gateway/internal/usecase/auth"
-	authpb "github.com/patyukin/mbs-api-gateway/pkg/auth_v1"
+	"github.com/patyukin/mbs-api-gateway/internal/usecase/logger"
 	"github.com/patyukin/mbs-api-gateway/pkg/grpc_client"
-	"github.com/patyukin/mbs-api-gateway/pkg/tracer"
+	authpb "github.com/patyukin/mbs-pkg/pkg/proto/auth_v1"
+	loggerpb "github.com/patyukin/mbs-pkg/pkg/proto/logger_v1"
+	"github.com/patyukin/mbs-pkg/pkg/tracing"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
@@ -19,6 +21,8 @@ import (
 	"syscall"
 	"time"
 )
+
+const ServiceName = "ApiGateway"
 
 func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
@@ -40,13 +44,15 @@ func main() {
 		log.Fatal().Msgf("failed to register metrics: %v", err)
 	}
 
-	traceProvider, err := tracer.Init(fmt.Sprintf("%s/api/traces", cfg.TracerHost), "Api Gateway")
+	_, closer, err := tracing.InitJaeger(fmt.Sprintf("localhost:6831"), ServiceName)
 	if err != nil {
-		log.Fatal().Msgf("failed init tracer, err: %v", err)
+		log.Fatal().Msgf("failed to initialize tracer: %v", err)
 	}
 
+	defer closer()
+
 	// auth service init
-	authConn, err := grpc_client.NewGRPCClientServiceConn(cfg.GRPC.AuthServicePort)
+	authConn, err := grpc_client.NewGRPCClientServiceConn(cfg.GRPC.AuthServiceHost, cfg.GRPC.AuthServicePort)
 	if err != nil {
 		log.Fatal().Msgf("failed to connect to auth service: %v", err)
 	}
@@ -60,8 +66,23 @@ func main() {
 	authClient := authpb.NewAuthServiceClient(authConn)
 	authUseCase := auth.New([]byte(cfg.JwtSecret), authClient)
 
-	h := handler.New(authUseCase)
-	r := server.InitRouterWithTrace(h, cfg, srvAddress)
+	// logger service init
+	loggerConn, err := grpc_client.NewGRPCClientServiceConn(cfg.GRPC.LoggerServiceHost, cfg.GRPC.LoggerServicePort)
+	if err != nil {
+		log.Fatal().Msgf("failed to connect to auth service: %v", err)
+	}
+
+	defer func(loggerConn *grpc.ClientConn) {
+		if err = loggerConn.Close(); err != nil {
+			log.Error().Msgf("failed to close auth service connection: %v", err)
+		}
+	}(loggerConn)
+
+	loggerClient := loggerpb.NewLoggerServiceClient(loggerConn)
+	loggerUseCase := logger.New(loggerClient)
+
+	h := handler.New(authUseCase, loggerUseCase)
+	r := server.Init(h, cfg, srvAddress)
 	srv := server.New(r)
 
 	errCh := make(chan error)
@@ -92,9 +113,5 @@ func main() {
 
 	if err = srv.Shutdown(ctx); err != nil {
 		log.Error().Msgf("failed server shutting down: %s", err.Error())
-	}
-
-	if err = traceProvider.Shutdown(ctx); err != nil {
-		log.Error().Msgf("Error shutting down tracer provider: %v", err)
 	}
 }

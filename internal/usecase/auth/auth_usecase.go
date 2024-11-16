@@ -2,8 +2,7 @@ package auth
 
 import (
 	"context"
-	"github.com/patyukin/mbs-api-gateway/internal/model"
-	authpb "github.com/patyukin/mbs-api-gateway/pkg/auth_v1"
+	authpb "github.com/patyukin/mbs-pkg/pkg/proto/auth_v1"
 	"google.golang.org/grpc"
 )
 
@@ -11,16 +10,13 @@ type ProtoClient interface {
 	SignUp(ctx context.Context, in *authpb.SignUpRequest, opts ...grpc.CallOption) (*authpb.SignUpResponse, error)
 	SignIn(ctx context.Context, in *authpb.SignInRequest, opts ...grpc.CallOption) (*authpb.SignInResponse, error)
 	SignInVerify(ctx context.Context, in *authpb.SignInVerifyRequest, opts ...grpc.CallOption) (*authpb.SignInVerifyResponse, error)
+	Authorize(ctx context.Context, in *authpb.AuthorizeRequest, opts ...grpc.CallOption) (*authpb.AuthorizeResponse, error)
+	RefreshToken(ctx context.Context, in *authpb.RefreshTokenRequest, opts ...grpc.CallOption) (*authpb.RefreshTokenResponse, error)
 }
 
 type UseCase struct {
 	jwtSecret  []byte
 	authClient ProtoClient
-}
-
-func (uc *UseCase) SignInVerifyV1(_ context.Context, _ model.SignInVerifyV1Request) (model.SignInVerifyV1Response, error) {
-	//TODO implement me
-	panic("implement me")
 }
 
 func New(jwtSecret []byte, authClient ProtoClient) *UseCase {

@@ -37,7 +37,8 @@ func (h *Handler) SignUpV1(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := h.auc.SignUpV1(r.Context(), in); err != nil {
+	msg, err := h.auc.SignUpV1(r.Context(), in)
+	if err != nil {
 		metrics.FailedRegistrations.Inc()
 		log.Error().Msgf("SignUpV1 UseCaseError: %v", err)
 		h.HandleError(w, http.StatusInternalServerError, err.Error())
@@ -45,7 +46,13 @@ func (h *Handler) SignUpV1(w http.ResponseWriter, r *http.Request) {
 	}
 
 	metrics.SuccessfulRegistrations.Inc()
-
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusCreated)
+
+	if err = json.NewEncoder(w).Encode(msg); err != nil {
+		metrics.FailedRegistrations.Inc()
+		log.Error().Msgf("SignInV1 EncodeError: %v", err)
+		h.HandleError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
 }

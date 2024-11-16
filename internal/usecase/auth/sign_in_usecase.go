@@ -9,10 +9,15 @@ import (
 func (uc *UseCase) SignInV1(ctx context.Context, in model.SignInV1Request) (model.SignInV1Response, error) {
 	dto := model.ToProtoSignInFromRequest(in)
 
-	_, err := uc.authClient.SignIn(ctx, &dto)
+	response, err := uc.authClient.SignIn(ctx, &dto)
 	if err != nil {
-		return model.SignInV1Response{}, fmt.Errorf("failed to uc.authClient.SignUp: %w", err)
+		return model.SignInV1Response{}, fmt.Errorf("failed to uc.authClient.SignIn: %w", err)
 	}
 
-	return model.SignInV1Response{}, nil
+	if response.Error != nil {
+		response.Error.Description = fmt.Sprintf("failed to uc.authClient.SignIn: %v", response.Error.Description)
+		return model.SignInV1Response{Error: response.Error}, nil
+	}
+
+	return model.SignInV1Response{Message: "Код отправлен в telegram bot"}, nil
 }

@@ -2,31 +2,19 @@ package grpc_client
 
 import (
 	"fmt"
-	"github.com/opentracing/opentracing-go"
-	"google.golang.org/grpc/credentials/insecure"
-	"time"
-
-	grpcRetry "github.com/grpc-ecosystem/go-grpc-middleware/retry"
-	traceutils "github.com/opentracing-contrib/go-grpc"
+	grpcopentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
+	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
-const (
-	backoffLinear = 100 * time.Millisecond
-)
-
-func NewGRPCClientServiceConn(port int) (*grpc.ClientConn, error) {
-	opts := []grpcRetry.CallOption{
-		grpcRetry.WithBackoff(grpcRetry.BackoffLinear(backoffLinear)),
-		grpcRetry.WithCodes(codes.NotFound, codes.Aborted),
-	}
-
+func NewGRPCClientServiceConn(host string, port int) (*grpc.ClientConn, error) {
+	url := fmt.Sprintf("%s:%d", host, port)
+	log.Info().Msgf("url: %s", url)
 	clientGRPCConn, err := grpc.NewClient(
-		fmt.Sprintf("http://0.0.0.0:%d", port),
-		grpc.WithUnaryInterceptor(traceutils.OpenTracingClientInterceptor(opentracing.GlobalTracer())),
+		url,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithUnaryInterceptor(grpcRetry.UnaryClientInterceptor(opts...)),
+		grpc.WithUnaryInterceptor(grpcopentracing.UnaryClientInterceptor()),
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to auth service: %w", err)

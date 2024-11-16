@@ -1,5 +1,5 @@
 ### SignUp user
-POST http://mbs.lcl/v1/sign-up
+POST http://localhost:5002/v1/sign-up
 Content-Type: application/json
 
 {

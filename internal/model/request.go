@@ -2,6 +2,7 @@ package model
 
 import (
 	"errors"
+	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
 	"regexp"
 	"time"
 )
@@ -20,14 +21,19 @@ func (s Secret) String() string {
 }
 
 type SignUpV1Request struct {
-	Email       Email  `json:"email"`
-	Password    Secret `json:"password"`
-	LastName    string `json:"last_name"`
-	FirstName   string `json:"first_name"`
-	Patronymic  string `json:"patronymic"`
-	Phone       string `json:"phone"`
-	Address     string `json:"address"`
-	DateOfBirth string `json:"date_of_birth"`
+	Email         Email  `json:"email"`
+	Password      Secret `json:"password"`
+	TelegramLogin string `json:"telegram_login"`
+	LastName      string `json:"last_name"`
+	FirstName     string `json:"first_name"`
+	Patronymic    string `json:"patronymic"`
+	Phone         string `json:"phone"`
+	Address       string `json:"address"`
+	DateOfBirth   string `json:"date_of_birth"`
+}
+
+type SignUpV1Response struct {
+	Message string `json:"message"`
 }
 
 func (req *SignUpV1Request) Validate() error {
@@ -41,6 +47,10 @@ func (req *SignUpV1Request) Validate() error {
 
 	if req.FirstName == "" {
 		return errors.New("имя не может быть пустым")
+	}
+
+	if req.TelegramLogin == "" {
+		return errors.New("telegram логин не может быть пустым")
 	}
 
 	if req.LastName == "" {
@@ -75,6 +85,8 @@ type UpdateUserProfileV1Request struct {
 }
 
 type SignInV1Response struct {
+	Error   *error_v1.ErrorResponse
+	Message string
 }
 
 type SignInV1Request struct {
@@ -96,4 +108,42 @@ func (req *SignInV1Request) Validate() error {
 
 type SignInVerifyV1Request struct {
 	Code string `json:"code"`
+}
+
+type AuthorizeRequest struct {
+	UserID    string `json:"user_id"`
+	RoutePath string `json:"route_path"`
+}
+
+type AuthorizeResponse struct {
+}
+
+type RefreshTokenV1Request struct {
+	RefreshToken string `json:"refresh_token"`
+}
+
+type RefreshTokenV1Response struct {
+	AccessToken string `json:"access_token"`
+}
+
+type GetLogReportV1Request struct {
+	ServiceName string `json:"service_name"`
+	StartDate   string `json:"start_date"`
+	EndDate     string `json:"end_date"`
+}
+
+func (req *GetLogReportV1Request) Validate() error {
+	if req.ServiceName == "" {
+		return errors.New("название сервиса не может быть пустым")
+	}
+
+	if req.StartDate == "" {
+		return errors.New("дата начала не может быть пустой")
+	}
+
+	if req.EndDate == "" {
+		return errors.New("дата окончания не может быть пустой")
+	}
+
+	return nil
 }

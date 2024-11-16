@@ -10,7 +10,7 @@ func (uc *UseCase) SignInVerify(ctx context.Context, in model.SignInVerifyV1Requ
 	siv := model.ToProtoSignInVerifyFromRequest(in)
 	tokens, err := uc.authClient.SignInVerify(ctx, &siv)
 	if err != nil {
-		return model.SignInVerifyV1Response{}, fmt.Errorf("failed to uc.authClient.SignUp: %w", err)
+		return model.SignInVerifyV1Response{}, fmt.Errorf("failed to uc.authClient.SignInVerify: %w", err)
 	}
 
 	if tokens == nil {

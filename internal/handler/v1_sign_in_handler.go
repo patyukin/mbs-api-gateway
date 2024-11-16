@@ -26,11 +26,18 @@ func (h *Handler) SignInV1(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tokens, err := h.auc.SignInV1(r.Context(), in)
+	response, err := h.auc.SignInV1(r.Context(), in)
 	if err != nil {
 		metrics.FailedLogin.Inc()
-		log.Error().Msgf("SignInV1 UseCaseError: %v", err)
+		log.Error().Msgf("failed h.auc.SignInV1: %v", err)
 		h.HandleError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if response.Error != nil {
+		metrics.FailedLogin.Inc()
+		log.Error().Msgf("SignInV1 UseCaseError: %v", response.Error.Description)
+		h.HandleError(w, int(response.Error.Code), response.Error.Message)
 		return
 	}
 
@@ -38,7 +45,7 @@ func (h *Handler) SignInV1(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
-	if err = json.NewEncoder(w).Encode(tokens); err != nil {
+	if err = json.NewEncoder(w).Encode(response.Message); err != nil {
 		metrics.FailedLogin.Inc()
 		log.Error().Msgf("SignInV1 EncodeError: %v", err)
 		h.HandleError(w, http.StatusInternalServerError, err.Error())

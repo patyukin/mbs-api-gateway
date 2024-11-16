@@ -1,6 +1,6 @@
 min_log_level: "debug"
 server:
-  port: 5001
+  port: 5002
   read_timeout: 10
   write_timeout: 5
   rate_limit:

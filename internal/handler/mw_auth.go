@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"net/http"
 	"strings"
 )
@@ -24,12 +25,17 @@ func (h *Handler) Auth(next http.Handler) http.Handler {
 			return h.auc.GetJWTToken(), nil
 		})
 
-		if err != nil || !token.Valid { // expires checks,
+		if err != nil || !token.Valid {
 			h.HandleError(w, http.StatusUnauthorized, err.Error())
 			return
 		}
 
 		id := token.Claims.(jwt.MapClaims)["id"].(string)
+
+		err = h.auc.Authorize(r.Context(), model.AuthorizeRequest{UserID: id, RoutePath: r.URL.Path})
+		if err != nil {
+			h.HandleError(w, http.StatusUnauthorized, err.Error())
+		}
 
 		r.Header.Set(HeaderUserID, id)
 

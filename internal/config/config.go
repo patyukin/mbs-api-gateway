@@ -2,10 +2,7 @@ package config
 
 import (
 	"fmt"
-	"github.com/go-playground/validator/v10"
-	"gopkg.in/yaml.v3"
-	"log"
-	"os"
+	configLoader "github.com/patyukin/mbs-pkg/pkg/config"
 )
 
 type Config struct {
@@ -22,36 +19,18 @@ type Config struct {
 	JwtSecret  string `yaml:"jwt_secret" validate:"required"`
 	TracerHost string `yaml:"tracer_host" validate:"required"`
 	GRPC       struct {
-		AuthServicePort int `yaml:"auth_service_port" validate:"min=1,max=65535"`
+		AuthServiceHost   string `yaml:"auth_service_host" validate:"required"`
+		AuthServicePort   int    `yaml:"auth_service_port" validate:"min=1,max=65535"`
+		LoggerServiceHost string `yaml:"logger_service_host" validate:"required"`
+		LoggerServicePort int    `yaml:"logger_service_port" validate:"min=1,max=65535"`
 	} `yaml:"grpc"`
 }
 
 func LoadConfig() (*Config, error) {
-	yamlConfigFilePath := os.Getenv("YAML_CONFIG_FILE_PATH")
-	if yamlConfigFilePath == "" {
-		return nil, fmt.Errorf("yaml config file path is not set")
-	}
-
-	f, err := os.Open(yamlConfigFilePath)
-	if err != nil {
-		return nil, fmt.Errorf("unable to open config file: %w", err)
-	}
-
-	defer func(f *os.File) {
-		if err = f.Close(); err != nil {
-			log.Printf("unable to close config file: %v", err)
-		}
-	}(f)
-
 	var config Config
-	decoder := yaml.NewDecoder(f)
-	if err = decoder.Decode(&config); err != nil {
-		return nil, fmt.Errorf("unable to decode config file: %w", err)
-	}
-
-	validate := validator.New()
-	if err = validate.Struct(&config); err != nil {
-		return nil, fmt.Errorf("config validation failed: %w", err)
+	err := configLoader.LoadConfig(&config)
+	if err != nil {
+		return nil, fmt.Errorf("error loading config: %w", err)
 	}
 
 	return &config, nil

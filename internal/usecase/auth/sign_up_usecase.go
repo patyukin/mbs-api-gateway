@@ -6,13 +6,13 @@ import (
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 )
 
-func (uc *UseCase) SignUpV1(ctx context.Context, in model.SignUpV1Request) error {
+func (uc *UseCase) SignUpV1(ctx context.Context, in model.SignUpV1Request) (model.SignUpV1Response, error) {
 	dto := model.ToProtoSignUpFromRequest(in)
 
-	_, err := uc.authClient.SignUp(ctx, &dto)
+	result, err := uc.authClient.SignUp(ctx, &dto)
 	if err != nil {
-		return fmt.Errorf("failed to uc.authClient.SignUp: %w", err)
+		return model.SignUpV1Response{}, fmt.Errorf("failed to uc.authClient.SignUp: %w", err)
 	}
 
-	return nil
+	return model.SignUpV1Response{Message: result.Message}, nil
 }

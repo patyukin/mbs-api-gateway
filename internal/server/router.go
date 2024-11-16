@@ -6,10 +6,8 @@ import (
 	"github.com/patyukin/mbs-api-gateway/internal/config"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	httpSwagger "github.com/swaggo/http-swagger"
-	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"net/http"
 	"net/http/pprof"
-	"os"
 )
 
 type Handler interface {
@@ -25,16 +23,8 @@ type Handler interface {
 	SignUpV1(w http.ResponseWriter, r *http.Request)
 	SignInV1(w http.ResponseWriter, r *http.Request)
 	SignInVerifyHandler(w http.ResponseWriter, r *http.Request)
-}
-
-func InitRouterWithTrace(h Handler, cfg *config.Config, srvAddress string) http.Handler {
-	r := Init(h, cfg, srvAddress)
-
-	tracedRouter := otelhttp.NewHandler(r, "request",
-		otelhttp.WithMessageEvents(otelhttp.ReadEvents, otelhttp.WriteEvents),
-	)
-
-	return tracedRouter
+	RefreshTokenV1Handler(w http.ResponseWriter, r *http.Request)
+	GetLogReportV1(w http.ResponseWriter, r *http.Request)
 }
 
 // Init docs
@@ -54,16 +44,22 @@ func Init(h Handler, cfg *config.Config, srvAddress string) http.Handler {
 		httpSwagger.URL(fmt.Sprintf("http://0.0.0.0%s/swagger/doc.json", srvAddress)),
 	))
 
-	// healthcheck
-	mux.Handle("GET /healthcheck", http.HandlerFunc(h.HealthCheck))
-
-	// api gateway routes
+	// auth service routes
 	mux.Handle("POST /v1/sign-up", http.HandlerFunc(h.SignUpV1))
 	mux.Handle("POST /v1/sign-in", http.HandlerFunc(h.SignInV1))
 	mux.Handle("POST /v1/sign-in-verify", http.HandlerFunc(h.SignInVerifyHandler))
-	mux.Handle("GET /crash", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		os.Exit(1)
-	}))
+	mux.Handle("POST /v1/refresh-token", http.HandlerFunc(h.RefreshTokenV1Handler))
+	mux.Handle("POST /v1/users-roles", h.Auth(http.HandlerFunc(h.RefreshTokenV1Handler)))
+
+	// payments service routes
+	// mux.Handle("GET /v1/payments", http.HandlerFunc(h.GetPaymentV1))
+	// mux.Handle("GET /v1/payments/{id}", http.HandlerFunc(h.GetPaymentByIDV1))
+	// mux.Handle("POST /v1/payments", http.HandlerFunc(h.CreatePaymentV1))
+	// mux.Handle("PUT /v1/payments/{id}", http.HandlerFunc(h.UpdatePaymentV1))
+	// mux.Handle("DELETE /v1/payments/{id}", http.HandlerFunc(h.DeletePaymentV1)) - canceled
+
+	// logger service routes
+	mux.Handle("POST /v1/log-reports", h.Auth(http.HandlerFunc(h.GetLogReportV1)))
 
 	// pprof routes
 	mux.Handle("/debug/pprof/", http.HandlerFunc(pprof.Index))
