@@ -85,8 +85,8 @@ type UpdateUserProfileV1Request struct {
 }
 
 type SignInV1Response struct {
-	Error   *error_v1.ErrorResponse
-	Message string
+	Error   *error_v1.ErrorResponse `json:"error,omitempty"`
+	Message string                  `json:"message,omitempty"`
 }
 
 type SignInV1Request struct {

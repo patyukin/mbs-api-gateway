@@ -3,6 +3,8 @@ name: CI
 on:
   push:
     branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
 
 env:
   REGISTRY: "cr.selcloud.ru/registry"
@@ -44,18 +46,18 @@ jobs:
           script: |
             # Set up variables
             TAG_NAME=$(echo $GITHUB_SHA | head -c7)
-            
+
             # Login into Selectel Registry
             docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} $REGISTRY
-            
+
             # Stop running container
             docker stop $CONTAINER_NAME
-            
+
             # Remove old container
             docker rm -f $CONTAINER_NAME
-            
+
             # cd to project directory
-            cd ~/bank-system/mbs-api-gateway
-            
+            cd ~/mbs-api-gateway
+
             # deploy
             ./deploy.sh $TAG_NAME

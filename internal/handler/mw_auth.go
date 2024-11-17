@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/patyukin/mbs-api-gateway/internal/model"
+	"github.com/rs/zerolog/log"
 	"net/http"
 	"strings"
 )
@@ -13,6 +14,7 @@ func (h *Handler) Auth(next http.Handler) http.Handler {
 
 		accessToken, err := GetBearerToken(r)
 		if err != nil {
+			log.Error().Msgf("failed GetBearerToken: %v", err)
 			h.HandleError(w, http.StatusUnauthorized, err.Error())
 			return
 		}
@@ -25,15 +27,17 @@ func (h *Handler) Auth(next http.Handler) http.Handler {
 			return h.auc.GetJWTToken(), nil
 		})
 
+		log.Debug().Msgf("token is valid: %v", token.Valid)
+
 		if err != nil || !token.Valid {
 			h.HandleError(w, http.StatusUnauthorized, err.Error())
 			return
 		}
 
 		id := token.Claims.(jwt.MapClaims)["id"].(string)
-
 		err = h.auc.Authorize(r.Context(), model.AuthorizeRequest{UserID: id, RoutePath: r.URL.Path})
 		if err != nil {
+			log.Error().Msgf("failed h.auc.Authorize: %v", err)
 			h.HandleError(w, http.StatusUnauthorized, err.Error())
 		}
 

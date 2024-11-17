@@ -2,6 +2,7 @@ package handler
 
 import (
 	"bytes"
+	"encoding/json"
 	"github.com/rs/zerolog/log"
 	"io"
 	"net/http"
@@ -19,7 +20,31 @@ func readBody(r *http.Request) (string, error) {
 
 	r.Body = io.NopCloser(&buf)
 
-	return string(body), nil
+	redactedBody, err := redactPassword(body)
+	if err != nil {
+		return string(body), nil
+	}
+
+	return redactedBody, nil
+}
+
+func redactPassword(body []byte) (string, error) {
+	var data map[string]interface{}
+
+	if err := json.Unmarshal(body, &data); err != nil {
+		return "", err
+	}
+
+	if _, ok := data["password"]; ok {
+		data["password"] = "***"
+	}
+
+	redactedBody, err := json.Marshal(data)
+	if err != nil {
+		return "", err
+	}
+
+	return string(redactedBody), nil
 }
 
 func (h *Handler) LoggingMiddleware(next http.Handler) http.Handler {

@@ -45,7 +45,7 @@ func (h *Handler) SignInV1(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
-	if err = json.NewEncoder(w).Encode(response.Message); err != nil {
+	if err = json.NewEncoder(w).Encode(response); err != nil {
 		metrics.FailedLogin.Inc()
 		log.Error().Msgf("SignInV1 EncodeError: %v", err)
 		h.HandleError(w, http.StatusInternalServerError, err.Error())
