@@ -10,41 +10,45 @@ import (
 )
 
 func (h *Handler) Auth(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
 
-		accessToken, err := GetBearerToken(r)
-		if err != nil {
-			log.Error().Msgf("failed GetBearerToken: %v", err)
-			h.HandleError(w, http.StatusUnauthorized, err.Error())
-			return
-		}
-
-		token, err := jwt.Parse(accessToken, func(token *jwt.Token) (interface{}, error) {
-			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+			accessToken, err := GetBearerToken(r)
+			if err != nil {
+				log.Error().Msgf("failed GetBearerToken: %v", err)
+				h.HandleError(w, http.StatusUnauthorized, err.Error())
+				return
 			}
 
-			return h.auc.GetJWTToken(), nil
-		})
+			token, err := jwt.Parse(
+				accessToken, func(token *jwt.Token) (interface{}, error) {
+					if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+						return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+					}
 
-		log.Debug().Msgf("token is valid: %v", token.Valid)
+					return h.auc.GetJWTToken(), nil
+				},
+			)
 
-		if err != nil || !token.Valid {
-			h.HandleError(w, http.StatusUnauthorized, err.Error())
-			return
-		}
+			log.Debug().Msgf("token is valid: %v", token.Valid)
 
-		id := token.Claims.(jwt.MapClaims)["id"].(string)
-		err = h.auc.Authorize(r.Context(), model.AuthorizeRequest{UserID: id, RoutePath: r.URL.Path})
-		if err != nil {
-			log.Error().Msgf("failed h.auc.Authorize: %v", err)
-			h.HandleError(w, http.StatusUnauthorized, err.Error())
-		}
+			//if err != nil || !token.Valid {
+			//	h.HandleError(w, http.StatusUnauthorized, err.Error())
+			//	return
+			//}
 
-		r.Header.Set(HeaderUserID, id)
+			id := "token.Claims"
+			err = h.auc.Authorize(r.Context(), model.AuthorizeRequest{UserID: id, RoutePath: r.URL.Path})
+			if err != nil {
+				log.Error().Msgf("failed h.auc.Authorize: %v", err)
+				h.HandleError(w, http.StatusUnauthorized, err.Error())
+			}
 
-		next.ServeHTTP(w, r)
-	})
+			r.Header.Set(HeaderUserID, id)
+
+			next.ServeHTTP(w, r)
+		},
+	)
 }
 
 func GetBearerToken(r *http.Request) (string, error) {

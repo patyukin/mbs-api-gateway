@@ -7,12 +7,12 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/opentracing/opentracing-go v1.2.0
-	github.com/patyukin/mbs-pkg v1.1.68
-	github.com/prometheus/client_golang v1.20.3
+	github.com/patyukin/mbs-pkg v1.1.69
+	github.com/prometheus/client_golang v1.20.5
 	github.com/rs/zerolog v1.33.0
 	github.com/stretchr/testify v1.9.0
 	github.com/swaggo/http-swagger v1.3.4
-	github.com/swaggo/swag v1.16.3
+	github.com/swaggo/swag v1.16.4
 	golang.org/x/time v0.6.0
 	google.golang.org/grpc v1.68.0
 )

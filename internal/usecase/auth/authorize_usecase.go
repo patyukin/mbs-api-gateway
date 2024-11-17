@@ -10,7 +10,7 @@ import (
 func (uc *UseCase) Authorize(ctx context.Context, in model.AuthorizeRequest) error {
 	pbm := model.ToProtoAuthorizeFromRequest(in)
 
-	log.Debug().Msgf("Authorize: %v", &pbm)
+	log.Debug().Msgf("uc.authClient: %v", uc.authClient)
 
 	_, err := uc.authClient.Authorize(ctx, &pbm)
 	if err != nil {
