@@ -7,8 +7,8 @@ import (
 )
 
 func (uc *UseCase) SignInVerify(ctx context.Context, in model.SignInVerifyV1Request) (model.SignInVerifyV1Response, error) {
-	siv := model.ToProtoSignInVerifyFromRequest(in)
-	tokens, err := uc.authClient.SignInVerify(ctx, &siv)
+	pbm := model.ToProtoSignInVerifyFromRequest(in)
+	tokens, err := uc.authClient.SignInConfirmation(ctx, &pbm)
 	if err != nil {
 		return model.SignInVerifyV1Response{}, fmt.Errorf("failed to uc.authClient.SignInVerify: %w", err)
 	}

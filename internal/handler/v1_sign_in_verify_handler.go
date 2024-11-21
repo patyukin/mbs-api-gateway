@@ -18,7 +18,7 @@ import (
 // @Failure      400   {object}  model.ErrorResponse "Invalid request body"
 // @Failure      500   {object}  model.ErrorResponse "Internal server error"
 // @Router       /v2/sign-in-verify [post]
-func (h *Handler) SignInVerifyHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) SignInConfirmationHandler(w http.ResponseWriter, r *http.Request) {
 	var signInVerifyV1Request model.SignInVerifyV1Request
 
 	if err := json.NewDecoder(r.Body).Decode(&signInVerifyV1Request); err != nil {

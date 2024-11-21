@@ -19,10 +19,11 @@ type Config struct {
 	JwtSecret  string `yaml:"jwt_secret" validate:"required"`
 	TracerHost string `yaml:"tracer_host" validate:"required"`
 	GRPC       struct {
-		AuthServiceHost   string `yaml:"auth_service_host" validate:"required"`
-		AuthServicePort   int    `yaml:"auth_service_port" validate:"min=1,max=65535"`
-		LoggerServiceHost string `yaml:"logger_service_host" validate:"required"`
-		LoggerServicePort int    `yaml:"logger_service_port" validate:"min=1,max=65535"`
+		AuthService    string `yaml:"auth_service" validate:"required"`
+		LoggerService  string `yaml:"logger_service" validate:"required"`
+		PaymentService string `yaml:"payment_service" validate:"required"`
+		CreditService  string `yaml:"credit_service" validate:"required"`
+		ReportService  string `yaml:"report_service" validate:"required"`
 	} `yaml:"grpc"`
 }
 

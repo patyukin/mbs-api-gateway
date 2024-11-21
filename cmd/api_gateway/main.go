@@ -8,10 +8,16 @@ import (
 	"github.com/patyukin/mbs-api-gateway/internal/metrics"
 	"github.com/patyukin/mbs-api-gateway/internal/server"
 	"github.com/patyukin/mbs-api-gateway/internal/usecase/auth"
+	"github.com/patyukin/mbs-api-gateway/internal/usecase/credit"
 	"github.com/patyukin/mbs-api-gateway/internal/usecase/logger"
+	"github.com/patyukin/mbs-api-gateway/internal/usecase/payment"
+	"github.com/patyukin/mbs-api-gateway/internal/usecase/report"
 	"github.com/patyukin/mbs-api-gateway/pkg/grpc_client"
 	authpb "github.com/patyukin/mbs-pkg/pkg/proto/auth_v1"
+	creditpb "github.com/patyukin/mbs-pkg/pkg/proto/credit_v1"
 	loggerpb "github.com/patyukin/mbs-pkg/pkg/proto/logger_v1"
+	paymentpb "github.com/patyukin/mbs-pkg/pkg/proto/payment_v1"
+	reportpb "github.com/patyukin/mbs-pkg/pkg/proto/report_v1"
 	"github.com/patyukin/mbs-pkg/pkg/tracing"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -52,7 +58,7 @@ func main() {
 	defer closer()
 
 	// auth service init
-	authConn, err := grpc_client.NewGRPCClientServiceConn(cfg.GRPC.AuthServiceHost, cfg.GRPC.AuthServicePort)
+	authConn, err := grpc_client.NewGRPCClientServiceConn(cfg.GRPC.AuthService)
 	if err != nil {
 		log.Fatal().Msgf("failed to connect to auth service: %v", err)
 	}
@@ -66,8 +72,38 @@ func main() {
 	authClient := authpb.NewAuthServiceClient(authConn)
 	authUseCase := auth.New([]byte(cfg.JwtSecret), authClient)
 
+	// payment service init
+	paymentConn, err := grpc_client.NewGRPCClientServiceConn(cfg.GRPC.PaymentService)
+	if err != nil {
+		log.Fatal().Msgf("failed to connect to payment service: %v", err)
+	}
+
+	defer func(paymentConn *grpc.ClientConn) {
+		if err = paymentConn.Close(); err != nil {
+			log.Error().Msgf("failed to close auth service connection: %v", err)
+		}
+	}(paymentConn)
+
+	paymentClient := paymentpb.NewPaymentServiceClient(paymentConn)
+	paymentUseCase := payment.New(paymentClient)
+
+	// credit service init
+	creditConn, err := grpc_client.NewGRPCClientServiceConn(cfg.GRPC.CreditService)
+	if err != nil {
+		log.Fatal().Msgf("failed to connect to CreditService: %v", err)
+	}
+
+	defer func(creditConn *grpc.ClientConn) {
+		if err = creditConn.Close(); err != nil {
+			log.Error().Msgf("failed to close creditConn service connection: %v", err)
+		}
+	}(creditConn)
+
+	creditClient := creditpb.NewCreditsServiceV1Client(creditConn)
+	creditUseCase := credit.New(creditClient)
+
 	// logger service init
-	loggerConn, err := grpc_client.NewGRPCClientServiceConn(cfg.GRPC.LoggerServiceHost, cfg.GRPC.LoggerServicePort)
+	loggerConn, err := grpc_client.NewGRPCClientServiceConn(cfg.GRPC.LoggerService)
 	if err != nil {
 		log.Fatal().Msgf("failed to connect to auth service: %v", err)
 	}
@@ -81,7 +117,22 @@ func main() {
 	loggerClient := loggerpb.NewLoggerServiceClient(loggerConn)
 	loggerUseCase := logger.New(loggerClient)
 
-	h := handler.New(authUseCase, loggerUseCase)
+	// report service init
+	reportConn, err := grpc_client.NewGRPCClientServiceConn(cfg.GRPC.ReportService)
+	if err != nil {
+		log.Fatal().Msgf("failed to connect to report service: %v", err)
+	}
+
+	defer func(conn *grpc.ClientConn) {
+		if err = conn.Close(); err != nil {
+			log.Error().Msgf("failed to close report service connection: %v", err)
+		}
+	}(reportConn)
+
+	reportClient := reportpb.NewReportServiceClient(reportConn)
+	reportUseCase := report.New(reportClient)
+
+	h := handler.New(authUseCase, loggerUseCase, paymentUseCase, creditUseCase, reportUseCase)
 	r := server.Init(h, cfg, srvAddress)
 	srv := server.New(r)
 

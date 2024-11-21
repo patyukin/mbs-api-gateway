@@ -1,10 +1,9 @@
 package model
 
 import (
-	"fmt"
 	authpb "github.com/patyukin/mbs-pkg/pkg/proto/auth_v1"
 	loggerpb "github.com/patyukin/mbs-pkg/pkg/proto/logger_v1"
-	"github.com/patyukin/mbs-pkg/pkg/utils"
+	paymentpb "github.com/patyukin/mbs-pkg/pkg/proto/payment_v1"
 )
 
 func ToProtoSignUpFromRequest(in SignUpV1Request) authpb.SignUpRequest {
@@ -21,8 +20,8 @@ func ToProtoSignUpFromRequest(in SignUpV1Request) authpb.SignUpRequest {
 	}
 }
 
-func ToProtoSignInVerifyFromRequest(in SignInVerifyV1Request) authpb.SignInVerifyRequest {
-	return authpb.SignInVerifyRequest{
+func ToProtoSignInVerifyFromRequest(in SignInVerifyV1Request) authpb.SignInConfirmationRequest {
+	return authpb.SignInConfirmationRequest{
 		Code: in.Code,
 	}
 }
@@ -34,17 +33,18 @@ func ToProtoSignInFromRequest(in SignInV1Request) authpb.SignInRequest {
 	}
 }
 
-func FromProtoSignInVerifyToResponse(in *authpb.SignInVerifyResponse) SignInVerifyV1Response {
+func FromProtoSignInVerifyToResponse(in *authpb.SignInConfirmationResponse) SignInVerifyV1Response {
 	return SignInVerifyV1Response{
 		AccessToken:  in.AccessToken,
 		RefreshToken: in.RefreshToken,
 	}
 }
 
-func ToProtoAuthorizeFromRequest(in AuthorizeRequest) authpb.AuthorizeRequest {
-	return authpb.AuthorizeRequest{
+func ToProtoAuthorizeFromRequest(in AuthorizeRequest) authpb.AuthorizeUserRequest {
+	return authpb.AuthorizeUserRequest{
 		UserId:    in.UserID,
 		RoutePath: in.RoutePath,
+		Method:    in.Method,
 	}
 }
 
@@ -61,27 +61,35 @@ func FromProtoRefreshTokenToResponse(in *authpb.RefreshTokenResponse) RefreshTok
 }
 
 func ToProtoLogReportFromRequest(in GetLogReportV1Request) (loggerpb.LogReportRequest, error) {
-	isValid, err := utils.ValidateDate(in.StartDate)
-	if err != nil {
-		return loggerpb.LogReportRequest{}, fmt.Errorf("некорректная дата начала")
-	}
-
-	if !isValid {
-		return loggerpb.LogReportRequest{}, fmt.Errorf("некорректная дата начала")
-	}
-
-	isValid, err = utils.ValidateDate(in.EndDate)
-	if err != nil {
-		return loggerpb.LogReportRequest{}, fmt.Errorf("некорректная дата окончания")
-	}
-
-	if !isValid {
-		return loggerpb.LogReportRequest{}, fmt.Errorf("некорректная дата окончания")
-	}
-
 	return loggerpb.LogReportRequest{
 		StartTime:   in.StartDate,
 		EndTime:     in.EndDate,
 		ServiceName: in.ServiceName,
 	}, nil
+}
+
+func ToProtoCreateAccountFromRequest(in CreateAccountV1Request) paymentpb.CreateAccountRequest {
+	return paymentpb.CreateAccountRequest{
+		UserId:   in.UserID,
+		Currency: in.Currency,
+		Balance:  in.Balance,
+	}
+}
+
+func ToProtoCreatePaymentFromRequest(in CreatePaymentV1Request) paymentpb.CreatePaymentRequest {
+	return paymentpb.CreatePaymentRequest{
+		SenderAccountId:   in.SenderAccountID,
+		ReceiverAccountId: in.ReceiverAccountID,
+		Amount:            in.Amount,
+		Currency:          in.Currency,
+		Description:       in.Description,
+		UserId:            in.UserID,
+	}
+}
+
+func ToProtoVerifyPaymentFromRequest(in VerifyPaymentV1Request) paymentpb.ConfirmationPaymentRequest {
+	return paymentpb.ConfirmationPaymentRequest{
+		UserId: in.UserID,
+		Code:   in.Code,
+	}
 }

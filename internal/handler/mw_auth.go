@@ -32,16 +32,16 @@ func (h *Handler) Auth(next http.Handler) http.Handler {
 
 			log.Debug().Msgf("token is valid: %v", token.Valid)
 
-			//if err != nil || !token.Valid {
-			//	h.HandleError(w, http.StatusUnauthorized, err.Error())
-			//	return
-			//}
+			if err != nil || !token.Valid {
+				h.HandleError(w, http.StatusUnauthorized, err.Error())
+				return
+			}
 
-			id := "token.Claims"
-			err = h.auc.Authorize(r.Context(), model.AuthorizeRequest{UserID: id, RoutePath: r.URL.Path})
+			id := token.Claims.(jwt.MapClaims)["id"].(string)
+			err = h.auc.Authorize(r.Context(), model.AuthorizeRequest{UserID: id, RoutePath: r.URL.Path, Method: r.Method})
 			if err != nil {
 				log.Error().Msgf("failed h.auc.Authorize: %v", err)
-				h.HandleError(w, http.StatusUnauthorized, err.Error())
+				h.HandleError(w, http.StatusUnauthorized, "Unauthorized")
 			}
 
 			r.Header.Set(HeaderUserID, id)

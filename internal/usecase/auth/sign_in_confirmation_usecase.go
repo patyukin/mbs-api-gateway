@@ -9,7 +9,7 @@ import (
 
 func (uc *UseCase) SignInVerifyV1(ctx context.Context, in model.SignInVerifyV1Request) (model.SignInVerifyV1Response, *error_v1.ErrorResponse) {
 	pbm := model.ToProtoSignInVerifyFromRequest(in)
-	result, err := uc.authClient.SignInVerify(ctx, &pbm)
+	result, err := uc.authClient.SignInConfirmation(ctx, &pbm)
 	if err != nil {
 		return model.SignInVerifyV1Response{}, &error_v1.ErrorResponse{
 			Code:        500,

@@ -9,8 +9,8 @@ import (
 type ProtoClient interface {
 	SignUp(ctx context.Context, in *authpb.SignUpRequest, opts ...grpc.CallOption) (*authpb.SignUpResponse, error)
 	SignIn(ctx context.Context, in *authpb.SignInRequest, opts ...grpc.CallOption) (*authpb.SignInResponse, error)
-	SignInVerify(ctx context.Context, in *authpb.SignInVerifyRequest, opts ...grpc.CallOption) (*authpb.SignInVerifyResponse, error)
-	Authorize(ctx context.Context, in *authpb.AuthorizeRequest, opts ...grpc.CallOption) (*authpb.AuthorizeResponse, error)
+	SignInConfirmation(ctx context.Context, in *authpb.SignInConfirmationRequest, opts ...grpc.CallOption) (*authpb.SignInConfirmationResponse, error)
+	AuthorizeUser(ctx context.Context, in *authpb.AuthorizeUserRequest, opts ...grpc.CallOption) (*authpb.AuthorizeUserResponse, error)
 	RefreshToken(ctx context.Context, in *authpb.RefreshTokenRequest, opts ...grpc.CallOption) (*authpb.RefreshTokenResponse, error)
 }
 

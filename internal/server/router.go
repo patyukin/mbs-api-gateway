@@ -19,12 +19,25 @@ type Handler interface {
 	RateLimitMiddleware(next http.Handler, rps float64, burst int) http.Handler
 	TracingMiddleware(next http.Handler) http.Handler
 	HandleError(w http.ResponseWriter, code int, message string)
-	HealthCheck(w http.ResponseWriter, r *http.Request)
 	SignUpV1(w http.ResponseWriter, r *http.Request)
 	SignInV1(w http.ResponseWriter, r *http.Request)
-	SignInVerifyHandler(w http.ResponseWriter, r *http.Request)
+	SignInConfirmationHandler(w http.ResponseWriter, r *http.Request)
 	RefreshTokenV1Handler(w http.ResponseWriter, r *http.Request)
 	GetLogReportV1(w http.ResponseWriter, r *http.Request)
+	CreatePaymentV1(w http.ResponseWriter, r *http.Request)
+	CreateAccountV1(w http.ResponseWriter, r *http.Request)
+	ConfirmationPaymentV1(w http.ResponseWriter, r *http.Request)
+	CreateCreditApplicationV1(w http.ResponseWriter, r *http.Request)
+	CreditApplicationConfirmationV1(w http.ResponseWriter, r *http.Request)
+	GetCreditApplicationV1(w http.ResponseWriter, r *http.Request)
+	UpdateCreditApplicationStatusV1(w http.ResponseWriter, r *http.Request)
+	GetCreditV1(w http.ResponseWriter, r *http.Request)
+	GetListUserCreditsV1(w http.ResponseWriter, r *http.Request)
+	GetPaymentScheduleV1(w http.ResponseWriter, r *http.Request)
+	GetUserReportV1(w http.ResponseWriter, r *http.Request)
+	GetPaymentV1(w http.ResponseWriter, r *http.Request)
+	UpdatePaymentStatusV1(w http.ResponseWriter, r *http.Request)
+	GetTransactionsByPaymentV1(w http.ResponseWriter, r *http.Request)
 }
 
 // Init docs
@@ -47,19 +60,32 @@ func Init(h Handler, cfg *config.Config, srvAddress string) http.Handler {
 	// auth service routes
 	mux.Handle("POST /v1/sign-up", http.HandlerFunc(h.SignUpV1))
 	mux.Handle("POST /v1/sign-in", http.HandlerFunc(h.SignInV1))
-	mux.Handle("POST /v1/sign-in-verify", http.HandlerFunc(h.SignInVerifyHandler))
+	mux.Handle("POST /v1/sign-in-verify", http.HandlerFunc(h.SignInConfirmationHandler))
 	mux.Handle("POST /v1/refresh-token", http.HandlerFunc(h.RefreshTokenV1Handler))
 	mux.Handle("POST /v1/users-roles", h.Auth(http.HandlerFunc(h.RefreshTokenV1Handler)))
 
 	// payments service routes
-	// mux.Handle("GET /v1/payments", http.HandlerFunc(h.GetPaymentV1))
-	// mux.Handle("GET /v1/payments/{id}", http.HandlerFunc(h.GetPaymentByIDV1))
-	// mux.Handle("POST /v1/payments", http.HandlerFunc(h.CreatePaymentV1))
-	// mux.Handle("PUT /v1/payments/{id}", http.HandlerFunc(h.UpdatePaymentV1))
-	// mux.Handle("DELETE /v1/payments/{id}", http.HandlerFunc(h.DeletePaymentV1)) - canceled
+	mux.Handle("POST /v1/accounts", h.Auth(http.HandlerFunc(h.CreateAccountV1)))
+	mux.Handle("POST /v1/payments", h.Auth(http.HandlerFunc(h.CreatePaymentV1)))
+	mux.Handle("POST /v1/payments/verify", h.Auth(http.HandlerFunc(h.ConfirmationPaymentV1)))
+	mux.Handle("GET /v1/payments/{id}", h.Auth(http.HandlerFunc(h.GetPaymentV1)))
+	mux.Handle("PATCH /v1/payments/{id}", h.Auth(http.HandlerFunc(h.UpdatePaymentStatusV1)))
+	mux.Handle("PATCH /v1/payments/{id}/transactions", h.Auth(http.HandlerFunc(h.GetTransactionsByPaymentV1)))
+
+	// credit service routes
+	mux.Handle("POST /v1/credit-applications", h.Auth(http.HandlerFunc(h.CreateCreditApplicationV1)))
+	mux.Handle("POST /v1/credit-applications/confirmation", h.Auth(http.HandlerFunc(h.CreditApplicationConfirmationV1)))
+	mux.Handle("GET /v1/credit-applications/{id}", h.Auth(http.HandlerFunc(h.GetCreditApplicationV1)))
+	mux.Handle("PATCH /v1/credit-applications/{id}", h.Auth(http.HandlerFunc(h.UpdateCreditApplicationStatusV1)))
+	mux.Handle("GET /v1/credits/{id}", h.Auth(http.HandlerFunc(h.GetCreditV1)))
+	mux.Handle("GET /v1/credits", h.Auth(http.HandlerFunc(h.GetListUserCreditsV1)))
+	mux.Handle("GET /v1/credits/{id}/payment-schedule", h.Auth(http.HandlerFunc(h.GetPaymentScheduleV1)))
 
 	// logger service routes
 	mux.Handle("POST /v1/log-reports", h.Auth(http.HandlerFunc(h.GetLogReportV1)))
+
+	// report service routes
+	mux.Handle("GET /v1/reports", h.Auth(http.HandlerFunc(h.GetUserReportV1)))
 
 	// pprof routes
 	mux.Handle("/debug/pprof/", http.HandlerFunc(pprof.Index))

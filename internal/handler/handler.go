@@ -28,18 +28,47 @@ type AuthUseCase interface {
 
 //go:generate go run github.com/vektra/mockery/v2@v2.45.1 --name=LoggerUseCase
 type LoggerUseCase interface {
-	GetLogReport(ctx context.Context, in model.GetLogReportV1Request) *error_v1.ErrorResponse
+	GetLogReport(ctx context.Context, in model.GetLogReportV1Request) (model.GetLogReportV1Response, *error_v1.ErrorResponse)
+}
+
+//go:generate go run github.com/vektra/mockery/v2@v2.45.1 --name=PaymentUseCase
+type PaymentUseCase interface {
+	CreateAccountUseCase(ctx context.Context, in model.CreateAccountV1Request) (model.CreateAccountV1Response, *error_v1.ErrorResponse)
+	CreatePaymentUseCase(ctx context.Context, in model.CreatePaymentV1Request) (model.CreatePaymentV1Response, *error_v1.ErrorResponse)
+	VerifyPaymentUseCase(ctx context.Context, in model.VerifyPaymentV1Request) (model.VerifyPaymentV1Response, *error_v1.ErrorResponse)
+}
+
+//go:generate go run github.com/vektra/mockery/v2@v2.45.1 --name=CreditUseCase
+type CreditUseCase interface {
+	CreateCreditUseCase(ctx context.Context, in model.CreateCreditV1Request, userID string) (model.CreateCreditV1Response, *error_v1.ErrorResponse)
+	CreateCreditApplicationUseCase(ctx context.Context, in model.CreateCreditApplicationV1Request, userID string) (model.CreateCreditApplicationV1Response, *error_v1.ErrorResponse)
+	CreditApplicationConfirmationUseCase(ctx context.Context, in model.CreditApplicationConfirmationV1Request, userID string) (model.CreditApplicationConfirmationV1Response, *error_v1.ErrorResponse)
+	GetCreditApplicationUseCase(ctx context.Context, applicationID, userID string) (model.GetCreditApplicationV1Response, *error_v1.ErrorResponse)
+	UpdateCreditApplicationStatusUseCase(ctx context.Context, in model.UpdateCreditApplicationStatusV1Request) (model.UpdateCreditApplicationStatusV1Response, *error_v1.ErrorResponse)
+	GetCreditUseCase(ctx context.Context, creditID, userID string) (model.GetCreditV1Response, *error_v1.ErrorResponse)
+	GetListUserCreditsUseCase(ctx context.Context, in model.GetListUserCreditsV1Request) (model.GetListUserCreditsV1Response, *error_v1.ErrorResponse)
+	GetPaymentScheduleUseCase(ctx context.Context, userID, creditID string) (model.GetPaymentScheduleV1Response, *error_v1.ErrorResponse)
+}
+
+type ReportUseCase interface {
+	GetUserReport(ctx context.Context, in model.GetUserReportV1Request) (model.GetUserReportV1Response, *error_v1.ErrorResponse)
 }
 
 type Handler struct {
 	auc AuthUseCase
 	luc LoggerUseCase
+	puc PaymentUseCase
+	cuc CreditUseCase
+	ruc ReportUseCase
 }
 
-func New(auc AuthUseCase, luc LoggerUseCase) *Handler {
+func New(auc AuthUseCase, luc LoggerUseCase, puc PaymentUseCase, cus CreditUseCase, ruc ReportUseCase) *Handler {
 	return &Handler{
 		auc: auc,
 		luc: luc,
+		puc: puc,
+		cuc: cus,
+		ruc: ruc,
 	}
 }
 

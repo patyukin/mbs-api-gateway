@@ -6,6 +6,7 @@ import (
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
 	loggerpb "github.com/patyukin/mbs-pkg/pkg/proto/logger_v1"
+	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 )
 
@@ -23,10 +24,10 @@ func New(loggerClient ProtoClient) *UseCase {
 	}
 }
 
-func (u *UseCase) GetLogReport(ctx context.Context, in model.GetLogReportV1Request) *error_v1.ErrorResponse {
+func (u *UseCase) GetLogReport(ctx context.Context, in model.GetLogReportV1Request) (model.GetLogReportV1Response, *error_v1.ErrorResponse) {
 	pbm, err := model.ToProtoLogReportFromRequest(in)
 	if err != nil {
-		return &error_v1.ErrorResponse{
+		return model.GetLogReportV1Response{}, &error_v1.ErrorResponse{
 			Code:        400,
 			Message:     err.Error(),
 			Description: fmt.Sprintf("failed to ToProtoLogReportFromRequest: %v", err),
@@ -35,7 +36,7 @@ func (u *UseCase) GetLogReport(ctx context.Context, in model.GetLogReportV1Reque
 
 	result, err := u.loggerClient.GetLogReport(ctx, &pbm)
 	if err != nil {
-		return &error_v1.ErrorResponse{
+		return model.GetLogReportV1Response{}, &error_v1.ErrorResponse{
 			Code:        500,
 			Message:     "Internal Server Error",
 			Description: fmt.Sprintf("failed to GetLogReport: %v", err),
@@ -43,8 +44,10 @@ func (u *UseCase) GetLogReport(ctx context.Context, in model.GetLogReportV1Reque
 	}
 
 	if result.Error != nil {
-		return result.Error
+		return model.GetLogReportV1Response{}, result.Error
 	}
 
-	return nil
+	log.Debug().Msgf("result.FileUrl: %v", result.FileUrl)
+
+	return model.GetLogReportV1Response{FileUrl: result.FileUrl}, nil
 }

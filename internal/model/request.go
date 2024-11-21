@@ -70,7 +70,7 @@ func (req *SignUpV1Request) Validate() error {
 	}
 
 	if req.Address == "" {
-		return errors.New("аддресс не может быть пустым")
+		return errors.New("адрес не может быть пустым")
 	}
 
 	return nil
@@ -113,13 +113,14 @@ type SignInVerifyV1Request struct {
 type AuthorizeRequest struct {
 	UserID    string `json:"user_id"`
 	RoutePath string `json:"route_path"`
+	Method    string `json:"method"`
 }
 
 type AuthorizeResponse struct {
 }
 
 type RefreshTokenV1Request struct {
-	RefreshToken string `json:"refresh_token"`
+	RefreshToken string `json:"token"`
 }
 
 type RefreshTokenV1Response struct {
@@ -130,6 +131,10 @@ type GetLogReportV1Request struct {
 	ServiceName string `json:"service_name"`
 	StartDate   string `json:"start_date"`
 	EndDate     string `json:"end_date"`
+}
+
+type GetLogReportV1Response struct {
+	FileUrl string `json:"file_url"`
 }
 
 func (req *GetLogReportV1Request) Validate() error {
@@ -146,4 +151,36 @@ func (req *GetLogReportV1Request) Validate() error {
 	}
 
 	return nil
+}
+
+type CreateAccountV1Request struct {
+	Currency string `json:"currency"`
+	Balance  int64  `json:"balance"`
+	UserID   string `json:"user_id"`
+}
+
+type CreateAccountV1Response struct {
+	Error *string `json:"error"`
+}
+
+type CreatePaymentV1Request struct {
+	SenderAccountID   string `json:"sender_account_id"`
+	ReceiverAccountID string `json:"receiver_account_id"`
+	Amount            int64  `json:"amount"`
+	Currency          string `json:"currency"`
+	Description       string `json:"description"`
+	UserID            string `json:"user_id"`
+}
+
+type CreatePaymentV1Response struct {
+	Error *string `json:"error"`
+}
+
+type VerifyPaymentV1Request struct {
+	Code   string `json:"code"`
+	UserID string `json:"user_id"`
+}
+
+type VerifyPaymentV1Response struct {
+	Error *string `json:"error"`
 }

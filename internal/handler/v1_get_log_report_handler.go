@@ -36,14 +36,20 @@ func (h *Handler) GetLogReportV1(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := h.luc.GetLogReport(r.Context(), in); err != nil {
+	result, err := h.luc.GetLogReport(r.Context(), in)
+	if err != nil {
 		metrics.FailedLogReport.Inc()
 		log.Error().Msgf("GetLogReportV1 UseCaseError: %v", err.Description)
 		h.HandleError(w, int(err.Code), err.Message)
 		return
 	}
 
-	metrics.SuccessfulLogReport.Inc()
+	log.Debug().Msgf("result.FileUrl: %v", result.FileUrl)
+
 	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	if errEnc := json.NewEncoder(w).Encode(result); errEnc != nil {
+		log.Error().Err(errEnc).Msgf("failed to encode tokens, error: %v", err)
+		h.HandleError(w, http.StatusInternalServerError, "internal server error")
+		return
+	}
 }
