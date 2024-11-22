@@ -47,7 +47,7 @@ func (u *UseCase) GetLogReport(ctx context.Context, in model.GetLogReportV1Reque
 		return model.GetLogReportV1Response{}, result.Error
 	}
 
-	log.Debug().Msgf("result.FileUrl: %v", result.FileUrl)
+	log.Debug().Msgf("result.FileUrl: %v", result.Message)
 
-	return model.GetLogReportV1Response{FileUrl: result.FileUrl}, nil
+	return model.GetLogReportV1Response{FileUrl: result.Message}, nil
 }

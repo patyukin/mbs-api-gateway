@@ -8,10 +8,10 @@ import (
 	"strconv"
 )
 
-func (h *Handler) GetListUserCreditsV1(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) GetListUserCreditsV1Handler(w http.ResponseWriter, r *http.Request) {
 	userID := r.Header.Get(HeaderUserID)
 	if userID == "" {
-		log.Error().Msg("GetCreditV1 missing userID")
+		log.Error().Msg("GetCreditV1Handler missing userID")
 		h.HandleError(w, http.StatusUnauthorized, "Unauthorized")
 		return
 	}
@@ -44,11 +44,13 @@ func (h *Handler) GetListUserCreditsV1(w http.ResponseWriter, r *http.Request) {
 		page = int32(pageParsed)
 	}
 
-	response, err := h.cuc.GetListUserCreditsUseCase(r.Context(), model.GetListUserCreditsV1Request{
-		UserID: userID,
-		Page:   page,
-		Limit:  limit,
-	})
+	response, err := h.cuc.GetListUserCreditsUseCase(
+		r.Context(), model.GetListUserCreditsV1Request{
+			UserID: userID,
+			Page:   page,
+			Limit:  limit,
+		},
+	)
 	if err != nil {
 		log.Error().Msgf("failed to sign in verify, code: %d, message: %s, error: %v", err.Code, err.Message, err.Description)
 		h.HandleError(w, int(err.Code), err.Message)

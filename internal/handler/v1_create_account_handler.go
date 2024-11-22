@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func (h *Handler) CreateAccountV1(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) CreateAccountV1Handler(w http.ResponseWriter, r *http.Request) {
 	var createAccountRequest model.CreateAccountV1Request
 
 	if err := json.NewDecoder(r.Body).Decode(&createAccountRequest); err != nil {
@@ -18,7 +18,7 @@ func (h *Handler) CreateAccountV1(w http.ResponseWriter, r *http.Request) {
 
 	userID := r.Header.Get(HeaderUserID)
 	if userID == "" {
-		log.Error().Msg("CreateAccountV1 missing userID")
+		log.Error().Msg("CreateAccountV1Handler missing userID")
 		h.HandleError(w, http.StatusUnauthorized, "Unauthorized")
 		return
 	}

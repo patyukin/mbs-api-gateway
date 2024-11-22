@@ -7,8 +7,8 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (uc *UseCase) Authorize(ctx context.Context, in model.AuthorizeRequest) error {
-	pbm := model.ToProtoAuthorizeFromRequest(in)
+func (uc *UseCase) AuthorizeUser(ctx context.Context, in model.AuthorizeUserV1Request) error {
+	pbm := model.ToProtoV1AuthorizeUserRequest(in)
 
 	log.Debug().Msgf("uc.authClient: %v", uc.authClient)
 

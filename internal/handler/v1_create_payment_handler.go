@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func (h *Handler) CreatePaymentV1(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) CreatePaymentV1Handler(w http.ResponseWriter, r *http.Request) {
 	var createPaymentRequest model.CreatePaymentV1Request
 
 	if err := json.NewDecoder(r.Body).Decode(&createPaymentRequest); err != nil {

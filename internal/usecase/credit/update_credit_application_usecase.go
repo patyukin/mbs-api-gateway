@@ -8,12 +8,12 @@ import (
 )
 
 func (u *UseCase) UpdateCreditApplicationStatusUseCase(ctx context.Context, in model.UpdateCreditApplicationStatusV1Request) (model.UpdateCreditApplicationStatusV1Response, *error_v1.ErrorResponse) {
-	mpb, err := model.ToProtoUpdateCreditApplicationStatusRequest(in)
+	mpb, err := model.ToProtoV1UpdateCreditApplicationStatusRequest(in)
 	if err != nil {
 		return model.UpdateCreditApplicationStatusV1Response{}, &error_v1.ErrorResponse{
 			Code:        500,
 			Message:     "Internal Server Error",
-			Description: fmt.Sprintf("failed model.ToProtoUpdateCreditApplicationStatusRequest: %v", err),
+			Description: fmt.Sprintf("failed model.ToProtoV1UpdateCreditApplicationStatusRequest: %v", err),
 		}
 	}
 

@@ -6,17 +6,17 @@ import (
 	"net/http"
 )
 
-func (h *Handler) GetCreditV1(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) GetCreditV1Handler(w http.ResponseWriter, r *http.Request) {
 	creditID := r.PathValue("id")
 	if creditID == "" {
-		log.Error().Msg("r.PathValue(\"id\") missing creditID in GetCreditV1")
+		log.Error().Msg("r.PathValue(\"id\") missing creditID in GetCreditV1Handler")
 		h.HandleError(w, http.StatusBadRequest, "invalid data")
 		return
 	}
 
 	userID := r.Header.Get(HeaderUserID)
 	if userID == "" {
-		log.Error().Msg("GetCreditV1 missing userID")
+		log.Error().Msg("GetCreditV1Handler missing userID")
 		h.HandleError(w, http.StatusUnauthorized, "Unauthorized")
 		return
 	}

@@ -40,7 +40,7 @@ func (_m *AuthUseCase) SignUpV1(ctx context.Context, in model.SignUpV1Request) e
 	ret := _m.Called(ctx, in)
 
 	if len(ret) == 0 {
-		panic("no return value specified for SignUpV1")
+		panic("no return value specified for SignUpV1Handler")
 	}
 
 	var r0 error

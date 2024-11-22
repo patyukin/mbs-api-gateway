@@ -9,10 +9,12 @@ import (
 )
 
 func (u *UseCase) GetCreditApplicationUseCase(ctx context.Context, applicationID, userID string) (model.GetCreditApplicationV1Response, *error_v1.ErrorResponse) {
-	response, err := u.creditClient.GetCreditApplication(ctx, &creditpb.GetCreditApplicationRequest{
-		ApplicationId: applicationID,
-		UserId:        userID,
-	})
+	response, err := u.creditClient.GetCreditApplication(
+		ctx, &creditpb.GetCreditApplicationRequest{
+			ApplicationId: applicationID,
+			UserId:        userID,
+		},
+	)
 	if err != nil {
 		return model.GetCreditApplicationV1Response{}, &error_v1.ErrorResponse{
 			Code:        500,
@@ -29,5 +31,5 @@ func (u *UseCase) GetCreditApplicationUseCase(ctx context.Context, applicationID
 		}
 	}
 
-	return model.ToModelGetCreditApplicationResponse(response), nil
+	return model.ToModelGetCreditApplicationV1Response(response), nil
 }

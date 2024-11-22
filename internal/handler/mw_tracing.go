@@ -6,17 +6,14 @@ import (
 )
 
 func (h *Handler) TracingMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		//ctx, span := otel.Tracer(tracer.ProviderNameApiGateway).Start(r.Context(), "request")
-		//ctx = metadata.AppendToOutgoingContext(ctx, "x-trace-id", span.SpanContext().TraceID().String())
-		//
-		//defer span.End()
+	return http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			span := opentracing.GlobalTracer().StartSpan("start-request")
+			defer span.Finish()
 
-		span := opentracing.GlobalTracer().StartSpan("start-request")
-		defer span.Finish()
+			ctx := opentracing.ContextWithSpan(r.Context(), span)
 
-		ctx := opentracing.ContextWithSpan(r.Context(), span)
-
-		next.ServeHTTP(w, r.WithContext(ctx))
-	})
+			next.ServeHTTP(w, r.WithContext(ctx))
+		},
+	)
 }

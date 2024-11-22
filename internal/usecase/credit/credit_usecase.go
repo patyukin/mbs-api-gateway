@@ -9,6 +9,7 @@ import (
 type ProtoClient interface {
 	CreateCreditApplication(ctx context.Context, in *creditpb.CreateCreditApplicationRequest, opts ...grpc.CallOption) (*creditpb.CreateCreditApplicationResponse, error)
 	CreditApplicationConfirmation(ctx context.Context, in *creditpb.CreditApplicationConfirmationRequest, opts ...grpc.CallOption) (*creditpb.CreditApplicationConfirmationResponse, error)
+	CreateCredit(ctx context.Context, in *creditpb.CreateCreditRequest, opts ...grpc.CallOption) (*creditpb.CreateCreditResponse, error)
 	GetCreditApplication(ctx context.Context, in *creditpb.GetCreditApplicationRequest, opts ...grpc.CallOption) (*creditpb.GetCreditApplicationResponse, error)
 	UpdateCreditApplicationStatus(ctx context.Context, in *creditpb.UpdateCreditApplicationStatusRequest, opts ...grpc.CallOption) (*creditpb.UpdateCreditApplicationStatusResponse, error)
 	GetCredit(ctx context.Context, in *creditpb.GetCreditRequest, opts ...grpc.CallOption) (*creditpb.GetCreditResponse, error)

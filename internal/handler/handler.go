@@ -18,24 +18,19 @@ const (
 
 //go:generate go run github.com/vektra/mockery/v2@v2.45.1 --name=AuthUseCase
 type AuthUseCase interface {
-	SignUpV1(ctx context.Context, in model.SignUpV1Request) (model.SignUpV1Response, error)
-	SignInV1(ctx context.Context, in model.SignInV1Request) (model.SignInV1Response, error)
-	SignInVerifyV1(ctx context.Context, in model.SignInVerifyV1Request) (model.SignInVerifyV1Response, *error_v1.ErrorResponse)
-	RefreshTokenV1(ctx context.Context, in model.RefreshTokenV1Request) (model.RefreshTokenV1Response, *error_v1.ErrorResponse)
 	GetJWTToken() []byte
-	Authorize(ctx context.Context, in model.AuthorizeRequest) error
-}
-
-//go:generate go run github.com/vektra/mockery/v2@v2.45.1 --name=LoggerUseCase
-type LoggerUseCase interface {
-	GetLogReport(ctx context.Context, in model.GetLogReportV1Request) (model.GetLogReportV1Response, *error_v1.ErrorResponse)
+	SignUpV1(ctx context.Context, in model.SignUpV1Request) (model.SignUpV1Response, *error_v1.ErrorResponse)
+	SignInV1(ctx context.Context, in model.SignInV1Request) (model.SignInV1Response, *error_v1.ErrorResponse)
+	SignInConfirmation(ctx context.Context, in model.SignInConfirmationV1Request) (model.SignInConfirmationV1Response, *error_v1.ErrorResponse)
+	RefreshTokenV1(ctx context.Context, in model.RefreshTokenV1Request) (model.RefreshTokenV1Response, *error_v1.ErrorResponse)
+	AuthorizeUser(ctx context.Context, in model.AuthorizeUserV1Request) error
 }
 
 //go:generate go run github.com/vektra/mockery/v2@v2.45.1 --name=PaymentUseCase
 type PaymentUseCase interface {
 	CreateAccountUseCase(ctx context.Context, in model.CreateAccountV1Request) (model.CreateAccountV1Response, *error_v1.ErrorResponse)
 	CreatePaymentUseCase(ctx context.Context, in model.CreatePaymentV1Request) (model.CreatePaymentV1Response, *error_v1.ErrorResponse)
-	VerifyPaymentUseCase(ctx context.Context, in model.VerifyPaymentV1Request) (model.VerifyPaymentV1Response, *error_v1.ErrorResponse)
+	ConfirmationPaymentUseCase(ctx context.Context, in model.ConfirmationPaymentV1Request) (model.VerifyPaymentV1Response, *error_v1.ErrorResponse)
 }
 
 //go:generate go run github.com/vektra/mockery/v2@v2.45.1 --name=CreditUseCase
@@ -50,8 +45,14 @@ type CreditUseCase interface {
 	GetPaymentScheduleUseCase(ctx context.Context, userID, creditID string) (model.GetPaymentScheduleV1Response, *error_v1.ErrorResponse)
 }
 
+//go:generate go run github.com/vektra/mockery/v2@v2.45.1 --name=ReportUseCase
 type ReportUseCase interface {
 	GetUserReport(ctx context.Context, in model.GetUserReportV1Request) (model.GetUserReportV1Response, *error_v1.ErrorResponse)
+}
+
+//go:generate go run github.com/vektra/mockery/v2@v2.45.1 --name=LoggerUseCase
+type LoggerUseCase interface {
+	GetLogReport(ctx context.Context, in model.GetLogReportV1Request) (model.GetLogReportV1Response, *error_v1.ErrorResponse)
 }
 
 type Handler struct {

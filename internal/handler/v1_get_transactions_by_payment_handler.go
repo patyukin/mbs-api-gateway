@@ -4,6 +4,6 @@ import (
 	"net/http"
 )
 
-func (h *Handler) GetTransactionsByPaymentV1(w http.ResponseWriter, r *http.Request) {
-	
+func (h *Handler) GetTransactionsByPaymentV1Handler(w http.ResponseWriter, r *http.Request) {
+
 }

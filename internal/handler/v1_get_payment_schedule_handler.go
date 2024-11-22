@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func (h *Handler) GetPaymentScheduleV1(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) GetPaymentScheduleV1Handler(w http.ResponseWriter, r *http.Request) {
 	creditID := r.PathValue("id")
 	if creditID == "" {
 		log.Error().Msg("r.PathValue(\"id\") missing creditID")
@@ -16,7 +16,7 @@ func (h *Handler) GetPaymentScheduleV1(w http.ResponseWriter, r *http.Request) {
 
 	userID := r.Header.Get(HeaderUserID)
 	if userID == "" {
-		log.Error().Msg("CreateAccountV1 missing userID")
+		log.Error().Msg("CreateAccountV1Handler missing userID")
 		h.HandleError(w, http.StatusUnauthorized, "Unauthorized")
 		return
 	}

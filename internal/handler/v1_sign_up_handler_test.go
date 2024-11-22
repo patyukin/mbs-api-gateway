@@ -49,7 +49,7 @@ func (suite *SignUpV1TestSuite) TearDownTest() {
 }
 
 func (suite *SignUpV1TestSuite) TestSignUpV1_Success() {
-	suite.mockUC.On("SignUpV1", mock.Anything, mock.Anything).Return(nil)
+	suite.mockUC.On("SignUpV1Handler", mock.Anything, mock.Anything).Return(nil)
 
 	requestData := model.SignUpV1Request{
 		Email:         "john.doe@example.com",
@@ -69,7 +69,7 @@ func (suite *SignUpV1TestSuite) TestSignUpV1_Success() {
 
 	rr := httptest.NewRecorder()
 
-	suite.handler.SignUpV1(rr, req)
+	suite.handler.SignUpV1Handler(rr, req)
 
 	suite.Equal(http.StatusCreated, rr.Code)
 	suite.Equal("application/json; charset=UTF-8", rr.Header().Get("Content-Type"))
@@ -82,11 +82,11 @@ func (suite *SignUpV1TestSuite) TestSignUpV1_DecodeError() {
 
 	rr := httptest.NewRecorder()
 
-	suite.handler.SignUpV1(rr, req)
+	suite.handler.SignUpV1Handler(rr, req)
 
 	suite.Equal(http.StatusBadRequest, rr.Code)
 
-	suite.mockUC.AssertNotCalled(suite.T(), "SignUpV1", mock.Anything, mock.Anything)
+	suite.mockUC.AssertNotCalled(suite.T(), "SignUpV1Handler", mock.Anything, mock.Anything)
 }
 
 func (suite *SignUpV1TestSuite) TestSignUpV1_ValidationError() {
@@ -108,13 +108,13 @@ func (suite *SignUpV1TestSuite) TestSignUpV1_ValidationError() {
 
 	rr := httptest.NewRecorder()
 
-	suite.handler.SignUpV1(rr, req)
+	suite.handler.SignUpV1Handler(rr, req)
 	suite.Equal(http.StatusBadRequest, rr.Code)
-	suite.mockUC.AssertNotCalled(suite.T(), "SignUpV1", mock.Anything, mock.Anything)
+	suite.mockUC.AssertNotCalled(suite.T(), "SignUpV1Handler", mock.Anything, mock.Anything)
 }
 
 func (suite *SignUpV1TestSuite) TestSignUpV1_UseCaseError() {
-	suite.mockUC.On("SignUpV1", mock.Anything, mock.Anything).Return(errors.New("use case error"))
+	suite.mockUC.On("SignUpV1Handler", mock.Anything, mock.Anything).Return(errors.New("use case error"))
 
 	requestData := model.SignUpV1Request{
 		Email:         "john.doe@example.com",
@@ -134,7 +134,7 @@ func (suite *SignUpV1TestSuite) TestSignUpV1_UseCaseError() {
 
 	rr := httptest.NewRecorder()
 
-	suite.handler.SignUpV1(rr, req)
+	suite.handler.SignUpV1Handler(rr, req)
 	suite.Equal(http.StatusInternalServerError, rr.Code)
 
 	suite.mockUC.AssertExpectations(suite.T())

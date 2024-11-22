@@ -8,7 +8,7 @@ import (
 )
 
 func (u *UseCase) CreateCreditApplicationUseCase(ctx context.Context, in model.CreateCreditApplicationV1Request, userID string) (model.CreateCreditApplicationV1Response, *error_v1.ErrorResponse) {
-	mpb := model.ToProtoCreateCreditApplicationRequest(in, userID)
+	mpb := model.ToProtoV1CreateCreditApplicationRequest(in, userID)
 	response, err := u.creditClient.CreateCreditApplication(ctx, &mpb)
 	if err != nil {
 		return model.CreateCreditApplicationV1Response{}, &error_v1.ErrorResponse{

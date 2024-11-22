@@ -65,17 +65,15 @@ func (req *CreateCreditApplicationV1Request) Validate() *error_v1.ErrorResponse 
 		for _, fieldErr := range validationErrors {
 			switch fieldErr.Tag() {
 			case "required":
-				errorMessages += fmt.Sprintf("Поле '%s' обязательно для заполнения.\n", fieldErr.Field())
+				errorMessages += fmt.Sprintf("Field '%s' is required.\n", fieldErr.Field())
 			case "gt":
-				errorMessages += fmt.Sprintf("Поле '%s' должно быть больше 0.\n", fieldErr.Field())
+				errorMessages += fmt.Sprintf("Field '%s' must be greater than zero.\n", fieldErr.Field())
 			case "datetime":
-				errorMessages += fmt.Sprintf("Поле '%s' должно соответствовать формату RFC3339.\n", fieldErr.Field())
-			case "gtfield":
-				errorMessages += fmt.Sprintf("Поле '%s' должно быть позже '%s'.\n", fieldErr.Field(), fieldErr.Param())
+				errorMessages += fmt.Sprintf("Field '%s' must be in RFC3339 format.\n", fieldErr.Field())
 			case "max":
-				errorMessages += fmt.Sprintf("Поле '%s' не должно превышать %s символов.\n", fieldErr.Field(), fieldErr.Param())
+				errorMessages += fmt.Sprintf("Field '%s' must be less than or equal to 500 characters.\n", fieldErr.Field())
 			default:
-				errorMessages += fmt.Sprintf("Поле '%s' имеет некорректное значение.\n", fieldErr.Field())
+				errorMessages += fmt.Sprintf("Field '%s' is invalid.\n", fieldErr.Field())
 			}
 		}
 
@@ -90,12 +88,16 @@ func (req *CreateCreditApplicationV1Request) Validate() *error_v1.ErrorResponse 
 }
 
 type CreateCreditApplicationV1Response struct {
+	Message string `json:"message"`
 }
 
 type CreateCreditV1Request struct {
+	ApplicationID string `json:"application_id"`
+	UserID        string `json:"user_id"`
 }
 
 type CreateCreditV1Response struct {
+	Message string `json:"message"`
 }
 
 type CreditApplicationConfirmationV1Request struct {
@@ -170,7 +172,7 @@ type GetListUserCreditsV1Request struct {
 	Limit  int32  `json:"limit"`
 }
 
-type Credit struct {
+type CreditV1 struct {
 	CreditID        string `json:"credit_id"`
 	UserID          string `json:"user_id"`
 	Amount          int64  `json:"amount"`
@@ -183,13 +185,12 @@ type Credit struct {
 }
 
 type GetCreditV1Response struct {
-	Credit Credit `json:"credit"`
+	CreditV1 CreditV1 `json:"credit"`
 }
 
 type GetListUserCreditsV1Response struct {
-	Credits     []Credit `json:"credits"`
-	CurrentPage int32    `json:"current_page"`
-	TotalPages  int32    `json:"total_pages"`
+	Credits []CreditV1 `json:"credits"`
+	Total   int32      `json:"total"`
 }
 
 type PaymentSchedule struct {

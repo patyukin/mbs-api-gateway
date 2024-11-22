@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func (h *Handler) GetCreditApplicationV1(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) GetCreditApplicationV1Handler(w http.ResponseWriter, r *http.Request) {
 	applicationID := r.PathValue("id")
 	if applicationID == "" {
 		log.Error().Msg("r.PathValue(\"id\") missing userID")
@@ -16,7 +16,7 @@ func (h *Handler) GetCreditApplicationV1(w http.ResponseWriter, r *http.Request)
 
 	userID := r.Header.Get(HeaderUserID)
 	if userID == "" {
-		log.Error().Msg("CreateAccountV1 missing userID")
+		log.Error().Msg("CreateAccountV1Handler missing userID")
 		h.HandleError(w, http.StatusUnauthorized, "Unauthorized")
 		return
 	}

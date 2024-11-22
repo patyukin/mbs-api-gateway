@@ -12,7 +12,7 @@ import (
 	"github.com/patyukin/mbs-api-gateway/internal/usecase/logger"
 	"github.com/patyukin/mbs-api-gateway/internal/usecase/payment"
 	"github.com/patyukin/mbs-api-gateway/internal/usecase/report"
-	"github.com/patyukin/mbs-api-gateway/pkg/grpc_client"
+	"github.com/patyukin/mbs-pkg/pkg/grpc_client"
 	authpb "github.com/patyukin/mbs-pkg/pkg/proto/auth_v1"
 	creditpb "github.com/patyukin/mbs-pkg/pkg/proto/credit_v1"
 	loggerpb "github.com/patyukin/mbs-pkg/pkg/proto/logger_v1"
@@ -50,7 +50,7 @@ func main() {
 		log.Fatal().Msgf("failed to register metrics: %v", err)
 	}
 
-	_, closer, err := tracing.InitJaeger(fmt.Sprintf("localhost:6831"), ServiceName)
+	_, closer, err := tracing.InitJaeger(cfg.TracerHost, ServiceName)
 	if err != nil {
 		log.Fatal().Msgf("failed to initialize tracer: %v", err)
 	}

@@ -19,20 +19,20 @@ import (
 // @Failure 400 {object} model.ErrorResponse "Invalid request"
 // @Failure 500 {object} model.ErrorResponse "Internal server error"
 // @Router /v1/sign-up [post]
-func (h *Handler) SignUpV1(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) SignUpV1Handler(w http.ResponseWriter, r *http.Request) {
 	metrics.TotalRegistrations.Inc()
 	var in model.SignUpV1Request
 
 	if err := json.NewDecoder(r.Body).Decode(&in); err != nil {
 		metrics.FailedRegistrations.Inc()
-		log.Error().Msgf("SignUpV1 DecodeError: %v", err)
+		log.Error().Msgf("SignUpV1Handler DecodeError: %v", err)
 		h.HandleError(w, http.StatusBadRequest, "invalid data")
 		return
 	}
 
 	if err := in.Validate(); err != nil {
 		metrics.FailedRegistrations.Inc()
-		log.Error().Msgf("SignUpV1 ValidateError: %v", err)
+		log.Error().Msgf("SignUpV1Handler ValidateError: %v", err)
 		h.HandleError(w, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -40,7 +40,7 @@ func (h *Handler) SignUpV1(w http.ResponseWriter, r *http.Request) {
 	msg, err := h.auc.SignUpV1(r.Context(), in)
 	if err != nil {
 		metrics.FailedRegistrations.Inc()
-		log.Error().Msgf("SignUpV1 UseCaseError: %v", err)
+		log.Error().Msgf("SignUpV1Handler UseCaseError: %v", err)
 		h.HandleError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -51,7 +51,7 @@ func (h *Handler) SignUpV1(w http.ResponseWriter, r *http.Request) {
 
 	if err = json.NewEncoder(w).Encode(msg); err != nil {
 		metrics.FailedRegistrations.Inc()
-		log.Error().Msgf("SignInV1 EncodeError: %v", err)
+		log.Error().Msgf("SignInV1Handler EncodeError: %v", err)
 		h.HandleError(w, http.StatusInternalServerError, err.Error())
 		return
 	}

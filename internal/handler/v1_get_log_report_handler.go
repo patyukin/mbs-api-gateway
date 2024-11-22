@@ -8,30 +8,30 @@ import (
 	"net/http"
 )
 
-func (h *Handler) GetLogReportV1(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) GetLogReportV1Handler(w http.ResponseWriter, r *http.Request) {
 	metrics.TotalLogReport.Inc()
 	var in model.GetLogReportV1Request
 
 	userID := r.Header.Get(HeaderUserID)
-	log.Info().Msgf("GetLogReportV1 userID: %v", userID)
+	log.Info().Msgf("GetLogReportV1Handler userID: %v", userID)
 
 	if userID == "" {
 		metrics.FailedLogReport.Inc()
-		log.Error().Msg("GetLogReportV1 missing userID")
+		log.Error().Msg("GetLogReportV1Handler missing userID")
 		h.HandleError(w, http.StatusUnauthorized, "StatusUnauthorized")
 		return
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&in); err != nil {
 		metrics.FailedLogReport.Inc()
-		log.Error().Msgf("GetLogReportV1 DecodeError: %v", err)
+		log.Error().Msgf("GetLogReportV1Handler DecodeError: %v", err)
 		h.HandleError(w, http.StatusBadRequest, "invalid data")
 		return
 	}
 
 	if err := in.Validate(); err != nil {
 		metrics.FailedLogReport.Inc()
-		log.Error().Msgf("GetLogReportV1 ValidateError: %v", err)
+		log.Error().Msgf("GetLogReportV1Handler ValidateError: %v", err)
 		h.HandleError(w, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -39,7 +39,7 @@ func (h *Handler) GetLogReportV1(w http.ResponseWriter, r *http.Request) {
 	result, err := h.luc.GetLogReport(r.Context(), in)
 	if err != nil {
 		metrics.FailedLogReport.Inc()
-		log.Error().Msgf("GetLogReportV1 UseCaseError: %v", err.Description)
+		log.Error().Msgf("GetLogReportV1Handler UseCaseError: %v", err.Description)
 		h.HandleError(w, int(err.Code), err.Message)
 		return
 	}
