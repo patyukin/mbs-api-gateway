@@ -21,7 +21,7 @@ func (h *Handler) GetPaymentScheduleV1Handler(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	response, err := h.cuc.GetPaymentScheduleUseCase(r.Context(), userID, creditID)
+	response, err := h.cuc.GetPaymentScheduleV1UseCase(r.Context(), userID, creditID)
 	if err != nil {
 		log.Error().Msgf("failed to sign in verify, code: %d, message: %s, error: %v", err.Code, err.Message, err.Description)
 		h.HandleError(w, int(err.Code), err.Message)

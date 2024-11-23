@@ -7,8 +7,8 @@ import (
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
 )
 
-func (uc *UseCase) RefreshTokenV1(ctx context.Context, in model.RefreshTokenV1Request) (model.RefreshTokenV1Response, *error_v1.ErrorResponse) {
-	pbm := model.ToProtoRefreshTokenFromRequest(in)
+func (uc *UseCase) RefreshTokenV1UseCase(ctx context.Context, in model.RefreshTokenV1Request) (model.RefreshTokenV1Response, *error_v1.ErrorResponse) {
+	pbm := model.ToProtoV1RefreshTokenRequest(in)
 	response, err := uc.authClient.RefreshToken(ctx, &pbm)
 	if err != nil {
 		return model.RefreshTokenV1Response{}, &error_v1.ErrorResponse{
@@ -30,5 +30,5 @@ func (uc *UseCase) RefreshTokenV1(ctx context.Context, in model.RefreshTokenV1Re
 		}
 	}
 
-	return model.FromProtoRefreshTokenToResponse(response), nil
+	return model.ToModelRefreshTokenV1Response(response), nil
 }

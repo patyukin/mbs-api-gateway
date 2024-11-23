@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-// SignUpV1 docs
+// SignUpV1Handler docs
 // @Summary Регистрация нового пользователя
 // @Description Регистрация нового пользователя в системе
 // @Tags Auth
@@ -33,15 +33,15 @@ func (h *Handler) SignUpV1Handler(w http.ResponseWriter, r *http.Request) {
 	if err := in.Validate(); err != nil {
 		metrics.FailedRegistrations.Inc()
 		log.Error().Msgf("SignUpV1Handler ValidateError: %v", err)
-		h.HandleError(w, http.StatusBadRequest, err.Error())
+		h.HandleError(w, int(err.Code), err.Message)
 		return
 	}
 
-	msg, err := h.auc.SignUpV1(r.Context(), in)
+	msg, err := h.auc.SignUpV1UseCase(r.Context(), in)
 	if err != nil {
 		metrics.FailedRegistrations.Inc()
 		log.Error().Msgf("SignUpV1Handler UseCaseError: %v", err)
-		h.HandleError(w, http.StatusInternalServerError, err.Error())
+		h.HandleError(w, int(err.Code), err.Message)
 		return
 	}
 
@@ -49,10 +49,10 @@ func (h *Handler) SignUpV1Handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusCreated)
 
-	if err = json.NewEncoder(w).Encode(msg); err != nil {
+	if encodeErr := json.NewEncoder(w).Encode(msg); encodeErr != nil {
 		metrics.FailedRegistrations.Inc()
-		log.Error().Msgf("SignInV1Handler EncodeError: %v", err)
-		h.HandleError(w, http.StatusInternalServerError, err.Error())
+		log.Error().Msgf("SignInV1Handler EncodeError: %v", encodeErr)
+		h.HandleError(w, http.StatusInternalServerError, encodeErr.Error())
 		return
 	}
 }

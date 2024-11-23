@@ -59,17 +59,22 @@ func (h *Handler) LoggingMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		requestUUID := "request-uuid"
-		if tempRequestUUID, ok := r.Context().Value(HeaderRequestUUID).(string); ok {
-			requestUUID = tempRequestUUID
+		requestID := "unknown-request-id"
+		if tempRequestID, ok := r.Context().Value(RequestID).(string); ok {
+			requestID = tempRequestID
 		}
 
-		log.Info().Msgf("Request ID: %s, Path: %s, Query Params: %s, Body: %s", requestUUID, path, queryParams, body)
+		traceID := "unknown-trace-id"
+		if tempTraceID, ok := r.Context().Value(TraceID).(string); ok {
+			traceID = tempTraceID
+		}
+
+		log.Info().Msgf("Request ID: %s, Trace ID: %s, Path: %s, Query Params: %s, Body: %s", requestID, traceID, path, queryParams, body)
 
 		startTime := time.Now()
 		next.ServeHTTP(w, r)
 		duration := time.Since(startTime)
 
-		log.Info().Msgf("Completed Request ID: %s in %v", requestUUID, duration)
+		log.Info().Msgf("Completed Request ID: %s, Trace ID: %s in %v", requestID, traceID, duration)
 	})
 }

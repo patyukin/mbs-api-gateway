@@ -23,7 +23,7 @@ func (h *Handler) ConfirmationPaymentV1Handler(w http.ResponseWriter, r *http.Re
 	}
 
 	confirmationPaymentV1Request.UserID = userID
-	_, err := h.puc.ConfirmationPaymentUseCase(r.Context(), confirmationPaymentV1Request)
+	_, err := h.puc.ConfirmationPaymentV1UseCase(r.Context(), confirmationPaymentV1Request)
 	if err != nil {
 		log.Error().Msgf("failed to sign in verify, code: %d, message: %s, error: %v", err.Code, err.Message, err.Description)
 		h.HandleError(w, int(err.Code), err.Message)

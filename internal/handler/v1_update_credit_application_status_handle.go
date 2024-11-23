@@ -36,7 +36,7 @@ func (h *Handler) UpdateCreditApplicationStatusV1Handler(w http.ResponseWriter, 
 		return
 	}
 
-	response, err := h.cuc.UpdateCreditApplicationStatusUseCase(r.Context(), updateCreditApplicationStatusV1Request)
+	response, err := h.cuc.UpdateCreditApplicationStatusV1UseCase(r.Context(), updateCreditApplicationStatusV1Request)
 	if err != nil {
 		log.Error().Msgf("failed to sign in verify, code: %d, message: %s, error: %v", err.Code, err.Message, err.Description)
 		h.HandleError(w, int(err.Code), err.Message)

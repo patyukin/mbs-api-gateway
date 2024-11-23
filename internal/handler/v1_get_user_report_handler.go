@@ -29,10 +29,10 @@ func (h *Handler) GetUserReportV1Handler(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	report, reportError := h.ruc.GetUserReport(r.Context(), in)
+	report, reportError := h.ruc.GetUserReportV1UseCase(r.Context(), in)
 	if reportError != nil {
 		metrics.FailedLogReport.Inc()
-		log.Error().Msgf("failed h.ruc.GetUserReport: %v", reportError.Description)
+		log.Error().Msgf("failed h.ruc.GetUserReportV1UseCase: %v", reportError.Description)
 		h.HandleError(w, int(reportError.Code), reportError.Message)
 		return
 	}

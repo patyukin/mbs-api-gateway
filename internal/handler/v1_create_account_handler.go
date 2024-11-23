@@ -24,7 +24,7 @@ func (h *Handler) CreateAccountV1Handler(w http.ResponseWriter, r *http.Request)
 	}
 
 	createAccountRequest.UserID = userID
-	_, err := h.puc.CreateAccountUseCase(r.Context(), createAccountRequest)
+	_, err := h.puc.CreateAccountV1UseCase(r.Context(), createAccountRequest)
 	if err != nil {
 		log.Error().Msgf("failed to sign in verify, code: %d, message: %s, error: %v", err.Code, err.Message, err.Description)
 		h.HandleError(w, int(err.Code), err.Message)

@@ -44,7 +44,7 @@ func (h *Handler) GetListUserCreditsV1Handler(w http.ResponseWriter, r *http.Req
 		page = int32(pageParsed)
 	}
 
-	response, err := h.cuc.GetListUserCreditsUseCase(
+	response, err := h.cuc.GetListUserCreditsV1UseCase(
 		r.Context(), model.GetListUserCreditsV1Request{
 			UserID: userID,
 			Page:   page,

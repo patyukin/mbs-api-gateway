@@ -8,7 +8,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (u *UseCase) ConfirmationPaymentUseCase(ctx context.Context, in model.ConfirmationPaymentV1Request) (model.VerifyPaymentV1Response, *error_v1.ErrorResponse) {
+func (u *UseCase) ConfirmationPaymentV1UseCase(ctx context.Context, in model.ConfirmationPaymentV1Request) (model.VerifyPaymentV1Response, *error_v1.ErrorResponse) {
 	pbm := model.ToProtoVerifyPaymentFromRequest(in)
 	log.Debug().Msgf("pbm: %v", &pbm)
 
@@ -17,7 +17,7 @@ func (u *UseCase) ConfirmationPaymentUseCase(ctx context.Context, in model.Confi
 		return model.VerifyPaymentV1Response{}, &error_v1.ErrorResponse{
 			Code:        500,
 			Message:     "Internal Server Error",
-			Description: fmt.Sprintf("failed to GetLogReport: %v", err),
+			Description: fmt.Sprintf("failed to GetLogReportV1UseCase: %v", err),
 		}
 	}
 

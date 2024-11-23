@@ -31,12 +31,12 @@ func (h *Handler) GetLogReportV1Handler(w http.ResponseWriter, r *http.Request) 
 
 	if err := in.Validate(); err != nil {
 		metrics.FailedLogReport.Inc()
-		log.Error().Msgf("GetLogReportV1Handler ValidateError: %v", err)
-		h.HandleError(w, http.StatusBadRequest, err.Error())
+		log.Error().Msgf("GetLogReportV1Handler ValidateError: %v", err.Description)
+		h.HandleError(w, int(err.Code), err.Message)
 		return
 	}
 
-	result, err := h.luc.GetLogReport(r.Context(), in)
+	result, err := h.luc.GetLogReportV1UseCase(r.Context(), in)
 	if err != nil {
 		metrics.FailedLogReport.Inc()
 		log.Error().Msgf("GetLogReportV1Handler UseCaseError: %v", err.Description)

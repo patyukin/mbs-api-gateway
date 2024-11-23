@@ -8,7 +8,7 @@ import (
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
 )
 
-func (u *UseCase) GetPaymentScheduleUseCase(ctx context.Context, userID, creditID string) (model.GetPaymentScheduleV1Response, *error_v1.ErrorResponse) {
+func (u *UseCase) GetPaymentScheduleV1UseCase(ctx context.Context, userID, creditID string) (model.GetPaymentScheduleV1Response, *error_v1.ErrorResponse) {
 	response, err := u.creditClient.GetPaymentSchedule(ctx, &creditpb.GetPaymentScheduleRequest{
 		UserId:   userID,
 		CreditId: creditID,

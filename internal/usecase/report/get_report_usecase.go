@@ -8,14 +8,14 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (u *UseCase) GetUserReport(ctx context.Context, in model.GetUserReportV1Request) (model.GetUserReportV1Response, *error_v1.ErrorResponse) {
+func (u *UseCase) GetUserReportV1UseCase(ctx context.Context, in model.GetUserReportV1Request) (model.GetUserReportV1Response, *error_v1.ErrorResponse) {
 	pbm := model.ToProtoGetUserReport(in)
 	result, err := u.reportClient.GetUserReport(ctx, &pbm)
 	if err != nil {
 		return model.GetUserReportV1Response{}, &error_v1.ErrorResponse{
 			Code:        500,
 			Message:     "Internal Server Error",
-			Description: fmt.Sprintf("failed to GetLogReport: %v", err),
+			Description: fmt.Sprintf("failed to GetLogReportV1UseCase: %v", err),
 		}
 	}
 

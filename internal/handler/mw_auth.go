@@ -38,7 +38,7 @@ func (h *Handler) Auth(next http.Handler) http.Handler {
 			}
 
 			id := token.Claims.(jwt.MapClaims)["id"].(string)
-			err = h.auc.AuthorizeUser(r.Context(), model.AuthorizeUserV1Request{UserID: id, RoutePath: r.URL.Path, Method: r.Method})
+			err = h.auc.AuthorizeUserV1UseCase(r.Context(), model.AuthorizeUserV1Request{UserID: id, RoutePath: r.URL.Path, Method: r.Method})
 			if err != nil {
 				log.Error().Msgf("failed h.auc.Authorize: %v", err)
 				h.HandleError(w, http.StatusUnauthorized, "Unauthorized")

@@ -27,7 +27,7 @@ func (h *Handler) CreatePaymentV1Handler(w http.ResponseWriter, r *http.Request)
 
 	log.Debug().Msgf("createPaymentRequest: %v", createPaymentRequest)
 
-	_, err := h.puc.CreatePaymentUseCase(r.Context(), createPaymentRequest)
+	_, err := h.puc.CreatePaymentV1UseCase(r.Context(), createPaymentRequest)
 	if err != nil {
 		log.Error().Msgf("failed to sign in verify, code: %d, message: %s, error: %v", err.Code, err.Message, err.Description)
 		h.HandleError(w, int(err.Code), err.Message)

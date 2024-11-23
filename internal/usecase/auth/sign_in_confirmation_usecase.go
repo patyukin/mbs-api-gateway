@@ -7,11 +7,11 @@ import (
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
 )
 
-func (uc *UseCase) SignInVerifyV1(ctx context.Context, in model.SignInVerifyV1Request) (model.SignInVerifyV1Response, *error_v1.ErrorResponse) {
-	pbm := model.ToProtoSignInVerifyFromRequest(in)
+func (uc *UseCase) SignInVerifyV1(ctx context.Context, in model.SignInConfirmationV1Request) (model.SignInConfirmationV1Response, *error_v1.ErrorResponse) {
+	pbm := model.ToProtoV1SignInConfirmationRequest(in)
 	result, err := uc.authClient.SignInConfirmation(ctx, &pbm)
 	if err != nil {
-		return model.SignInVerifyV1Response{}, &error_v1.ErrorResponse{
+		return model.SignInConfirmationV1Response{}, &error_v1.ErrorResponse{
 			Code:        500,
 			Message:     "Internal Server Error",
 			Description: fmt.Sprintf("failed to uc.authClient.SignInVerify: %v", err),
@@ -19,8 +19,8 @@ func (uc *UseCase) SignInVerifyV1(ctx context.Context, in model.SignInVerifyV1Re
 	}
 
 	if result.Error != nil {
-		return model.SignInVerifyV1Response{}, result.Error
+		return model.SignInConfirmationV1Response{}, result.Error
 	}
 
-	return model.FromProtoSignInVerifyToResponse(result), nil
+	return model.ToModelSignInConfirmationV1Response(result), nil
 }

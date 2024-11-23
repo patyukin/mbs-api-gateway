@@ -21,23 +21,16 @@ func (h *Handler) SignInV1Handler(w http.ResponseWriter, r *http.Request) {
 
 	if err := in.Validate(); err != nil {
 		metrics.FailedLogin.Inc()
-		log.Error().Msgf("SignInV1Handler ValidateError: %v", err)
-		h.HandleError(w, http.StatusBadRequest, err.Error())
+		log.Error().Msgf("SignInV1Handler ValidateError: %v", err.Description)
+		h.HandleError(w, int(err.Code), err.Message)
 		return
 	}
 
-	response, err := h.auc.SignInV1(r.Context(), in)
+	response, err := h.auc.SignInV1UseCase(r.Context(), in)
 	if err != nil {
 		metrics.FailedLogin.Inc()
-		log.Error().Msgf("failed h.auc.SignInV1Handler: %v", err)
-		h.HandleError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	if response.Error != nil {
-		metrics.FailedLogin.Inc()
-		log.Error().Msgf("SignInV1Handler UseCaseError: %v", response.Error.Description)
-		h.HandleError(w, int(response.Error.Code), response.Error.Message)
+		log.Error().Msgf("failed h.auc.SignInV1Handler: %v", err.Description)
+		h.HandleError(w, int(err.Code), err.Message)
 		return
 	}
 
@@ -45,10 +38,10 @@ func (h *Handler) SignInV1Handler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
-	if err = json.NewEncoder(w).Encode(response); err != nil {
+	if encodeError := json.NewEncoder(w).Encode(response); encodeError != nil {
 		metrics.FailedLogin.Inc()
-		log.Error().Msgf("SignInV1Handler EncodeError: %v", err)
-		h.HandleError(w, http.StatusInternalServerError, err.Error())
+		log.Error().Msgf("SignInV1Handler EncodeError: %v", encodeError)
+		h.HandleError(w, http.StatusInternalServerError, encodeError.Error())
 		return
 	}
 }

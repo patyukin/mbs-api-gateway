@@ -8,7 +8,7 @@ import (
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
 )
 
-func (u *UseCase) GetCreditUseCase(ctx context.Context, creditID, userID string) (model.GetCreditV1Response, *error_v1.ErrorResponse) {
+func (u *UseCase) GetCreditV1UseCase(ctx context.Context, creditID, userID string) (model.GetCreditV1Response, *error_v1.ErrorResponse) {
 	response, err := u.creditClient.GetCredit(ctx, &creditpb.GetCreditRequest{
 		CreditId: creditID,
 		UserId:   userID,

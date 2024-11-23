@@ -99,6 +99,7 @@ github.com/patyukin/mbs-pkg v1.1.111 h1:nRMFvhRo3m2FwRlEjfu7j9Gk4Mj/orN92QgJOyXN
 github.com/patyukin/mbs-pkg v1.1.111/go.mod h1:+UQ64ATFRy46t9D3mPKclp5YLpomHKEHw0qtsIvU7WM=
 github.com/patyukin/mbs-pkg v1.1.112 h1:wGZ0YRAopb9T9xzO7jgXoGOqw0aGzUThjHv+qPTlmmU=
 github.com/patyukin/mbs-pkg v1.1.112/go.mod h1:QqCfjqGyZ58teyLNi2xXI8/0d/950ZKVrUlkDp0rcgs=
+github.com/patyukin/mbs-pkg v1.1.113 h1:nifzzng9UQiRcc5rrVvz9/vmVIJnLaOqo92gg8iRw9c=
 github.com/patyukin/mbs-pkg v1.1.113/go.mod h1:QqCfjqGyZ58teyLNi2xXI8/0d/950ZKVrUlkDp0rcgs=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=

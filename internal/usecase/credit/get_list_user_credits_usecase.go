@@ -8,7 +8,7 @@ import (
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
 )
 
-func (u *UseCase) GetListUserCreditsUseCase(ctx context.Context, in model.GetListUserCreditsV1Request) (model.GetListUserCreditsV1Response, *error_v1.ErrorResponse) {
+func (u *UseCase) GetListUserCreditsV1UseCase(ctx context.Context, in model.GetListUserCreditsV1Request) (model.GetListUserCreditsV1Response, *error_v1.ErrorResponse) {
 	response, err := u.creditClient.GetListUserCredits(ctx, &creditpb.GetListUserCreditsRequest{
 		UserId: in.UserID,
 		Limit:  in.Limit,

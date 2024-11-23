@@ -1,7 +1,10 @@
 package handler
 
 import (
+	"context"
+	"github.com/google/uuid"
 	"github.com/opentracing/opentracing-go"
+	"github.com/uber/jaeger-client-go"
 	"net/http"
 )
 
@@ -11,7 +14,11 @@ func (h *Handler) TracingMiddleware(next http.Handler) http.Handler {
 			span := opentracing.GlobalTracer().StartSpan("start-request")
 			defer span.Finish()
 
-			ctx := opentracing.ContextWithSpan(r.Context(), span)
+			traceID := span.Context().(jaeger.SpanContext).TraceID().String()
+			ctx := context.WithValue(r.Context(), TraceID, traceID)
+
+			requestID := uuid.New().String()
+			ctx = context.WithValue(ctx, RequestID, requestID)
 
 			next.ServeHTTP(w, r.WithContext(ctx))
 		},

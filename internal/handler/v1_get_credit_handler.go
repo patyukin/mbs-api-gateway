@@ -21,7 +21,7 @@ func (h *Handler) GetCreditV1Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response, err := h.cuc.GetCreditUseCase(r.Context(), creditID, userID)
+	response, err := h.cuc.GetCreditV1UseCase(r.Context(), creditID, userID)
 	if err != nil {
 		log.Error().Msgf("failed to sign in verify, code: %d, message: %s, error: %v", err.Code, err.Message, err.Description)
 		h.HandleError(w, int(err.Code), err.Message)

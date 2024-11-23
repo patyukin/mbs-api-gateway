@@ -7,27 +7,26 @@ import (
 	"net/http"
 )
 
-// SignInVerifyHandler godoc
+// SignInConfirmationHandler godoc
 // @Summary      Окончание регистрации нового пользователя
 // @Description  Окончание регистрации нового пользователя. Пользователь должен прислать токен для подтверждения его регистрации
 // @Tags         Auth
 // @Accept       json
 // @Produce      json
-// @Param        body  body model.SignInVerifyV1Request true "SignInVerifyData Request"
+// @Param        body  body model.SignInConfirmationV1Request true "SignInConfirmationData Request"
 // @Success      200   {object}  model.TokensResponse "Registration successfully"
 // @Failure      400   {object}  model.ErrorResponse "Invalid request body"
 // @Failure      500   {object}  model.ErrorResponse "Internal server error"
-// @Router       /v2/sign-in-verify [post]
+// @Router       /v1/sign-in/confirmation [post]
 func (h *Handler) SignInConfirmationHandler(w http.ResponseWriter, r *http.Request) {
-	var signInVerifyV1Request model.SignInVerifyV1Request
-
-	if err := json.NewDecoder(r.Body).Decode(&signInVerifyV1Request); err != nil {
+	var signInConfirmationV1Request model.SignInConfirmationV1Request
+	if err := json.NewDecoder(r.Body).Decode(&signInConfirmationV1Request); err != nil {
 		log.Error().Err(err).Msgf("failed to decode sign in verify data, error: %v", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	tokens, err := h.auc.SignInVerifyV1(r.Context(), signInVerifyV1Request)
+	tokens, err := h.auc.SignInConfirmationV1UseCase(r.Context(), signInConfirmationV1Request)
 	if err != nil {
 		log.Error().Msgf("failed to sign in verify, error: %v", err.Description)
 		h.HandleError(w, int(err.Code), err.Message)
@@ -38,7 +37,7 @@ func (h *Handler) SignInConfirmationHandler(w http.ResponseWriter, r *http.Reque
 	w.WriteHeader(http.StatusOK)
 	if encodeErr := json.NewEncoder(w).Encode(tokens); encodeErr != nil {
 		log.Error().Msgf("failed to encode tokens, error: %v", encodeErr)
-		w.WriteHeader(http.StatusBadRequest)
+		h.HandleError(w, http.StatusInternalServerError, encodeErr.Error())
 		return
 	}
 }

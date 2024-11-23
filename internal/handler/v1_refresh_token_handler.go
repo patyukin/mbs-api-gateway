@@ -16,7 +16,7 @@ func (h *Handler) RefreshTokenV1Handler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	response, err := h.auc.RefreshTokenV1(r.Context(), refreshTokenRequest)
+	response, err := h.auc.RefreshTokenV1UseCase(r.Context(), refreshTokenRequest)
 	if err != nil {
 		log.Error().Msgf("failed to sign in verify, code: %d, message: %s, error: %v", err.Code, err.Message, err.Description)
 		h.HandleError(w, int(err.Code), err.Message)

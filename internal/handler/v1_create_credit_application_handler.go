@@ -23,7 +23,7 @@ func (h *Handler) CreateCreditApplicationV1Handler(w http.ResponseWriter, r *htt
 		return
 	}
 
-	_, err := h.cuc.CreateCreditApplicationUseCase(r.Context(), req, userID)
+	_, err := h.cuc.CreateCreditApplicationV1UseCase(r.Context(), req, userID)
 	if err != nil {
 		log.Error().Msgf("failed to sign in verify, code: %d, message: %s, error: %v", err.Code, err.Message, err.Description)
 		h.HandleError(w, int(err.Code), err.Message)

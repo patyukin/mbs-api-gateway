@@ -15,7 +15,6 @@ type Handler interface {
 	CORS(next http.Handler) http.Handler
 	LoggingMiddleware(next http.Handler) http.Handler
 	RecoverMiddleware(next http.Handler) http.Handler
-	RequestIDMiddleware(next http.Handler) http.Handler
 	RateLimitMiddleware(next http.Handler, rps float64, burst int) http.Handler
 	TracingMiddleware(next http.Handler) http.Handler
 	HandleError(w http.ResponseWriter, code int, message string)
@@ -106,11 +105,10 @@ func Init(h Handler, cfg *config.Config, srvAddress string) http.Handler {
 	mux.Handle("/debug/pprof/threadcreate", pprof.Handler("goroutine"))
 
 	// required middlewares
-	withMiddlewareMux := h.TracingMiddleware(mux)
-	withMiddlewareMux = h.LoggingMiddleware(withMiddlewareMux)
-	withMiddlewareMux = h.CORS(withMiddlewareMux)
+	withMiddlewareMux := h.CORS(mux)
 	withMiddlewareMux = h.RateLimitMiddleware(withMiddlewareMux, cfg.HttpServer.RateLimit.Rps, cfg.HttpServer.RateLimit.Burst)
-	withMiddlewareMux = h.RequestIDMiddleware(withMiddlewareMux)
+	withMiddlewareMux = h.LoggingMiddleware(withMiddlewareMux)
+	withMiddlewareMux = h.TracingMiddleware(withMiddlewareMux)
 	withMiddlewareMux = h.RecoverMiddleware(withMiddlewareMux)
 
 	return withMiddlewareMux
