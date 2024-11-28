@@ -29,17 +29,17 @@ func ToModelGetCreditApplicationV1Response(in *creditpb.GetCreditApplicationResp
 		ApprovedAmount: in.ApprovedAmount,
 		Status:         in.Status.String(),
 		DecisionDate:   in.DecisionDate,
-		Message:        in.Message,
+		Description:    in.Description,
 	}
 }
 
-func ToProtoV1UpdateCreditApplicationStatusRequest(in UpdateCreditApplicationStatusV1Request) (creditpb.UpdateCreditApplicationStatusRequest, error) {
+func ToProtoV1UpdateCreditApplicationStatusRequest(in UpdateCreditApplicationStatusV1Request) (creditpb.UpdateCreditApplicationSolutionRequest, error) {
 	status, err := creditmapper.StringToEnumCreditApplicationStatus(in.Status)
 	if err != nil {
-		return creditpb.UpdateCreditApplicationStatusRequest{}, err
+		return creditpb.UpdateCreditApplicationSolutionRequest{}, err
 	}
 
-	return creditpb.UpdateCreditApplicationStatusRequest{
+	return creditpb.UpdateCreditApplicationSolutionRequest{
 		ApplicationId: in.ApplicationID,
 		Status:        status,
 		DecisionNotes: in.DecisionNotes,

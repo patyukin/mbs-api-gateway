@@ -24,7 +24,6 @@ type Handler interface {
 	RefreshTokenV1Handler(w http.ResponseWriter, r *http.Request)
 	GetUserByIDV1Handler(w http.ResponseWriter, r *http.Request)
 	GetUsersV1Handler(w http.ResponseWriter, r *http.Request)
-	GetLogReportV1Handler(w http.ResponseWriter, r *http.Request)
 	CreatePaymentV1Handler(w http.ResponseWriter, r *http.Request)
 	CreateAccountV1Handler(w http.ResponseWriter, r *http.Request)
 	ConfirmationPaymentV1Handler(w http.ResponseWriter, r *http.Request)
@@ -35,17 +34,18 @@ type Handler interface {
 	GetCreditV1Handler(w http.ResponseWriter, r *http.Request)
 	GetListUserCreditsV1Handler(w http.ResponseWriter, r *http.Request)
 	GetPaymentScheduleV1Handler(w http.ResponseWriter, r *http.Request)
-	GetUserReportV1Handler(w http.ResponseWriter, r *http.Request)
 	GetPaymentV1Handler(w http.ResponseWriter, r *http.Request)
 	UpdatePaymentStatusV1Handler(w http.ResponseWriter, r *http.Request)
 	GetTransactionsByPaymentV1Handler(w http.ResponseWriter, r *http.Request)
+	GetUserReportV1Handler(w http.ResponseWriter, r *http.Request)
+	GetLogReportV1Handler(w http.ResponseWriter, r *http.Request)
 }
 
 // Init docs
 // @title Auth API
 // @version 1.0
 // @description Auth API for microservices
-// @host http://0.0.0.0:5001
+// @host http://0.0.0.0:5002
 // @BasePath /
 func Init(h Handler, cfg *config.Config, srvAddress string) http.Handler {
 	mux := http.NewServeMux()
@@ -56,14 +56,14 @@ func Init(h Handler, cfg *config.Config, srvAddress string) http.Handler {
 	// swagger route
 	mux.Handle(
 		"/swagger/", httpSwagger.Handler(
-			httpSwagger.URL(fmt.Sprintf("http://0.0.0.0%s/swagger/doc.json", srvAddress)),
+			httpSwagger.URL(fmt.Sprintf("http://%s/swagger/doc.json", srvAddress)),
 		),
 	)
 
 	// auth service routes
 	mux.Handle("POST /v1/sign-up", http.HandlerFunc(h.SignUpV1Handler))
 	mux.Handle("POST /v1/sign-in", http.HandlerFunc(h.SignInV1Handler))
-	mux.Handle("POST /v1/sign-in-verify", http.HandlerFunc(h.SignInConfirmationHandler))
+	mux.Handle("POST /v1/sign-in/confirmation", http.HandlerFunc(h.SignInConfirmationHandler))
 	mux.Handle("POST /v1/refresh-token", http.HandlerFunc(h.RefreshTokenV1Handler))
 	mux.Handle("POST /v1/users-roles", h.Auth(http.HandlerFunc(h.RefreshTokenV1Handler)))
 	mux.Handle("GET /v1/users/{id}", h.Auth(http.HandlerFunc(h.GetUserByIDV1Handler)))
@@ -72,7 +72,7 @@ func Init(h Handler, cfg *config.Config, srvAddress string) http.Handler {
 	// payments service routes
 	mux.Handle("POST /v1/accounts", h.Auth(http.HandlerFunc(h.CreateAccountV1Handler)))
 	mux.Handle("POST /v1/payments", h.Auth(http.HandlerFunc(h.CreatePaymentV1Handler)))
-	mux.Handle("POST /v1/payments/verify", h.Auth(http.HandlerFunc(h.ConfirmationPaymentV1Handler)))
+	mux.Handle("POST /v1/payments/confirmation", h.Auth(http.HandlerFunc(h.ConfirmationPaymentV1Handler)))
 	mux.Handle("GET /v1/payments/{id}", h.Auth(http.HandlerFunc(h.GetPaymentV1Handler)))
 	mux.Handle("PATCH /v1/payments/{id}", h.Auth(http.HandlerFunc(h.UpdatePaymentStatusV1Handler)))
 	mux.Handle("PATCH /v1/payments/{id}/transactions", h.Auth(http.HandlerFunc(h.GetTransactionsByPaymentV1Handler)))

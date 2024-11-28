@@ -5,7 +5,7 @@ Content-Type: application/json
 {
   "email": "john.doe@example.com",
   "password": "securepassword123",
-  "telegram_login": "johndoe_telegram",
+  "telegram_login": "patyukin",
   "first_name": "John",
   "last_name": "Doe",
   "patronymic": "Jonathan",

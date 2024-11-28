@@ -131,7 +131,7 @@ type GetCreditApplicationV1Response struct {
 	Status         string `json:"status"`
 	ApprovedAmount int64  `json:"approved_amount"`
 	DecisionDate   string `json:"decision_date"`
-	Message        string `json:"message"`
+	Description    string `json:"description"`
 }
 
 type UpdateCreditApplicationStatusV1Request struct {
@@ -176,7 +176,7 @@ type CreditV1 struct {
 	CreditID        string `json:"credit_id"`
 	UserID          string `json:"user_id"`
 	Amount          int64  `json:"amount"`
-	InterestRate    int64  `json:"interest_rate"`
+	InterestRate    int32  `json:"interest_rate"`
 	RemainingAmount int64  `json:"remaining_amount"`
 	Status          string `json:"status"`
 	StartDate       string `json:"start_date"`

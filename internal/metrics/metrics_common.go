@@ -25,5 +25,15 @@ func RegisterMetrics() error {
 		return fmt.Errorf("failed to register incoming traffic: %w", err)
 	}
 
+	err = RegisterAuthMetrics()
+	if err != nil {
+		return fmt.Errorf("failed to register auth metrics: %w", err)
+	}
+
+	err = RegisterLoggerMetrics()
+	if err != nil {
+		return fmt.Errorf("failed to register logger metrics: %w", err)
+	}
+
 	return nil
 }

@@ -17,7 +17,7 @@ func (u *UseCase) UpdateCreditApplicationStatusV1UseCase(ctx context.Context, in
 		}
 	}
 
-	response, err := u.creditClient.UpdateCreditApplicationStatus(ctx, &mpb)
+	response, err := u.creditClient.UpdateCreditApplicationSolution(ctx, &mpb)
 	if err != nil {
 		return model.UpdateCreditApplicationStatusV1Response{}, &error_v1.ErrorResponse{
 			Code:        500,

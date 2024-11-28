@@ -42,7 +42,7 @@ func main() {
 		log.Fatal().Msgf("unable to load config: %v", err)
 	}
 
-	srvAddress := fmt.Sprintf(":%d", cfg.HttpServer.Port)
+	srvAddress := fmt.Sprintf("0.0.0.0:%d", cfg.HttpServer.Port)
 
 	// register metrics
 	err = metrics.RegisterMetrics()
@@ -139,7 +139,7 @@ func main() {
 	errCh := make(chan error)
 
 	go func() {
-		log.Info().Msgf("starting server on %d", cfg.HttpServer.Port)
+		log.Info().Msgf("starting http server on %d", cfg.HttpServer.Port)
 		if err = srv.Run(srvAddress, cfg); err != nil {
 			log.Error().Msgf("failed starting server: %v", err)
 			errCh <- err
