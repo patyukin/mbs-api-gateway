@@ -2,9 +2,10 @@ package server
 
 import (
 	"context"
+	"github.com/patyukin/mbs-api-gateway/internal/config"
+	"github.com/rs/zerolog/log"
 	"net/http"
 	"time"
-
 )
 
 type Server struct {
