@@ -2,10 +2,9 @@ package handler
 
 import (
 	"encoding/json"
-	"github.com/patyukin/mbs-api-gateway/internal/model"
-	"github.com/rs/zerolog/log"
 	"net/http"
 	"strconv"
+
 )
 
 func (h *Handler) GetListUserCreditsV1Handler(w http.ResponseWriter, r *http.Request) {

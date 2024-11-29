@@ -516,3 +516,32 @@ linters-settings:
       - re
       - id
       - h
+
+  promlinter:
+    # Promlinter cannot infer all metrics name in static analysis.
+    # Enable strict mode will also include the errors caused by failing to parse the args.
+    # Default: false
+    strict: true
+    # Please refer to https://github.com/yeya24/promlinter#usage for detailed usage.
+    # Default: []
+    disabled-linters:
+      # Help detects issues related to the help text for a metric.
+      - Help
+      # MetricUnits detects issues with metric unit names.
+      - MetricUnits
+      # Counter detects issues specific to counters, as well as patterns that should only be used with counters.
+      - Counter
+      # HistogramSummaryReserved detects when other types of metrics use names or labels reserved for use by histograms and/or summaries.
+      - HistogramSummaryReserved
+      # MetricTypeInName detects when metric types are included in the metric name.
+      - MetricTypeInName
+      # ReservedChars detects colons in metric names.
+      - ReservedChars
+      # CamelCase detects metric names and label names written in camelCase.
+      - CamelCase
+      # UnitAbbreviations detects abbreviated units in the metric name.
+      - UnitAbbreviations
+
+
+
+

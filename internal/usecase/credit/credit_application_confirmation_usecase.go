@@ -3,6 +3,7 @@ package credit
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
@@ -13,7 +14,7 @@ func (u *UseCase) CreditApplicationConfirmationV1UseCase(ctx context.Context, in
 	response, err := u.creditClient.CreditApplicationConfirmation(ctx, &mpb)
 	if err != nil {
 		return model.CreditApplicationConfirmationV1Response{}, &error_v1.ErrorResponse{
-			Code:        500,
+			Code:        http.StatusInternalServerError,
 			Message:     "Internal Server Error",
 			Description: fmt.Sprintf("failed to CreateCreditApplication: %v", err),
 		}
@@ -21,7 +22,7 @@ func (u *UseCase) CreditApplicationConfirmationV1UseCase(ctx context.Context, in
 
 	if response == nil {
 		return model.CreditApplicationConfirmationV1Response{}, &error_v1.ErrorResponse{
-			Code:        500,
+			Code:        http.StatusInternalServerError,
 			Message:     "Internal Server Error",
 			Description: fmt.Sprintf("failed to CreateCreditApplication: %v", err),
 		}

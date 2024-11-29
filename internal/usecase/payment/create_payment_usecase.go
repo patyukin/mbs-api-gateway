@@ -3,6 +3,7 @@ package payment
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
@@ -20,7 +21,7 @@ func (u *UseCase) CreatePaymentV1UseCase(ctx context.Context, in model.CreatePay
 
 	if err != nil {
 		return model.CreatePaymentV1Response{}, &error_v1.ErrorResponse{
-			Code:        500,
+			Code:        http.StatusInternalServerError,
 			Message:     "Internal Server Error",
 			Description: fmt.Sprintf("failed to GetLogReportV1UseCase: %v", err),
 		}

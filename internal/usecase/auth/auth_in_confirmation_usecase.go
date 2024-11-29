@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
@@ -13,7 +14,7 @@ func (uc *UseCase) SignInConfirmationV1UseCase(ctx context.Context, in model.Sig
 	tokens, err := uc.authClient.SignInConfirmation(ctx, &pbm)
 	if err != nil {
 		return model.SignInConfirmationV1Response{}, &error_v1.ErrorResponse{
-			Code:        500,
+			Code:        http.StatusInternalServerError,
 			Message:     "Internal Server Error",
 			Description: fmt.Sprintf("failed to uc.authClient.SignInConfirmationV1UseCase: %v", err),
 		}
@@ -21,7 +22,7 @@ func (uc *UseCase) SignInConfirmationV1UseCase(ctx context.Context, in model.Sig
 
 	if tokens == nil {
 		return model.SignInConfirmationV1Response{}, &error_v1.ErrorResponse{
-			Code:        500,
+			Code:        http.StatusInternalServerError,
 			Message:     "Internal Server Error",
 			Description: fmt.Sprintf("failed to uc.authClient.SignInConfirmationV1UseCase: %v", err),
 		}

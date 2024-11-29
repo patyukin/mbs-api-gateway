@@ -3,6 +3,7 @@ package credit
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 	creditpb "github.com/patyukin/mbs-pkg/pkg/proto/credit_v1"
@@ -16,7 +17,7 @@ func (u *UseCase) GetCreditV1UseCase(ctx context.Context, creditID, userID strin
 	})
 	if err != nil {
 		return model.GetCreditV1Response{}, &error_v1.ErrorResponse{
-			Code:        500,
+			Code:        http.StatusInternalServerError,
 			Message:     "Internal Server Error",
 			Description: fmt.Sprintf("failed to CreateCreditApplication: %v", err),
 		}
@@ -24,7 +25,7 @@ func (u *UseCase) GetCreditV1UseCase(ctx context.Context, creditID, userID strin
 
 	if response == nil {
 		return model.GetCreditV1Response{}, &error_v1.ErrorResponse{
-			Code:        500,
+			Code:        http.StatusInternalServerError,
 			Message:     "Internal Server Error",
 			Description: fmt.Sprintf("failed to CreateCreditApplication: %v", err),
 		}
