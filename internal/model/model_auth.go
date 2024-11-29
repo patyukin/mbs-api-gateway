@@ -8,6 +8,8 @@ import (
 	"regexp"
 )
 
+const minPasswordLength = 8
+
 type Secret string
 
 func (s Secret) String() string {
@@ -44,8 +46,8 @@ func (req *SignUpV1Request) Validate() *error_v1.ErrorResponse {
 		}
 	}
 
-	if len(req.Password) < 6 {
-		msg := "password: Invalid, password must be at least 6 characters long"
+	if len(req.Password) < minPasswordLength {
+		msg := "password: Invalid, password must be at least 8 characters long"
 		return &error_v1.ErrorResponse{
 			Code:        http.StatusBadRequest,
 			Message:     msg,
@@ -131,8 +133,8 @@ func (req *SignInV1Request) Validate() *error_v1.ErrorResponse {
 		}
 	}
 
-	if len(req.Password) < 6 {
-		msg := "password: Invalid, password must be at least 6 characters long"
+	if len(req.Password) < minPasswordLength {
+		msg := "password: Invalid, password must be at least 8 characters long"
 		return &error_v1.ErrorResponse{
 			Code:        http.StatusBadRequest,
 			Message:     msg,
