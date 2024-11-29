@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"fmt"
+
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
 )
@@ -18,11 +19,11 @@ func (uc *UseCase) RefreshTokenV1UseCase(ctx context.Context, in model.RefreshTo
 		}
 	}
 
-	if response.Error != nil {
-		return model.RefreshTokenV1Response{}, response.Error
+	if response.GetError() != nil {
+		return model.RefreshTokenV1Response{}, response.GetError()
 	}
 
-	if response.AccessToken == "" {
+	if response.GetAccessToken() == "" {
 		return model.RefreshTokenV1Response{}, &error_v1.ErrorResponse{
 			Code:        500,
 			Message:     "Internal Server Error",

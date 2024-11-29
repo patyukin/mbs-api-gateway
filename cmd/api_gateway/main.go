@@ -3,6 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
 	"github.com/patyukin/mbs-api-gateway/internal/config"
 	"github.com/patyukin/mbs-api-gateway/internal/handler"
 	"github.com/patyukin/mbs-api-gateway/internal/metrics"
@@ -22,10 +27,6 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
-	"os"
-	"os/signal"
-	"syscall"
-	"time"
 )
 
 const ServiceName = "ApiGateway"
@@ -41,6 +42,13 @@ func main() {
 	if err != nil {
 		log.Fatal().Msgf("unable to load config: %v", err)
 	}
+
+	level, err := zerolog.ParseLevel(cfg.MinLogLevel)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Invalid log level")
+	}
+
+	zerolog.SetGlobalLevel(level)
 
 	srvAddress := fmt.Sprintf("0.0.0.0:%d", cfg.HttpServer.Port)
 

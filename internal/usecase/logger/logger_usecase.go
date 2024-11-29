@@ -2,6 +2,7 @@ package logger
 
 import (
 	"context"
+
 	loggerpb "github.com/patyukin/mbs-pkg/pkg/proto/logger_v1"
 	"google.golang.org/grpc"
 )

@@ -5,3 +5,4 @@ config-local.yaml
 /api_gateway
 /bin/*
 *.drawio.bkp
+report.xml

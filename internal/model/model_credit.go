@@ -13,10 +13,10 @@ import (
 
 type CreateCreditApplicationV1Request struct {
 	RequestedAmount int64  `json:"requested_amount" validate:"required,gt=0"`
-	InterestRate    int32  `json:"interest_rate" validate:"required,gt=0"`
-	StartDate       string `json:"start_date" validate:"required,datetime=2006-01-02T15:04:05Z07:00"`
-	EndDate         string `json:"end_date" validate:"required,datetime=2006-01-02T15:04:05Z07:00"`
-	Description     string `json:"description" validate:"omitempty,max=500"`
+	InterestRate    int32  `json:"interest_rate"    validate:"required,gt=0"`
+	StartDate       string `json:"start_date"       validate:"required,datetime=2006-01-02T15:04:05Z07:00"`
+	EndDate         string `json:"end_date"         validate:"required,datetime=2006-01-02T15:04:05Z07:00"`
+	Description     string `json:"description"      validate:"omitempty,max=500"`
 }
 
 func (req *CreateCreditApplicationV1Request) Validate() *error_v1.ErrorResponse {

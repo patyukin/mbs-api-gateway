@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"fmt"
+
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
 )
@@ -26,8 +27,8 @@ func (uc *UseCase) SignInConfirmationV1UseCase(ctx context.Context, in model.Sig
 		}
 	}
 
-	if tokens.Error != nil {
-		return model.SignInConfirmationV1Response{}, tokens.Error
+	if tokens.GetError() != nil {
+		return model.SignInConfirmationV1Response{}, tokens.GetError()
 	}
 
 	return model.ToModelSignInConfirmationV1Response(tokens), nil

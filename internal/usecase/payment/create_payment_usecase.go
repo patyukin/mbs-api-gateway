@@ -3,6 +3,7 @@ package payment
 import (
 	"context"
 	"fmt"
+
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
 	"github.com/rs/zerolog/log"
@@ -25,8 +26,8 @@ func (u *UseCase) CreatePaymentV1UseCase(ctx context.Context, in model.CreatePay
 		}
 	}
 
-	if result.Error != nil {
-		return model.CreatePaymentV1Response{}, result.Error
+	if result.GetError() != nil {
+		return model.CreatePaymentV1Response{}, result.GetError()
 	}
 
 	return model.CreatePaymentV1Response{}, nil

@@ -33,8 +33,8 @@ func ToProtoV1SignInRequest(in SignInV1Request) authpb.SignInRequest {
 
 func ToModelSignInConfirmationV1Response(in *authpb.SignInConfirmationResponse) SignInConfirmationV1Response {
 	return SignInConfirmationV1Response{
-		AccessToken:  in.AccessToken,
-		RefreshToken: in.RefreshToken,
+		AccessToken:  in.GetAccessToken(),
+		RefreshToken: in.GetRefreshToken(),
 	}
 }
 
@@ -54,6 +54,6 @@ func ToProtoV1RefreshTokenRequest(in RefreshTokenV1Request) authpb.RefreshTokenR
 
 func ToModelRefreshTokenV1Response(in *authpb.RefreshTokenResponse) RefreshTokenV1Response {
 	return RefreshTokenV1Response{
-		AccessToken: in.AccessToken,
+		AccessToken: in.GetAccessToken(),
 	}
 }

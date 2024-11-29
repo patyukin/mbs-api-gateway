@@ -1,9 +1,10 @@
 package handler
 
 import (
+	"net/http"
+
 	"github.com/rs/zerolog/log"
 	"golang.org/x/time/rate"
-	"net/http"
 )
 
 func (h *Handler) RateLimitMiddleware(next http.Handler, rps float64, burst int) http.Handler {

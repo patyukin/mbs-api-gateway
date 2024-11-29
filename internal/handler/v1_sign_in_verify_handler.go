@@ -2,9 +2,10 @@ package handler
 
 import (
 	"encoding/json"
+	"net/http"
+
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"github.com/rs/zerolog/log"
-	"net/http"
 )
 
 // SignInConfirmationHandler godoc
@@ -17,7 +18,7 @@ import (
 // @Success      200   {object}  model.TokensResponse "Registration successfully"
 // @Failure      400   {object}  model.ErrorResponse "Invalid request body"
 // @Failure      500   {object}  model.ErrorResponse "Internal server error"
-// @Router       /v1/sign-in/confirmation [post]
+// @Router       /v1/sign-in/confirmation [post].
 func (h *Handler) SignInConfirmationHandler(w http.ResponseWriter, r *http.Request) {
 	var signInConfirmationV1Request model.SignInConfirmationV1Request
 	if err := json.NewDecoder(r.Body).Decode(&signInConfirmationV1Request); err != nil {
@@ -28,8 +29,8 @@ func (h *Handler) SignInConfirmationHandler(w http.ResponseWriter, r *http.Reque
 
 	tokens, err := h.auc.SignInConfirmationV1UseCase(r.Context(), signInConfirmationV1Request)
 	if err != nil {
-		log.Error().Msgf("failed to sign in verify, error: %v", err.Description)
-		h.HandleError(w, int(err.Code), err.Message)
+		log.Error().Msgf("failed to sign in verify, error: %v", err.GetDescription())
+		h.HandleError(w, int(err.GetCode()), err.GetMessage())
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

@@ -2,9 +2,10 @@ package handler
 
 import (
 	"encoding/json"
+	"net/http"
+
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"github.com/rs/zerolog/log"
-	"net/http"
 )
 
 func (h *Handler) CreatePaymentV1Handler(w http.ResponseWriter, r *http.Request) {
@@ -29,8 +30,8 @@ func (h *Handler) CreatePaymentV1Handler(w http.ResponseWriter, r *http.Request)
 
 	_, err := h.puc.CreatePaymentV1UseCase(r.Context(), createPaymentRequest)
 	if err != nil {
-		log.Error().Msgf("failed to sign in verify, code: %d, message: %s, error: %v", err.Code, err.Message, err.Description)
-		h.HandleError(w, int(err.Code), err.Message)
+		log.Error().Msgf("failed to sign in verify, code: %d, message: %s, error: %v", err.GetCode(), err.GetMessage(), err.GetDescription())
+		h.HandleError(w, int(err.GetCode()), err.GetMessage())
 		return
 	}
 

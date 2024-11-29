@@ -2,6 +2,7 @@ package metrics
 
 import (
 	"fmt"
+
 	"github.com/prometheus/client_golang/prometheus"
 )
 
@@ -10,9 +11,7 @@ type Counter interface {
 	Inc()
 }
 
-var (
-	IncomingTraffic Counter
-)
+var IncomingTraffic Counter
 
 func RegisterMetrics() error {
 	var err error

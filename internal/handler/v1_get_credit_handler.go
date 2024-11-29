@@ -2,8 +2,9 @@ package handler
 
 import (
 	"encoding/json"
-	"github.com/rs/zerolog/log"
 	"net/http"
+
+	"github.com/rs/zerolog/log"
 )
 
 func (h *Handler) GetCreditV1Handler(w http.ResponseWriter, r *http.Request) {
@@ -23,8 +24,8 @@ func (h *Handler) GetCreditV1Handler(w http.ResponseWriter, r *http.Request) {
 
 	response, err := h.cuc.GetCreditV1UseCase(r.Context(), creditID, userID)
 	if err != nil {
-		log.Error().Msgf("failed to sign in verify, code: %d, message: %s, error: %v", err.Code, err.Message, err.Description)
-		h.HandleError(w, int(err.Code), err.Message)
+		log.Error().Msgf("failed to sign in verify, code: %d, message: %s, error: %v", err.GetCode(), err.GetMessage(), err.GetDescription())
+		h.HandleError(w, int(err.GetCode()), err.GetMessage())
 		return
 	}
 

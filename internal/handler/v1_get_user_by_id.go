@@ -5,5 +5,4 @@ import (
 )
 
 func (h *Handler) GetUserByIDV1Handler(w http.ResponseWriter, r *http.Request) {
-
 }

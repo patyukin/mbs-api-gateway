@@ -48,3 +48,9 @@ gen-api:
 	--validate_out lang=go:pkg/auth_v1 --validate_opt=paths=source_relative \
 	--plugin=protoc-gen-validate=bin/protoc-gen-validate \
 	api/auth_v1/auth.proto
+
+lint:
+	golangci-lint run ./...
+
+lint-fix:
+	golangci-lint run --fix ./...

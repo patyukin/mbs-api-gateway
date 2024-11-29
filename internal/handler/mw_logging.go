@@ -3,10 +3,11 @@ package handler
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/rs/zerolog/log"
 	"io"
 	"net/http"
 	"time"
+
+	"github.com/rs/zerolog/log"
 )
 
 func readBody(r *http.Request) (string, error) {

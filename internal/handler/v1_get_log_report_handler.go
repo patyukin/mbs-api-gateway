@@ -2,10 +2,11 @@ package handler
 
 import (
 	"encoding/json"
+	"net/http"
+
 	"github.com/patyukin/mbs-api-gateway/internal/metrics"
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"github.com/rs/zerolog/log"
-	"net/http"
 )
 
 func (h *Handler) GetLogReportV1Handler(w http.ResponseWriter, r *http.Request) {
@@ -31,16 +32,16 @@ func (h *Handler) GetLogReportV1Handler(w http.ResponseWriter, r *http.Request) 
 
 	if err := in.Validate(); err != nil {
 		metrics.FailedLogReport.Inc()
-		log.Error().Msgf("GetLogReportV1Handler ValidateError: %v", err.Description)
-		h.HandleError(w, int(err.Code), err.Message)
+		log.Error().Msgf("GetLogReportV1Handler ValidateError: %v", err.GetDescription())
+		h.HandleError(w, int(err.GetCode()), err.GetMessage())
 		return
 	}
 
 	result, err := h.luc.GetLogReportV1UseCase(r.Context(), in)
 	if err != nil {
 		metrics.FailedLogReport.Inc()
-		log.Error().Msgf("GetLogReportV1Handler UseCaseError: %v", err.Description)
-		h.HandleError(w, int(err.Code), err.Message)
+		log.Error().Msgf("GetLogReportV1Handler UseCaseError: %v", err.GetDescription())
+		h.HandleError(w, int(err.GetCode()), err.GetMessage())
 		return
 	}
 

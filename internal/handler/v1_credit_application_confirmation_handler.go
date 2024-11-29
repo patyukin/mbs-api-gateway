@@ -2,9 +2,10 @@ package handler
 
 import (
 	"encoding/json"
+	"net/http"
+
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"github.com/rs/zerolog/log"
-	"net/http"
 )
 
 func (h *Handler) CreditApplicationConfirmationV1Handler(w http.ResponseWriter, r *http.Request) {
@@ -25,9 +26,9 @@ func (h *Handler) CreditApplicationConfirmationV1Handler(w http.ResponseWriter, 
 	response, err := h.cuc.CreditApplicationConfirmationV1UseCase(r.Context(), req, userID)
 	if err != nil {
 		log.Error().Msgf(
-			"failed to sign in verify, code: %d, message: %s, error: %v", err.Code, err.Message, err.Description,
+			"failed to sign in verify, code: %d, message: %s, error: %v", err.GetCode(), err.GetMessage(), err.GetDescription(),
 		)
-		h.HandleError(w, int(err.Code), err.Message)
+		h.HandleError(w, int(err.GetCode()), err.GetMessage())
 		return
 	}
 

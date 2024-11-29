@@ -3,6 +3,7 @@ package credit
 import (
 	"context"
 	"fmt"
+
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
 )
@@ -34,5 +35,5 @@ func (u *UseCase) UpdateCreditApplicationStatusV1UseCase(ctx context.Context, in
 		}
 	}
 
-	return model.UpdateCreditApplicationStatusV1Response{Message: response.Message}, nil
+	return model.UpdateCreditApplicationStatusV1Response{Message: response.GetMessage()}, nil
 }

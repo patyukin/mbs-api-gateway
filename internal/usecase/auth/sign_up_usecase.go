@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"fmt"
+
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
 )
@@ -18,5 +19,5 @@ func (uc *UseCase) SignUpV1UseCase(ctx context.Context, in model.SignUpV1Request
 		}
 	}
 
-	return model.SignUpV1Response{Message: result.Message}, nil
+	return model.SignUpV1Response{Message: result.GetMessage()}, nil
 }

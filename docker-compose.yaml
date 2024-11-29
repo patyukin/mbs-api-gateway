@@ -3,6 +3,11 @@ services:
     build:
       dockerfile: local.Dockerfile
     container_name: mbs-api-gateway-container
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://host.docker.internal:12201" # Адрес и порт Graylog
+        tag: "mbs-api-gateway"              # Тег логов
     volumes:
       - .:/app
     restart: always

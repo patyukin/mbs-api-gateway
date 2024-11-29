@@ -2,12 +2,13 @@ package server
 
 import (
 	"fmt"
+	"net/http"
+	"net/http/pprof"
+
 	_ "github.com/patyukin/mbs-api-gateway/docs"
 	"github.com/patyukin/mbs-api-gateway/internal/config"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	httpSwagger "github.com/swaggo/http-swagger"
-	"net/http"
-	"net/http/pprof"
 )
 
 type Handler interface {
@@ -46,7 +47,7 @@ type Handler interface {
 // @version 1.0
 // @description Auth API for microservices
 // @host http://0.0.0.0:5002
-// @BasePath /
+// @BasePath /.
 func Init(h Handler, cfg *config.Config, srvAddress string) http.Handler {
 	mux := http.NewServeMux()
 

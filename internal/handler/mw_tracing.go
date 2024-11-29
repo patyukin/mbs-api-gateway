@@ -2,10 +2,11 @@ package handler
 
 import (
 	"context"
+	"net/http"
+
 	"github.com/google/uuid"
 	"github.com/opentracing/opentracing-go"
 	"github.com/uber/jaeger-client-go"
-	"net/http"
 )
 
 func (h *Handler) TracingMiddleware(next http.Handler) http.Handler {

@@ -3,11 +3,12 @@ package handler
 import (
 	"context"
 	"encoding/json"
+	"net/http"
+
 	"github.com/patyukin/mbs-api-gateway/internal/metrics"
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
 	"github.com/rs/zerolog/log"
-	"net/http"
 )
 
 const (

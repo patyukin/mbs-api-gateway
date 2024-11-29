@@ -2,10 +2,11 @@ package handler
 
 import (
 	"encoding/json"
+	"net/http"
+
 	"github.com/patyukin/mbs-api-gateway/internal/metrics"
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"github.com/rs/zerolog/log"
-	"net/http"
 )
 
 func (h *Handler) GetUserReportV1Handler(w http.ResponseWriter, r *http.Request) {
@@ -24,16 +25,16 @@ func (h *Handler) GetUserReportV1Handler(w http.ResponseWriter, r *http.Request)
 	in.EndDate = r.URL.Query().Get("end_date")
 	if err := in.Validate(); err != nil {
 		metrics.FailedLogReport.Inc()
-		log.Error().Msgf("GetUserReportV1Handler ValidateError: %v", err.Description)
-		h.HandleError(w, int(err.Code), err.Message)
+		log.Error().Msgf("GetUserReportV1Handler ValidateError: %v", err.GetDescription())
+		h.HandleError(w, int(err.GetCode()), err.GetMessage())
 		return
 	}
 
 	report, reportError := h.ruc.GetUserReportV1UseCase(r.Context(), in)
 	if reportError != nil {
 		metrics.FailedLogReport.Inc()
-		log.Error().Msgf("failed h.ruc.GetUserReportV1UseCase: %v", reportError.Description)
-		h.HandleError(w, int(reportError.Code), reportError.Message)
+		log.Error().Msgf("failed h.ruc.GetUserReportV1UseCase: %v", reportError.GetDescription())
+		h.HandleError(w, int(reportError.GetCode()), reportError.GetMessage())
 		return
 	}
 

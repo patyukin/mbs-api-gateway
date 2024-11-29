@@ -3,6 +3,7 @@ package credit
 import (
 	"context"
 	"fmt"
+
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 	creditpb "github.com/patyukin/mbs-pkg/pkg/proto/credit_v1"
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
@@ -29,5 +30,5 @@ func (u *UseCase) GetCreditV1UseCase(ctx context.Context, creditID, userID strin
 		}
 	}
 
-	return model.ToModelGetCreditResponse(response.Credit), nil
+	return model.ToModelGetCreditResponse(response.GetCredit()), nil
 }

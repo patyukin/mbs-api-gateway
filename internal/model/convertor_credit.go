@@ -25,11 +25,11 @@ func ToProtoV1CreditApplicationConfirmationRequest(in CreditApplicationConfirmat
 
 func ToModelGetCreditApplicationV1Response(in *creditpb.GetCreditApplicationResponse) GetCreditApplicationV1Response {
 	return GetCreditApplicationV1Response{
-		ApplicationID:  in.ApplicationId,
-		ApprovedAmount: in.ApprovedAmount,
-		Status:         in.Status.String(),
-		DecisionDate:   in.DecisionDate,
-		Description:    in.Description,
+		ApplicationID:  in.GetApplicationId(),
+		ApprovedAmount: in.GetApprovedAmount(),
+		Status:         in.GetStatus().String(),
+		DecisionDate:   in.GetDecisionDate(),
+		Description:    in.GetDescription(),
 	}
 }
 
@@ -48,15 +48,15 @@ func ToProtoV1UpdateCreditApplicationStatusRequest(in UpdateCreditApplicationSta
 
 func ToModelCredit(in *creditpb.Credit) CreditV1 {
 	return CreditV1{
-		CreditID:        in.CreditId,
-		UserID:          in.UserId,
-		Amount:          in.Amount,
-		InterestRate:    in.InterestRate,
-		RemainingAmount: in.RemainingAmount,
-		Status:          in.Status.String(),
-		StartDate:       in.StartDate,
-		EndDate:         in.EndDate,
-		Description:     in.Description,
+		CreditID:        in.GetCreditId(),
+		UserID:          in.GetUserId(),
+		Amount:          in.GetAmount(),
+		InterestRate:    in.GetInterestRate(),
+		RemainingAmount: in.GetRemainingAmount(),
+		Status:          in.GetStatus().String(),
+		StartDate:       in.GetStartDate(),
+		EndDate:         in.GetEndDate(),
+		Description:     in.GetDescription(),
 	}
 }
 
@@ -77,8 +77,8 @@ func ToModelsGetListUserCreditsResponse(in []*creditpb.Credit) []CreditV1 {
 
 func ToModelGetListUserCreditsResponse(in *creditpb.GetListUserCreditsResponse) GetListUserCreditsV1Response {
 	return GetListUserCreditsV1Response{
-		Credits: ToModelsGetListUserCreditsResponse(in.Credits),
-		Total:   in.Total,
+		Credits: ToModelsGetListUserCreditsResponse(in.GetCredits()),
+		Total:   in.GetTotal(),
 	}
 }
 
@@ -87,10 +87,10 @@ func ToModelPaymentSchedule(in []*creditpb.PaymentSchedule) []PaymentSchedule {
 	for _, payment := range in {
 		payments = append(
 			payments, PaymentSchedule{
-				ID:      payment.PaymentId,
-				Amount:  payment.Amount,
-				DueDate: payment.DueDate,
-				Status:  payment.Status.String(),
+				ID:      payment.GetPaymentId(),
+				Amount:  payment.GetAmount(),
+				DueDate: payment.GetDueDate(),
+				Status:  payment.GetStatus().String(),
 			},
 		)
 	}
@@ -100,7 +100,7 @@ func ToModelPaymentSchedule(in []*creditpb.PaymentSchedule) []PaymentSchedule {
 
 func ToModelGetPaymentScheduleResponse(in *creditpb.GetPaymentScheduleResponse) GetPaymentScheduleV1Response {
 	return GetPaymentScheduleV1Response{
-		Payments: ToModelPaymentSchedule(in.Payments),
+		Payments: ToModelPaymentSchedule(in.GetPayments()),
 	}
 }
 

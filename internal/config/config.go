@@ -2,28 +2,29 @@ package config
 
 import (
 	"fmt"
+
 	configLoader "github.com/patyukin/mbs-pkg/pkg/config"
 )
 
 type Config struct {
-	MinLogLevel string `yaml:"min_log_level" validate:"oneof=debug info warn error fatal panic"`
+	MinLogLevel string `validate:"oneof=debug info warn error fatal panic" yaml:"min_log_level"`
 	HttpServer  struct {
-		Port         int `yaml:"port" validate:"min=1,max=65535"`
-		ReadTimeout  int `yaml:"read_timeout" validate:"min=1,max=65535"`
-		WriteTimeout int `yaml:"write_timeout" validate:"min=1,max=65535"`
+		Port         int `validate:"min=1,max=65535" yaml:"port"`
+		ReadTimeout  int `validate:"min=1,max=65535" yaml:"read_timeout"`
+		WriteTimeout int `validate:"min=1,max=65535" yaml:"write_timeout"`
 		RateLimit    struct {
-			Rps   float64 `yaml:"rps" validate:"min=1,max=65535"`
-			Burst int     `yaml:"burst" validate:"min=1,max=65535"`
+			Rps   float64 `validate:"min=1,max=65535" yaml:"rps"`
+			Burst int     `validate:"min=1,max=65535" yaml:"burst"`
 		} `yaml:"rate_limit"`
 	} `yaml:"server"`
-	JwtSecret  string `yaml:"jwt_secret" validate:"required"`
-	TracerHost string `yaml:"tracer_host" validate:"required"`
+	JwtSecret  string `validate:"required" yaml:"jwt_secret"`
+	TracerHost string `validate:"required" yaml:"tracer_host"`
 	GRPC       struct {
-		AuthService    string `yaml:"auth_service" validate:"required"`
-		LoggerService  string `yaml:"logger_service" validate:"required"`
-		PaymentService string `yaml:"payment_service" validate:"required"`
-		CreditService  string `yaml:"credit_service" validate:"required"`
-		ReportService  string `yaml:"report_service" validate:"required"`
+		AuthService    string `validate:"required" yaml:"auth_service"`
+		LoggerService  string `validate:"required" yaml:"logger_service"`
+		PaymentService string `validate:"required" yaml:"payment_service"`
+		CreditService  string `validate:"required" yaml:"credit_service"`
+		ReportService  string `validate:"required" yaml:"report_service"`
 	} `yaml:"grpc"`
 }
 

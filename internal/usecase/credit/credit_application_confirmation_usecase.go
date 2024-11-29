@@ -3,6 +3,7 @@ package credit
 import (
 	"context"
 	"fmt"
+
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
 )
@@ -27,8 +28,8 @@ func (u *UseCase) CreditApplicationConfirmationV1UseCase(ctx context.Context, in
 	}
 
 	return model.CreditApplicationConfirmationV1Response{
-		ApplicationID: response.ApplicationId,
-		Message:       response.Message,
-		Status:        response.Status.String(),
+		ApplicationID: response.GetApplicationId(),
+		Message:       response.GetMessage(),
+		Status:        response.GetStatus().String(),
 	}, nil
 }

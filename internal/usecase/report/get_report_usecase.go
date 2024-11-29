@@ -3,6 +3,7 @@ package report
 import (
 	"context"
 	"fmt"
+
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
 	"github.com/rs/zerolog/log"
@@ -19,11 +20,11 @@ func (u *UseCase) GetUserReportV1UseCase(ctx context.Context, in model.GetUserRe
 		}
 	}
 
-	if result.Error != nil {
-		return model.GetUserReportV1Response{}, result.Error
+	if result.GetError() != nil {
+		return model.GetUserReportV1Response{}, result.GetError()
 	}
 
-	log.Debug().Msgf("result.FileUrl: %v", result.Message)
+	log.Debug().Msgf("result.FileUrl: %v", result.GetMessage())
 
-	return model.GetUserReportV1Response{Message: result.Message}, nil
+	return model.GetUserReportV1Response{Message: result.GetMessage()}, nil
 }

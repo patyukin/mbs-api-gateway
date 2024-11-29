@@ -2,17 +2,17 @@ package handler
 
 import (
 	"fmt"
+	"net/http"
+	"strings"
+
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"github.com/rs/zerolog/log"
-	"net/http"
-	"strings"
 )
 
 func (h *Handler) Auth(next http.Handler) http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
-
 			accessToken, err := GetBearerToken(r)
 			if err != nil {
 				log.Error().Msgf("failed GetBearerToken: %v", err)

@@ -3,6 +3,7 @@ package credit
 import (
 	"context"
 	"fmt"
+
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
 )
@@ -26,11 +27,11 @@ func (u *UseCase) CreateCreditApplicationV1UseCase(ctx context.Context, in model
 		}
 	}
 
-	if response.Error != nil {
+	if response.GetError() != nil {
 		return model.CreateCreditApplicationV1Response{}, &error_v1.ErrorResponse{
-			Code:        response.Error.Code,
-			Message:     response.Error.Message,
-			Description: response.Error.Description,
+			Code:        response.GetError().GetCode(),
+			Message:     response.GetError().GetMessage(),
+			Description: response.GetError().GetDescription(),
 		}
 	}
 
