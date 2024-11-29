@@ -68,7 +68,7 @@ func ToModelGetCreditResponse(in *creditpb.Credit) GetCreditV1Response {
 }
 
 func ToModelsGetListUserCreditsResponse(in []*creditpb.Credit) []CreditV1 {
-	credits := make([]CreditV1, len(in))
+	credits := make([]CreditV1, 0, len(in))
 	for _, credit := range in {
 		credits = append(credits, ToModelCredit(credit))
 	}

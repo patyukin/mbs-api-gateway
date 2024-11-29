@@ -448,13 +448,14 @@ linters-settings:
     case:
       # Use the struct field name to check the name of the struct tag.
       # Default: false
-      use-field-name: true
+      use-field-name: false
       # `camel` is used for `json` and `yaml`, and `header` is used for `header` (can be overridden)
       # Default: {}
       rules:
         # Any struct tag type can be used.
         # Support string case: `camel`, `pascal`, `kebab`, `snake`, `upperSnake`, `goCamel`, `goPascal`, `goKebab`, `goSnake`, `upper`, `lower`, `header`
         json: snake
+        yaml: snake
   gocritic:
     # Enable all checks.
     # Default: false
@@ -565,6 +566,7 @@ linters-settings:
       # Inappropriate key in call to 'context.WithValue'.
       # https://staticcheck.dev/docs/checks/#SA1029
       - SA1029
+
 
 
 
