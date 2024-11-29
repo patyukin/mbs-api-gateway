@@ -13,9 +13,9 @@ import (
 
 const (
 	HeaderAuthorization = "Authorization"
-	HeaderUserID        = "X-User-ID"
-	RequestID           = "X-Request-ID"
-	TraceID             = "x-trace-id"
+	HeaderUserID        = "X-User-Id"
+	RequestID           = "X-Request-Id"
+	TraceID             = "X-Trace-Id"
 )
 
 //go:generate go run github.com/vektra/mockery/v2@v2.45.1 --name=AuthUseCase

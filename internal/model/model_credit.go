@@ -3,12 +3,13 @@ package model
 import (
 	"errors"
 	"fmt"
+	"net/http"
+	"time"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 	"github.com/patyukin/mbs-pkg/pkg/mapping/creditmapper"
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
-	"net/http"
-	"time"
 )
 
 type CreateCreditApplicationV1Request struct {
