@@ -8,7 +8,7 @@ import (
 
 type Config struct {
 	MinLogLevel string `validate:"oneof=debug info warn error fatal panic" yaml:"min_log_level"`
-	HttpServer  struct {
+	HTTPServer  struct {
 		Port         int `validate:"min=1,max=65535" yaml:"port"`
 		ReadTimeout  int `validate:"min=1,max=65535" yaml:"read_timeout"`
 		WriteTimeout int `validate:"min=1,max=65535" yaml:"write_timeout"`

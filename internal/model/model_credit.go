@@ -37,7 +37,7 @@ func (req *CreateCreditApplicationV1Request) Validate() *error_v1.ErrorResponse 
 		return &error_v1.ErrorResponse{
 			Code:        http.StatusBadRequest,
 			Message:     "start_date: Invalid",
-			Description: fmt.Sprintf("failed to parse start_date: %w", err),
+			Description: fmt.Sprintf("failed to parse start_date: %v", err),
 		}
 	}
 

@@ -20,7 +20,7 @@ func (h *Handler) GetListUserCreditsV1Handler(w http.ResponseWriter, r *http.Req
 	var limit, page int32
 	limitRequest := r.URL.Query().Get("limit")
 	if limitRequest != "" {
-		limit = int32(10)
+		limit = int32(minLimit)
 	} else {
 		limitParsed, err := strconv.Atoi(limitRequest)
 		if err != nil {
@@ -35,7 +35,7 @@ func (h *Handler) GetListUserCreditsV1Handler(w http.ResponseWriter, r *http.Req
 	if pageRequest != "" {
 		page = int32(1)
 	} else {
-		pageParsed, err := strconv.Atoi(pageRequest)
+		pageParsed, err := strconv.ParseInt(pageRequest, 10, 32)
 		if err != nil {
 			log.Error().Msgf("failed to parse page, error: %v", err)
 			h.HandleError(w, http.StatusBadRequest, "invalid data")

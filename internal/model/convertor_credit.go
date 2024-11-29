@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/patyukin/mbs-pkg/pkg/mapping/creditmapper"
 	creditpb "github.com/patyukin/mbs-pkg/pkg/proto/credit_v1"
 )
@@ -36,7 +37,7 @@ func ToModelGetCreditApplicationV1Response(in *creditpb.GetCreditApplicationResp
 func ToProtoV1UpdateCreditApplicationStatusRequest(in UpdateCreditApplicationStatusV1Request) (creditpb.UpdateCreditApplicationSolutionRequest, error) {
 	status, err := creditmapper.StringToEnumCreditApplicationStatus(in.Status)
 	if err != nil {
-		return creditpb.UpdateCreditApplicationSolutionRequest{}, err
+		return creditpb.UpdateCreditApplicationSolutionRequest{}, fmt.Errorf("failed creditmapper.StringToEnumCreditApplicationStatus: %w", err)
 	}
 
 	return creditpb.UpdateCreditApplicationSolutionRequest{
@@ -67,7 +68,7 @@ func ToModelGetCreditResponse(in *creditpb.Credit) GetCreditV1Response {
 }
 
 func ToModelsGetListUserCreditsResponse(in []*creditpb.Credit) []CreditV1 {
-	var credits []CreditV1
+	credits := make([]CreditV1, len(in))
 	for _, credit := range in {
 		credits = append(credits, ToModelCredit(credit))
 	}
@@ -83,7 +84,7 @@ func ToModelGetListUserCreditsResponse(in *creditpb.GetListUserCreditsResponse) 
 }
 
 func ToModelPaymentSchedule(in []*creditpb.PaymentSchedule) []PaymentSchedule {
-	var payments []PaymentSchedule
+	payments := make([]PaymentSchedule, 0, len(in))
 	for _, payment := range in {
 		payments = append(
 			payments, PaymentSchedule{

@@ -50,7 +50,7 @@ func main() {
 
 	zerolog.SetGlobalLevel(level)
 
-	srvAddress := fmt.Sprintf("0.0.0.0:%d", cfg.HttpServer.Port)
+	srvAddress := fmt.Sprintf("0.0.0.0:%d", cfg.HTTPServer.Port)
 
 	// register metrics
 	err = metrics.RegisterMetrics()
@@ -147,7 +147,7 @@ func main() {
 	errCh := make(chan error)
 
 	go func() {
-		log.Info().Msgf("starting http server on %d", cfg.HttpServer.Port)
+		log.Info().Msgf("starting http server on %d", cfg.HTTPServer.Port)
 		if err = srv.Run(srvAddress, cfg); err != nil {
 			log.Error().Msgf("failed starting server: %v", err)
 			errCh <- err

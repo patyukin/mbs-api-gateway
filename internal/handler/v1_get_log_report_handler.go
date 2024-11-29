@@ -45,7 +45,7 @@ func (h *Handler) GetLogReportV1Handler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	log.Debug().Msgf("result.FileUrl: %v", result.FileUrl)
+	log.Debug().Msgf("result.FileURL: %v", result.FileURL)
 
 	w.WriteHeader(http.StatusOK)
 	if errEnc := json.NewEncoder(w).Encode(result); errEnc != nil {

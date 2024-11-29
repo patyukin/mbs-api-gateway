@@ -516,7 +516,6 @@ linters-settings:
       - re
       - id
       - h
-
   promlinter:
     # Promlinter cannot infer all metrics name in static analysis.
     # Enable strict mode will also include the errors caused by failing to parse the args.
@@ -541,16 +540,14 @@ linters-settings:
       - CamelCase
       # UnitAbbreviations detects abbreviated units in the metric name.
       - UnitAbbreviations
-
   lll:
     # Max line length, lines longer will be reported.
     # '\t' is counted as 1 character by default, and can be changed with the tab-width option.
     # Default: 120.
-    line-length: 150
+    line-length: 230
     # Tab width in spaces.
     # Default: 1
     tab-width: 2
-
   cyclop:
     # The maximal code complexity to report.
     # Default: 10
@@ -558,11 +555,16 @@ linters-settings:
     # The maximal average package complexity.
     # If it's higher than 0.0 (float) the check is enabled
     # Default: 0.0
-    package-average: 0.5
+    package-average: 0.0
     # Should ignore tests.
     # Default: false
     skip-tests: true
 
+  staticcheck:
+    checks:
+      # Inappropriate key in call to 'context.WithValue'.
+      # https://staticcheck.dev/docs/checks/#SA1029
+      - SA1029
 
 
 

@@ -29,15 +29,7 @@ type SignUpV1Request struct {
 }
 
 func (req *SignUpV1Request) Validate() *error_v1.ErrorResponse {
-	re, err := regexp.Compile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
-	if err != nil {
-		return &error_v1.ErrorResponse{
-			Code:        http.StatusInternalServerError,
-			Message:     "Internal Server Error",
-			Description: fmt.Sprintf("failed to compile regex: %v", err),
-		}
-	}
-
+	re := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
 	if re.MatchString(req.Email) == false {
 		return &error_v1.ErrorResponse{
 			Code:        http.StatusBadRequest,

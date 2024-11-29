@@ -14,7 +14,7 @@ func (u *UseCase) GetLogReportV1UseCase(ctx context.Context, in model.GetLogRepo
 	pbm, err := model.ToProtoLogReportFromRequest(in)
 	if err != nil {
 		return model.GetLogReportV1Response{}, &error_v1.ErrorResponse{
-			Code:        400,
+			Code:        http.StatusBadRequest,
 			Message:     err.Error(),
 			Description: fmt.Sprintf("failed to ToProtoLogReportFromRequest: %v", err),
 		}
@@ -33,7 +33,7 @@ func (u *UseCase) GetLogReportV1UseCase(ctx context.Context, in model.GetLogRepo
 		return model.GetLogReportV1Response{}, result.GetError()
 	}
 
-	log.Debug().Msgf("result.FileUrl: %v", result.GetMessage())
+	log.Debug().Msgf("result.FileURL: %v", result.GetMessage())
 
-	return model.GetLogReportV1Response{FileUrl: result.GetMessage()}, nil
+	return model.GetLogReportV1Response{FileURL: result.GetMessage()}, nil
 }

@@ -16,6 +16,7 @@ const (
 	HeaderUserID        = "X-User-Id"
 	RequestID           = "X-Request-Id"
 	TraceID             = "X-Trace-Id"
+	minLimit            = 10
 )
 
 //go:generate go run github.com/vektra/mockery/v2@v2.45.1 --name=AuthUseCase

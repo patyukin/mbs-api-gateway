@@ -15,7 +15,7 @@ type GetLogReportV1Request struct {
 }
 
 type GetLogReportV1Response struct {
-	FileUrl string `json:"file_url"`
+	FileURL string `json:"file_url"`
 }
 
 func (req *GetLogReportV1Request) Validate() *error_v1.ErrorResponse {

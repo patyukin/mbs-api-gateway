@@ -3,6 +3,7 @@ package handler
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"time"
@@ -16,7 +17,7 @@ func readBody(r *http.Request) (string, error) {
 
 	body, err := io.ReadAll(tee)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to read request body: %w", err)
 	}
 
 	r.Body = io.NopCloser(&buf)
@@ -33,7 +34,7 @@ func redactPassword(body []byte) (string, error) {
 	var data map[string]interface{}
 
 	if err := json.Unmarshal(body, &data); err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to unmarshal request body: %w", err)
 	}
 
 	if _, ok := data["password"]; ok {
@@ -42,7 +43,7 @@ func redactPassword(body []byte) (string, error) {
 
 	redactedBody, err := json.Marshal(data)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to marshal request body: %w", err)
 	}
 
 	return string(redactedBody), nil

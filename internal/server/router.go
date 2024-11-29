@@ -107,7 +107,7 @@ func Init(h Handler, cfg *config.Config, srvAddress string) http.Handler {
 
 	// required middlewares
 	withMiddlewareMux := h.CORS(mux)
-	withMiddlewareMux = h.RateLimitMiddleware(withMiddlewareMux, cfg.HttpServer.RateLimit.Rps, cfg.HttpServer.RateLimit.Burst)
+	withMiddlewareMux = h.RateLimitMiddleware(withMiddlewareMux, cfg.HTTPServer.RateLimit.Rps, cfg.HTTPServer.RateLimit.Burst)
 	withMiddlewareMux = h.LoggingMiddleware(withMiddlewareMux)
 	withMiddlewareMux = h.TracingMiddleware(withMiddlewareMux)
 	withMiddlewareMux = h.RecoverMiddleware(withMiddlewareMux)

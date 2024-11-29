@@ -25,7 +25,7 @@ func (u *UseCase) GetUserReportV1UseCase(ctx context.Context, in model.GetUserRe
 		return model.GetUserReportV1Response{}, result.GetError()
 	}
 
-	log.Debug().Msgf("result.FileUrl: %v", result.GetMessage())
+	log.Debug().Msgf("result.FileURL: %v", result.GetMessage())
 
 	return model.GetUserReportV1Response{Message: result.GetMessage()}, nil
 }
