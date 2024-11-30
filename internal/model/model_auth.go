@@ -125,6 +125,15 @@ func (req *SignInV1Request) Validate() *error_v1.ErrorResponse {
 		}
 	}
 
+	re := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
+	if re.MatchString(req.Login) == false {
+		return &error_v1.ErrorResponse{
+			Code:        http.StatusBadRequest,
+			Message:     "login: Invalid",
+			Description: "login is invalid",
+		}
+	}
+
 	if len(req.Password) < minPasswordLength {
 		msg := "password: Invalid, password must be at least 8 characters long"
 		return &error_v1.ErrorResponse{

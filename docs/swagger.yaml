@@ -4,9 +4,33 @@ definitions:
       error:
         type: string
     type: object
-  model.SignInVerifyV1Request:
+  model.RefreshTokenV1Request:
+    properties:
+      refresh_token:
+        type: string
+    type: object
+  model.RefreshTokenV1Response:
+    properties:
+      access_token:
+        type: string
+    type: object
+  model.SignInConfirmationV1Request:
     properties:
       code:
+        type: string
+    type: object
+  model.SignInConfirmationV1Response:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    type: object
+  model.SignInV1Request:
+    properties:
+      login:
+        type: string
+      password:
         type: string
     type: object
   model.SignUpV1Request:
@@ -27,24 +51,107 @@ definitions:
         type: string
       phone:
         type: string
-    type: object
-  model.TokensResponse:
-    properties:
-      access_token:
-        type: string
-      refresh_token:
+      telegram_login:
         type: string
     type: object
 info:
   contact: {}
 paths:
+  /v1/refresh-token:
+    post:
+      consumes:
+      - application/json
+      description: Обновление токена
+      parameters:
+      - description: RefreshTokenData Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.RefreshTokenV1Request'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Registration successfully
+          schema:
+            $ref: '#/definitions/model.RefreshTokenV1Response'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Обновление токена
+      tags:
+      - Auth
+  /v1/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: Авторизация пользователя в системе
+      parameters:
+      - description: Данные для авторизации пользователя
+        in: body
+        name: SignInRequest
+        required: true
+        schema:
+          $ref: '#/definitions/model.SignInV1Request'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Пользователь успешно авторизован
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Авторизация пользователя
+      tags:
+      - Auth
+  /v1/sign-in/confirmation:
+    post:
+      consumes:
+      - application/json
+      description: Второй этап входа в систему по коду
+      parameters:
+      - description: SignInConfirmationData Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.SignInConfirmationV1Request'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Registration successfully
+          schema:
+            $ref: '#/definitions/model.SignInConfirmationV1Response'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Второй этап входа в систему
+      tags:
+      - Auth
   /v1/sign-up:
     post:
       consumes:
       - application/json
       description: Регистрация нового пользователя в системе
       parameters:
-      - description: Запрос пользователя на регистрацию
+      - description: Данные для регистрации пользователя
         in: body
         name: SignUpRequest
         required: true
@@ -64,37 +171,6 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Регистрация нового пользователя
-      tags:
-      - Auth
-  /v2/sign-in-verify:
-    post:
-      consumes:
-      - application/json
-      description: Окончание регистрации нового пользователя. Пользователь должен
-        прислать токен для подтверждения его регистрации
-      parameters:
-      - description: SignInVerifyData Request
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/model.SignInVerifyV1Request'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Registration successfully
-          schema:
-            $ref: '#/definitions/model.TokensResponse'
-        "400":
-          description: Invalid request body
-          schema:
-            $ref: '#/definitions/model.ErrorResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/model.ErrorResponse'
-      summary: Окончание регистрации нового пользователя
       tags:
       - Auth
 swagger: "2.0"

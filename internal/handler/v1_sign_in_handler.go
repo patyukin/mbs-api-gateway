@@ -21,7 +21,7 @@ import (
 // @Failure 500 {object} model.ErrorResponse "Internal server error"
 // @Router /v1/sign-in [post].
 func (h *Handler) SignInV1Handler(w http.ResponseWriter, r *http.Request) {
-	metrics.TotalRegistrations.Inc()
+	metrics.TotalLogin.Inc()
 	var in model.SignInV1Request
 
 	if err := json.NewDecoder(r.Body).Decode(&in); err != nil {

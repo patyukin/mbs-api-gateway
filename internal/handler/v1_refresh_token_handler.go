@@ -8,6 +8,17 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// RefreshTokenV1Handler godoc
+// @Summary      Обновление токена
+// @Description  Обновление токена
+// @Tags         Auth
+// @Accept       json
+// @Produce      json
+// @Param        body  body model.RefreshTokenV1Request true "RefreshTokenData Request"
+// @Success      200   {object}  model.RefreshTokenV1Response "Registration successfully"
+// @Failure      400   {object}  model.ErrorResponse "Invalid request body"
+// @Failure      500   {object}  model.ErrorResponse "Internal server error"
+// @Router       /v1/refresh-token [post].
 func (h *Handler) RefreshTokenV1Handler(w http.ResponseWriter, r *http.Request) {
 	var refreshTokenRequest model.RefreshTokenV1Request
 

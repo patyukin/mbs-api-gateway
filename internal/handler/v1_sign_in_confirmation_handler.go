@@ -9,13 +9,13 @@ import (
 )
 
 // SignInConfirmationHandler godoc
-// @Summary      Окончание регистрации нового пользователя
-// @Description  Окончание регистрации нового пользователя. Пользователь должен прислать токен для подтверждения его регистрации
+// @Summary      Второй этап входа в систему
+// @Description  Второй этап входа в систему по коду
 // @Tags         Auth
 // @Accept       json
 // @Produce      json
 // @Param        body  body model.SignInConfirmationV1Request true "SignInConfirmationData Request"
-// @Success      200   {object}  model.TokensResponse "Registration successfully"
+// @Success      200   {object}  model.SignInConfirmationV1Response "Registration successfully"
 // @Failure      400   {object}  model.ErrorResponse "Invalid request body"
 // @Failure      500   {object}  model.ErrorResponse "Internal server error"
 // @Router       /v1/sign-in/confirmation [post].

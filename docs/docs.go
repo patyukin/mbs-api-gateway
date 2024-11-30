@@ -15,6 +15,141 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/v1/refresh-token": {
+            "post": {
+                "description": "Обновление токена",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Обновление токена",
+                "parameters": [
+                    {
+                        "description": "RefreshTokenData Request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.RefreshTokenV1Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Registration successfully",
+                        "schema": {
+                            "$ref": "#/definitions/model.RefreshTokenV1Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/sign-in": {
+            "post": {
+                "description": "Авторизация пользователя в системе",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Авторизация пользователя",
+                "parameters": [
+                    {
+                        "description": "Данные для авторизации пользователя",
+                        "name": "SignInRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.SignInV1Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Пользователь успешно авторизован"
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/sign-in/confirmation": {
+            "post": {
+                "description": "Второй этап входа в систему по коду",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Второй этап входа в систему",
+                "parameters": [
+                    {
+                        "description": "SignInConfirmationData Request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.SignInConfirmationV1Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Registration successfully",
+                        "schema": {
+                            "$ref": "#/definitions/model.SignInConfirmationV1Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/sign-up": {
             "post": {
                 "description": "Регистрация нового пользователя в системе",
@@ -30,7 +165,7 @@ const docTemplate = `{
                 "summary": "Регистрация нового пользователя",
                 "parameters": [
                     {
-                        "description": "Запрос пользователя на регистрацию",
+                        "description": "Данные для регистрации пользователя",
                         "name": "SignUpRequest",
                         "in": "body",
                         "required": true,
@@ -57,52 +192,6 @@ const docTemplate = `{
                     }
                 }
             }
-        },
-        "/v2/sign-in-verify": {
-            "post": {
-                "description": "Окончание регистрации нового пользователя. Пользователь должен прислать токен для подтверждения его регистрации",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Окончание регистрации нового пользователя",
-                "parameters": [
-                    {
-                        "description": "SignInVerifyData Request",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.SignInVerifyV1Request"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Registration successfully",
-                        "schema": {
-                            "$ref": "#/definitions/model.TokensResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request body",
-                        "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
-                        }
-                    }
-                }
-            }
         }
     },
     "definitions": {
@@ -114,10 +203,48 @@ const docTemplate = `{
                 }
             }
         },
-        "model.SignInVerifyV1Request": {
+        "model.RefreshTokenV1Request": {
+            "type": "object",
+            "properties": {
+                "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.RefreshTokenV1Response": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.SignInConfirmationV1Request": {
             "type": "object",
             "properties": {
                 "code": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.SignInConfirmationV1Response": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.SignInV1Request": {
+            "type": "object",
+            "properties": {
+                "login": {
+                    "type": "string"
+                },
+                "password": {
                     "type": "string"
                 }
             }
@@ -148,16 +275,8 @@ const docTemplate = `{
                 },
                 "phone": {
                     "type": "string"
-                }
-            }
-        },
-        "model.TokensResponse": {
-            "type": "object",
-            "properties": {
-                "access_token": {
-                    "type": "string"
                 },
-                "refresh_token": {
+                "telegram_login": {
                     "type": "string"
                 }
             }
