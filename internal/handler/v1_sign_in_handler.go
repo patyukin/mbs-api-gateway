@@ -9,6 +9,17 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// SignInV1Handler docs
+// @Summary Авторизация пользователя
+// @Description Авторизация пользователя в системе
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param SignInRequest body model.SignInV1Request true "Данные для авторизации пользователя"
+// @Success 200 "Пользователь успешно авторизован"
+// @Failure 400 {object} model.ErrorResponse "Invalid request"
+// @Failure 500 {object} model.ErrorResponse "Internal server error"
+// @Router /v1/sign-in [post].
 func (h *Handler) SignInV1Handler(w http.ResponseWriter, r *http.Request) {
 	metrics.TotalRegistrations.Inc()
 	var in model.SignInV1Request
