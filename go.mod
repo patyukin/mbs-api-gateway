@@ -7,7 +7,7 @@ require (
 	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/google/uuid v1.6.0
 	github.com/opentracing/opentracing-go v1.2.0
-	github.com/patyukin/mbs-pkg v1.1.150
+	github.com/patyukin/mbs-pkg v1.1.153
 	github.com/prometheus/client_golang v1.20.5
 	github.com/rs/zerolog v1.33.0
 	github.com/stretchr/testify v1.9.0

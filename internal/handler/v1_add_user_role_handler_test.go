@@ -3,6 +3,7 @@ package handler
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/google/uuid"
 	"github.com/patyukin/mbs-api-gateway/internal/handler/mocks"
 	"github.com/patyukin/mbs-api-gateway/internal/metrics"
 	"github.com/patyukin/mbs-api-gateway/internal/model"
@@ -13,7 +14,7 @@ import (
 	"testing"
 )
 
-type SignInConfirmationV1TestSuite struct {
+type AddUserRoleV1TestSuite struct {
 	suite.Suite
 	handler         *Handler
 	mockAUC         *mocks.AuthUseCase
@@ -26,11 +27,11 @@ type SignInConfirmationV1TestSuite struct {
 	SuccessfulLogin *mocks.Counter
 }
 
-func TestSignInConfirmationV1TestSuite(t *testing.T) {
-	suite.Run(t, new(SignInConfirmationV1TestSuite))
+func TestAddUserRoleV1TestSuiteTestSuite(t *testing.T) {
+	suite.Run(t, new(AddUserRoleV1TestSuite))
 }
 
-func (suite *SignInConfirmationV1TestSuite) SetupTest() {
+func (suite *AddUserRoleV1TestSuite) SetupTest() {
 	suite.mockAUC = &mocks.AuthUseCase{}
 	suite.mockLUC = &mocks.LoggerUseCase{}
 	suite.mockPUC = &mocks.PaymentUseCase{}
@@ -51,43 +52,42 @@ func (suite *SignInConfirmationV1TestSuite) SetupTest() {
 	suite.SuccessfulLogin.On("Inc").Return(nil)
 }
 
-func (suite *SignInConfirmationV1TestSuite) TearDownTest() {
+func (suite *AddUserRoleV1TestSuite) TearDownTest() {
 	metrics.TotalRegistrations = nil
 	metrics.FailedRegistrations = nil
 	metrics.SuccessfulRegistrations = nil
 }
 
-func (suite *SignInConfirmationV1TestSuite) TestSignInConfirmationV1_Success() {
-	requestData := model.SignInConfirmationV1Request{
-		Login: "john.doe@example.com",
-		Code:  "12345",
+func (suite *AddUserRoleV1TestSuite) TestAddUserRoleV1_Success() {
+	userUUID, err := uuid.NewUUID()
+	suite.Require().NoError(err)
+
+	roleUUID, err := uuid.NewUUID()
+	suite.Require().NoError(err)
+
+	reqBody := model.AddUserRoleV1Request{UserID: userUUID.String(), RoleID: roleUUID.String()}
+	body, err := json.Marshal(reqBody)
+	suite.Require().NoError(err)
+
+	response := model.AddUserRoleV1Response{
+		Message: "Success",
 	}
+	suite.mockAUC.On("AddUserRoleV1UseCase", mock.Anything, reqBody).Return(response, nil)
 
-	responseData := model.SignInConfirmationV1Response{
-		AccessToken:  "new.jwt.token",
-		RefreshToken: "new.refresh.token",
-	}
-
-	suite.mockAUC.
-		On("SignInConfirmationV1UseCase", mock.Anything, requestData).
-		Return(responseData, nil)
-
-	body, err := json.Marshal(requestData)
-	suite.NoError(err)
-
-	req, err := http.NewRequest(http.MethodPost, "/sign-in-confirmation", bytes.NewReader(body))
-	suite.NoError(err)
+	req, err := http.NewRequest("POST", "/add-user-role", bytes.NewBuffer(body))
+	suite.Require().NoError(err)
+	req.Header.Set("Content-Type", "application/json")
 
 	rr := httptest.NewRecorder()
 
-	suite.handler.SignInConfirmationHandler(rr, req)
+	suite.handler.AddUserRoleV1Handler(rr, req)
 
 	suite.Equal(http.StatusOK, rr.Code)
 
-	var resp model.SignInConfirmationV1Response
-	err = json.Unmarshal(rr.Body.Bytes(), &resp)
-	suite.NoError(err)
-	suite.Equal(responseData, resp)
+	var resp model.AddUserRoleV1Response
+	err = json.NewDecoder(rr.Body).Decode(&resp)
+	suite.Require().NoError(err)
+	suite.Equal(response, resp)
 
 	suite.mockAUC.AssertExpectations(suite.T())
 }

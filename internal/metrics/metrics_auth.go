@@ -43,6 +43,14 @@ func RegisterAuthMetrics() error {
 		return fmt.Errorf("failed to register failed registrations: %w", err)
 	}
 
+	TotalLogin = prometheus.NewCounter(
+		prometheus.CounterOpts{Name: "total_sign_in_v1", Help: "Total logins"},
+	)
+	err = prometheus.Register(TotalLogin.(prometheus.Collector))
+	if err != nil {
+		return fmt.Errorf("failed to register total logins: %w", err)
+	}
+
 	SuccessfulLogin = prometheus.NewCounter(
 		prometheus.CounterOpts{Name: "successful_sign_in_v1", Help: "Successful login"},
 	)

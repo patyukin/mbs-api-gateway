@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"github.com/google/uuid"
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
 	"github.com/patyukin/mbs-pkg/pkg/validator"
 	"net/http"
@@ -154,6 +155,39 @@ type GetUserByIDV1Request struct {
 	UserID string `json:"user_id"`
 }
 
+func (r *GetUserByIDV1Request) Validate(userIDFromHeader, roleFromHeader string) *error_v1.ErrorResponse {
+	if r.UserID == "" {
+		return &error_v1.ErrorResponse{
+			Code:        http.StatusBadRequest,
+			Message:     "user_id: required",
+			Description: "user_id is required",
+		}
+	}
+
+	_, err := uuid.Parse(r.UserID)
+	if err != nil {
+		return &error_v1.ErrorResponse{
+			Code:        http.StatusBadRequest,
+			Message:     "user_id: Invalid",
+			Description: "user_id is invalid",
+		}
+	}
+
+	if roleFromHeader == "sys-admin" {
+		return nil
+	}
+
+	if r.UserID != userIDFromHeader {
+		return &error_v1.ErrorResponse{
+			Code:        http.StatusBadRequest,
+			Message:     "user_id: Invalid",
+			Description: "user_id is invalid",
+		}
+	}
+
+	return nil
+}
+
 type UserV1 struct {
 	ID            string `json:"id"`
 	Email         string `json:"email"`
@@ -171,12 +205,7 @@ type UserV1 struct {
 }
 
 type GetUserByIDV1Response struct {
-	UserV1 UserV1 `json:"user"`
-}
-
-type GetUsersV1Request struct {
-	Page  int32 `json:"page"`
-	Limit int32 `json:"limit"`
+	UserInfoV1 UserInfoV1 `json:"user"`
 }
 
 type ProfileV1 struct {
@@ -194,13 +223,67 @@ type UserInfoV1 struct {
 	ProfileV1 ProfileV1 `json:"profile"`
 }
 
+type GetUsersV1Request struct {
+	Page  int32 `json:"page"`
+	Limit int32 `json:"limit"`
+}
+
+func (req *GetUsersV1Request) Validate() *error_v1.ErrorResponse {
+	if req.Page < 0 {
+		return &error_v1.ErrorResponse{
+			Code:        http.StatusBadRequest,
+			Message:     "page: Invalid",
+			Description: "page is invalid",
+		}
+	}
+
+	if req.Limit < 0 {
+		return &error_v1.ErrorResponse{
+			Code:        http.StatusBadRequest,
+			Message:     "limit: Invalid",
+			Description: "limit is invalid",
+		}
+	}
+
+	return nil
+}
+
 type GetUsersV1Response struct {
 	UsersInfoV1 []UserInfoV1 `json:"users"`
 	Total       int32        `json:"total"`
 }
 
 type SignInConfirmationV1Request struct {
-	Code string `json:"code"`
+	Login string `json:"login"`
+	Code  string `json:"code"`
+}
+
+func (req *SignInConfirmationV1Request) Validate() *error_v1.ErrorResponse {
+	if req.Login == "" {
+		return &error_v1.ErrorResponse{
+			Code:        http.StatusBadRequest,
+			Message:     "login: required",
+			Description: "login is required",
+		}
+	}
+
+	re := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
+	if re.MatchString(req.Login) == false {
+		return &error_v1.ErrorResponse{
+			Code:        http.StatusBadRequest,
+			Message:     "login: Invalid",
+			Description: "login is invalid",
+		}
+	}
+
+	if req.Code == "" {
+		return &error_v1.ErrorResponse{
+			Code:        http.StatusBadRequest,
+			Message:     "code: required",
+			Description: "code is required"}
+	}
+
+	return nil
 }
 
 type SignInConfirmationV1Response struct {
@@ -210,7 +293,45 @@ type SignInConfirmationV1Response struct {
 
 type AddUserRoleV1Request struct {
 	UserID string `json:"user_id"`
-	Role   string `json:"role"`
+	RoleID string `json:"role_id"`
+}
+
+func (r *AddUserRoleV1Request) Validate() *error_v1.ErrorResponse {
+	if r.UserID == "" {
+		return &error_v1.ErrorResponse{
+			Code:        http.StatusBadRequest,
+			Message:     "user_id: required",
+			Description: "user_id is required",
+		}
+	}
+
+	_, err := uuid.Parse(r.UserID)
+	if err != nil {
+		return &error_v1.ErrorResponse{
+			Code:        http.StatusBadRequest,
+			Message:     "user_id: Invalid",
+			Description: "user_id is invalid",
+		}
+	}
+
+	if r.RoleID == "" {
+		return &error_v1.ErrorResponse{
+			Code:        http.StatusBadRequest,
+			Message:     "role: required",
+			Description: "role is required",
+		}
+	}
+
+	_, err = uuid.Parse(r.RoleID)
+	if err != nil {
+		return &error_v1.ErrorResponse{
+			Code:        http.StatusBadRequest,
+			Message:     "role: Invalid",
+			Description: "role is invalid",
+		}
+	}
+
+	return nil
 }
 
 type AddUserRoleV1Response struct {

@@ -14,9 +14,11 @@ import (
 const (
 	HeaderAuthorization string = "Authorization"
 	HeaderUserID        string = "X-User-Id"
+	HeaderUserRole      string = "X-User-Role"
 	RequestID           string = "X-Request-Id"
 	TraceID             string = "X-Trace-Id"
 	minLimit                   = 10
+	SysAdmin                   = "sys-admin"
 )
 
 //go:generate go run github.com/vektra/mockery/v2@v2.45.1 --name=AuthUseCase
@@ -25,8 +27,11 @@ type AuthUseCase interface {
 	SignUpV1UseCase(ctx context.Context, in model.SignUpV1Request) (model.SignUpV1Response, *error_v1.ErrorResponse)
 	SignInV1UseCase(ctx context.Context, in model.SignInV1Request) (model.SignInV1Response, *error_v1.ErrorResponse)
 	SignInConfirmationV1UseCase(ctx context.Context, in model.SignInConfirmationV1Request) (model.SignInConfirmationV1Response, *error_v1.ErrorResponse)
+	GetUserByIDV1UseCase(ctx context.Context, in model.GetUserByIDV1Request) (model.GetUserByIDV1Response, *error_v1.ErrorResponse)
 	RefreshTokenV1UseCase(ctx context.Context, in model.RefreshTokenV1Request) (model.RefreshTokenV1Response, *error_v1.ErrorResponse)
 	AuthorizeUserV1UseCase(ctx context.Context, in model.AuthorizeUserV1Request) error
+	AddUserRoleV1UseCase(ctx context.Context, in model.AddUserRoleV1Request) (model.AddUserRoleV1Response, *error_v1.ErrorResponse)
+	GetUsersV1UseCase(ctx context.Context, in model.GetUsersV1Request) (model.GetUsersV1Response, *error_v1.ErrorResponse)
 }
 
 //go:generate go run github.com/vektra/mockery/v2@v2.45.1 --name=PaymentUseCase

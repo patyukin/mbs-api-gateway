@@ -1,7 +1,60 @@
 definitions:
+  model.AddUserRoleV1Request:
+    properties:
+      role_id:
+        type: string
+      user_id:
+        type: string
+    type: object
+  model.AddUserRoleV1Response:
+    properties:
+      message:
+        type: string
+    type: object
   model.ErrorResponse:
     properties:
       error:
+        type: string
+    type: object
+  model.GetUserByIDV1Request:
+    properties:
+      user_id:
+        type: string
+    type: object
+  model.GetUserByIDV1Response:
+    properties:
+      user:
+        $ref: '#/definitions/model.UserInfoV1'
+    type: object
+  model.GetUsersV1Request:
+    properties:
+      limit:
+        type: integer
+      page:
+        type: integer
+    type: object
+  model.GetUsersV1Response:
+    properties:
+      total:
+        type: integer
+      users:
+        items:
+          $ref: '#/definitions/model.UserInfoV1'
+        type: array
+    type: object
+  model.ProfileV1:
+    properties:
+      address:
+        type: string
+      date_of_birth:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      patronymic:
+        type: string
+      phone:
         type: string
     type: object
   model.RefreshTokenV1Request:
@@ -17,6 +70,8 @@ definitions:
   model.SignInConfirmationV1Request:
     properties:
       code:
+        type: string
+      login:
         type: string
     type: object
   model.SignInConfirmationV1Response:
@@ -53,6 +108,15 @@ definitions:
         type: string
       telegram_login:
         type: string
+    type: object
+  model.UserInfoV1:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      profile:
+        $ref: '#/definitions/model.ProfileV1'
     type: object
 info:
   contact: {}
@@ -173,4 +237,96 @@ paths:
       summary: Регистрация нового пользователя
       tags:
       - Auth
+  /v1/users:
+    get:
+      consumes:
+      - application/json
+      description: Получить список пользователей (для админов)
+      parameters:
+      - description: GetUsersV1Request
+        in: body
+        name: GetUsersV1Request
+        required: true
+        schema:
+          $ref: '#/definitions/model.GetUsersV1Request'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.GetUsersV1Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Получить список пользователей
+      tags:
+      - User
+  /v1/users-roles:
+    post:
+      consumes:
+      - application/json
+      description: '"Добавление роли пользователю"'
+      parameters:
+      - description: AddUserRoleV1Request
+        in: body
+        name: AddUserRoleV1Request
+        required: true
+        schema:
+          $ref: '#/definitions/model.AddUserRoleV1Request'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешно добавлено
+          schema:
+            $ref: '#/definitions/model.AddUserRoleV1Response'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: '"Добавление роли пользователю"'
+      tags:
+      - User
+  /v1/users/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Информация о пользователе
+      parameters:
+      - description: GetUserByIDV1Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.GetUserByIDV1Request'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Registration successfully
+          schema:
+            $ref: '#/definitions/model.GetUserByIDV1Response'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Информация о пользователе
+      tags:
+      - User
 swagger: "2.0"

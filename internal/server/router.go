@@ -13,6 +13,7 @@ import (
 
 type Handler interface {
 	Auth(next http.Handler) http.Handler
+	Admin(next http.Handler) http.Handler
 	CORS(next http.Handler) http.Handler
 	LoggingMiddleware(next http.Handler) http.Handler
 	RecoverMiddleware(next http.Handler) http.Handler
@@ -22,6 +23,7 @@ type Handler interface {
 	SignUpV1Handler(w http.ResponseWriter, r *http.Request)
 	SignInV1Handler(w http.ResponseWriter, r *http.Request)
 	SignInConfirmationHandler(w http.ResponseWriter, r *http.Request)
+	AddUserRoleV1Handler(w http.ResponseWriter, r *http.Request)
 	RefreshTokenV1Handler(w http.ResponseWriter, r *http.Request)
 	GetUserByIDV1Handler(w http.ResponseWriter, r *http.Request)
 	GetUsersV1Handler(w http.ResponseWriter, r *http.Request)
@@ -66,9 +68,9 @@ func Init(h Handler, cfg *config.Config, srvAddress string) http.Handler {
 	mux.Handle("POST /v1/sign-in", http.HandlerFunc(h.SignInV1Handler))
 	mux.Handle("POST /v1/sign-in/confirmation", http.HandlerFunc(h.SignInConfirmationHandler))
 	mux.Handle("POST /v1/refresh-token", http.HandlerFunc(h.RefreshTokenV1Handler))
-	mux.Handle("POST /v1/users-roles", h.Auth(http.HandlerFunc(h.RefreshTokenV1Handler)))
+	mux.Handle("POST /v1/users-roles", h.Auth(http.HandlerFunc(h.AddUserRoleV1Handler)))
 	mux.Handle("GET /v1/users/{id}", h.Auth(http.HandlerFunc(h.GetUserByIDV1Handler)))
-	mux.Handle("GET /v1/users", h.Auth(http.HandlerFunc(h.GetUsersV1Handler)))
+	mux.Handle("GET /v1/users", h.Auth(h.Admin(http.HandlerFunc(h.GetUsersV1Handler))))
 
 	// payments service routes
 	mux.Handle("POST /v1/accounts", h.Auth(http.HandlerFunc(h.CreateAccountV1Handler)))

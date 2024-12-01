@@ -20,18 +20,23 @@ import (
 // @Failure      500   {object}  model.ErrorResponse "Internal server error"
 // @Router       /v1/sign-in/confirmation [post].
 func (h *Handler) SignInConfirmationHandler(w http.ResponseWriter, r *http.Request) {
-	var signInConfirmationV1Request model.SignInConfirmationV1Request
-	if err := json.NewDecoder(r.Body).Decode(&signInConfirmationV1Request); err != nil {
+	var in model.SignInConfirmationV1Request
+	if err := json.NewDecoder(r.Body).Decode(&in); err != nil {
 		log.Error().Err(err).Msgf("failed to decode sign in verify data, error: %v", err)
-		w.WriteHeader(http.StatusBadRequest)
+		h.HandleError(w, http.StatusBadRequest, "invalid data")
 		return
 	}
 
-	tokens, err := h.auc.SignInConfirmationV1UseCase(r.Context(), signInConfirmationV1Request)
+	if err := in.Validate(); err != nil {
+		log.Error().Msgf("SignInV1Handler ValidateError: %v", err.GetDescription())
+		h.HandleError(w, int(err.GetCode()), err.GetMessage())
+		return
+	}
+
+	tokens, err := h.auc.SignInConfirmationV1UseCase(r.Context(), in)
 	if err != nil {
 		log.Error().Msgf("failed to sign in verify, error: %v", err.GetDescription())
 		h.HandleError(w, int(err.GetCode()), err.GetMessage())
-		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 

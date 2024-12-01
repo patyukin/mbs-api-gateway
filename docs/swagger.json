@@ -181,13 +181,239 @@
                     }
                 }
             }
+        },
+        "/v1/users": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Получить список пользователей (для админов)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Получить список пользователей",
+                "parameters": [
+                    {
+                        "description": "GetUsersV1Request",
+                        "name": "GetUsersV1Request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.GetUsersV1Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.GetUsersV1Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/users-roles": {
+            "post": {
+                "description": "\"Добавление роли пользователю\"",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "\"Добавление роли пользователю\"",
+                "parameters": [
+                    {
+                        "description": "AddUserRoleV1Request",
+                        "name": "AddUserRoleV1Request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.AddUserRoleV1Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешно добавлено",
+                        "schema": {
+                            "$ref": "#/definitions/model.AddUserRoleV1Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/users/{id}": {
+            "get": {
+                "description": "Информация о пользователе",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Информация о пользователе",
+                "parameters": [
+                    {
+                        "description": "GetUserByIDV1Request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.GetUserByIDV1Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Registration successfully",
+                        "schema": {
+                            "$ref": "#/definitions/model.GetUserByIDV1Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "model.AddUserRoleV1Request": {
+            "type": "object",
+            "properties": {
+                "role_id": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.AddUserRoleV1Response": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "model.ErrorResponse": {
             "type": "object",
             "properties": {
                 "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.GetUserByIDV1Request": {
+            "type": "object",
+            "properties": {
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.GetUserByIDV1Response": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "$ref": "#/definitions/model.UserInfoV1"
+                }
+            }
+        },
+        "model.GetUsersV1Request": {
+            "type": "object",
+            "properties": {
+                "limit": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.GetUsersV1Response": {
+            "type": "object",
+            "properties": {
+                "total": {
+                    "type": "integer"
+                },
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.UserInfoV1"
+                    }
+                }
+            }
+        },
+        "model.ProfileV1": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "date_of_birth": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "patronymic": {
+                    "type": "string"
+                },
+                "phone": {
                     "type": "string"
                 }
             }
@@ -212,6 +438,9 @@
             "type": "object",
             "properties": {
                 "code": {
+                    "type": "string"
+                },
+                "login": {
                     "type": "string"
                 }
             }
@@ -267,6 +496,20 @@
                 },
                 "telegram_login": {
                     "type": "string"
+                }
+            }
+        },
+        "model.UserInfoV1": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "profile": {
+                    "$ref": "#/definitions/model.ProfileV1"
                 }
             }
         }
