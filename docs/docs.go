@@ -15,6 +15,52 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/v1/accounts": {
+            "post": {
+                "description": "Добавление банковского счета",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Payment"
+                ],
+                "summary": "Добавление банковского счета",
+                "parameters": [
+                    {
+                        "description": "CreateAccountV1Request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CreateAccountV1Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Registration successfully",
+                        "schema": {
+                            "$ref": "#/definitions/model.CreateAccountV1Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/refresh-token": {
             "post": {
                 "description": "Обновление токена",
@@ -350,6 +396,25 @@ const docTemplate = `{
             }
         },
         "model.AddUserRoleV1Response": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.CreateAccountV1Request": {
+            "type": "object",
+            "properties": {
+                "balance": {
+                    "type": "integer"
+                },
+                "currency": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.CreateAccountV1Response": {
             "type": "object",
             "properties": {
                 "message": {

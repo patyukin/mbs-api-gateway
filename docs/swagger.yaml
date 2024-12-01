@@ -11,6 +11,18 @@ definitions:
       message:
         type: string
     type: object
+  model.CreateAccountV1Request:
+    properties:
+      balance:
+        type: integer
+      currency:
+        type: string
+    type: object
+  model.CreateAccountV1Response:
+    properties:
+      message:
+        type: string
+    type: object
   model.ErrorResponse:
     properties:
       error:
@@ -121,6 +133,36 @@ definitions:
 info:
   contact: {}
 paths:
+  /v1/accounts:
+    post:
+      consumes:
+      - application/json
+      description: Добавление банковского счета
+      parameters:
+      - description: CreateAccountV1Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateAccountV1Request'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Registration successfully
+          schema:
+            $ref: '#/definitions/model.CreateAccountV1Response'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Добавление банковского счета
+      tags:
+      - Payment
   /v1/refresh-token:
     post:
       consumes:

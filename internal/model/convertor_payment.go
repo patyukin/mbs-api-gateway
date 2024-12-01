@@ -4,9 +4,9 @@ import (
 	paymentpb "github.com/patyukin/mbs-pkg/pkg/proto/payment_v1"
 )
 
-func ToProtoCreateAccountFromRequest(in CreateAccountV1Request) paymentpb.CreateAccountRequest {
+func ToProtoCreateAccountFromRequest(in CreateAccountV1Request, userID string) paymentpb.CreateAccountRequest {
 	return paymentpb.CreateAccountRequest{
-		UserId:   in.UserID,
+		UserId:   userID,
 		Currency: in.Currency,
 		Balance:  in.Balance,
 	}
