@@ -9,6 +9,16 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// GetLogReportV1Handler godoc
+// @Summary Получение логов
+// @Description Получение логов
+// @Tags Logger
+// @Accept  json
+// @Produce json
+// @Success 200  {object}  model.GetLogReportV1Response "Логи получены"
+// @Failure 400  {object} model.ErrorResponse "Invalid request body"
+// @Failure 500  {object} model.ErrorResponse "Internal server error"
+// @Router /v1/log-reports [get].
 func (h *Handler) GetLogReportV1Handler(w http.ResponseWriter, r *http.Request) {
 	metrics.TotalLogReport.Inc()
 	var in model.GetLogReportV1Request

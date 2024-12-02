@@ -12,6 +12,7 @@ import (
 )
 
 type Handler interface {
+	// Middlewares
 	Auth(next http.Handler) http.Handler
 	Admin(next http.Handler) http.Handler
 	CORS(next http.Handler) http.Handler
@@ -20,6 +21,7 @@ type Handler interface {
 	RateLimitMiddleware(next http.Handler, rps float64, burst int) http.Handler
 	TracingMiddleware(next http.Handler) http.Handler
 	HandleError(w http.ResponseWriter, code int, message string)
+	// Auth
 	SignUpV1Handler(w http.ResponseWriter, r *http.Request)
 	SignInV1Handler(w http.ResponseWriter, r *http.Request)
 	SignInConfirmationHandler(w http.ResponseWriter, r *http.Request)
@@ -27,9 +29,12 @@ type Handler interface {
 	RefreshTokenV1Handler(w http.ResponseWriter, r *http.Request)
 	GetUserByIDV1Handler(w http.ResponseWriter, r *http.Request)
 	GetUsersV1Handler(w http.ResponseWriter, r *http.Request)
-	CreatePaymentV1Handler(w http.ResponseWriter, r *http.Request)
+	// Payment
 	CreateAccountV1Handler(w http.ResponseWriter, r *http.Request)
+	CreatePaymentV1Handler(w http.ResponseWriter, r *http.Request)
 	ConfirmationPaymentV1Handler(w http.ResponseWriter, r *http.Request)
+	GetPaymentV1Handler(w http.ResponseWriter, r *http.Request)
+	// Credit
 	CreateCreditApplicationV1Handler(w http.ResponseWriter, r *http.Request)
 	CreditApplicationConfirmationV1Handler(w http.ResponseWriter, r *http.Request)
 	GetCreditApplicationV1Handler(w http.ResponseWriter, r *http.Request)
@@ -37,10 +42,9 @@ type Handler interface {
 	GetCreditV1Handler(w http.ResponseWriter, r *http.Request)
 	GetListUserCreditsV1Handler(w http.ResponseWriter, r *http.Request)
 	GetPaymentScheduleV1Handler(w http.ResponseWriter, r *http.Request)
-	GetPaymentV1Handler(w http.ResponseWriter, r *http.Request)
-	UpdatePaymentStatusV1Handler(w http.ResponseWriter, r *http.Request)
-	GetTransactionsByPaymentV1Handler(w http.ResponseWriter, r *http.Request)
+	// Report
 	GetUserReportV1Handler(w http.ResponseWriter, r *http.Request)
+	// Logger
 	GetLogReportV1Handler(w http.ResponseWriter, r *http.Request)
 }
 
@@ -49,7 +53,7 @@ type Handler interface {
 // @version 1.0
 // @description Auth API for microservices
 // @host http://0.0.0.0:5002
-// @BasePath /.
+// @BasePath /
 func Init(h Handler, cfg *config.Config, srvAddress string) http.Handler {
 	mux := http.NewServeMux()
 
@@ -57,11 +61,9 @@ func Init(h Handler, cfg *config.Config, srvAddress string) http.Handler {
 	mux.Handle("/metrics", promhttp.Handler())
 
 	// swagger route
-	mux.Handle(
-		"/swagger/", httpSwagger.Handler(
-			httpSwagger.URL(fmt.Sprintf("http://%s/swagger/doc.json", srvAddress)),
-		),
-	)
+	mux.Handle("/swagger/", httpSwagger.Handler(
+		httpSwagger.URL(fmt.Sprintf("http://%s/swagger/doc.json", srvAddress)),
+	))
 
 	// auth service routes
 	mux.Handle("POST /v1/sign-up", http.HandlerFunc(h.SignUpV1Handler))
@@ -77,8 +79,6 @@ func Init(h Handler, cfg *config.Config, srvAddress string) http.Handler {
 	mux.Handle("POST /v1/payments", h.Auth(http.HandlerFunc(h.CreatePaymentV1Handler)))
 	mux.Handle("POST /v1/payments/confirmation", h.Auth(http.HandlerFunc(h.ConfirmationPaymentV1Handler)))
 	mux.Handle("GET /v1/payments/{id}", h.Auth(http.HandlerFunc(h.GetPaymentV1Handler)))
-	mux.Handle("PATCH /v1/payments/{id}", h.Auth(http.HandlerFunc(h.UpdatePaymentStatusV1Handler)))
-	mux.Handle("PATCH /v1/payments/{id}/transactions", h.Auth(http.HandlerFunc(h.GetTransactionsByPaymentV1Handler)))
 
 	// credit service routes
 	mux.Handle("POST /v1/credit-applications", h.Auth(http.HandlerFunc(h.CreateCreditApplicationV1Handler)))

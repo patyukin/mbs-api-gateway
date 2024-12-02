@@ -8,6 +8,16 @@ import (
 	"strconv"
 )
 
+// GetListUserCreditsV1Handler godoc
+// @Summary Получение списка кредитов
+// @Description Получение списка кредитов
+// @Tags Credit
+// @Accept  json
+// @Produce json
+// @Success 200  {object}  model.GetListUserCreditsV1Response "Список кредитов получен"
+// @Failure 400  {object} model.ErrorResponse "Invalid request body"
+// @Failure 500  {object} model.ErrorResponse "Internal server error"
+// @Router /v1/credits [get].
 func (h *Handler) GetListUserCreditsV1Handler(w http.ResponseWriter, r *http.Request) {
 	userID := r.Header.Get(HeaderUserID)
 	if userID == "" {

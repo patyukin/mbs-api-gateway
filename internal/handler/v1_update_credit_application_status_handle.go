@@ -8,6 +8,17 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// UpdateCreditApplicationStatusV1Handler godoc
+// @Summary Обновление статуса заявки на кредит
+// @Description Обновление статуса заявки на кредит
+// @Tags Credit
+// @Accept  json
+// @Produce json
+// @Param   body body model.UpdateCreditApplicationStatusV1Request true "UpdateCreditApplicationStatusV1Request"
+// @Success 201  {object}  model.UpdateCreditApplicationStatusV1Response "Статус заявки на кредит обновлен"
+// @Failure 400  {object} model.ErrorResponse "Invalid request body"
+// @Failure 500  {object} model.ErrorResponse "Internal server error"
+// @Router /v1/credit-applications/{id} [patch].
 func (h *Handler) UpdateCreditApplicationStatusV1Handler(w http.ResponseWriter, r *http.Request) {
 	applicationID := r.PathValue("id")
 	if applicationID == "" {

@@ -7,6 +7,16 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// GetPaymentScheduleV1Handler godoc
+// @Summary Получение расписания платежей
+// @Description Получение расписания платежей
+// @Tags Payment
+// @Accept  json
+// @Produce json
+// @Success 200  {object}  model.GetPaymentScheduleV1Response "Расписание платежей получено"
+// @Failure 400  {object} model.ErrorResponse "Invalid request body"
+// @Failure 500  {object} model.ErrorResponse "Internal server error"
+// @Router /v1/credits/{id}/payment-schedule [get].
 func (h *Handler) GetPaymentScheduleV1Handler(w http.ResponseWriter, r *http.Request) {
 	creditID := r.PathValue("id")
 	if creditID == "" {

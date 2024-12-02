@@ -7,6 +7,16 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// GetCreditV1Handler godoc
+// @Summary Получение информации о кредите
+// @Description Получение информации о кредите
+// @Tags Credit
+// @Accept  json
+// @Produce json
+// @Success 200  {object}  model.GetCreditV1Response "Информация о кредите получена"
+// @Failure 400  {object} model.ErrorResponse "Invalid request body"
+// @Failure 500  {object} model.ErrorResponse "Internal server error"
+// @Router /v1/credits/{id} [get].
 func (h *Handler) GetCreditV1Handler(w http.ResponseWriter, r *http.Request) {
 	creditID := r.PathValue("id")
 	if creditID == "" {

@@ -85,6 +85,66 @@ func (_m *AuthUseCase) GetJWTToken() []byte {
 	return r0
 }
 
+// GetUserByIDV1UseCase provides a mock function with given fields: ctx, in
+func (_m *AuthUseCase) GetUserByIDV1UseCase(ctx context.Context, in model.GetUserByIDV1Request) (model.GetUserByIDV1Response, *error_v1.ErrorResponse) {
+	ret := _m.Called(ctx, in)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetUserByIDV1UseCase")
+	}
+
+	var r0 model.GetUserByIDV1Response
+	var r1 *error_v1.ErrorResponse
+	if rf, ok := ret.Get(0).(func(context.Context, model.GetUserByIDV1Request) (model.GetUserByIDV1Response, *error_v1.ErrorResponse)); ok {
+		return rf(ctx, in)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, model.GetUserByIDV1Request) model.GetUserByIDV1Response); ok {
+		r0 = rf(ctx, in)
+	} else {
+		r0 = ret.Get(0).(model.GetUserByIDV1Response)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, model.GetUserByIDV1Request) *error_v1.ErrorResponse); ok {
+		r1 = rf(ctx, in)
+	} else {
+		if ret.Get(1) != nil {
+			r1 = ret.Get(1).(*error_v1.ErrorResponse)
+		}
+	}
+
+	return r0, r1
+}
+
+// GetUsersV1UseCase provides a mock function with given fields: ctx, in
+func (_m *AuthUseCase) GetUsersV1UseCase(ctx context.Context, in model.GetUsersV1Request) (model.GetUsersV1Response, *error_v1.ErrorResponse) {
+	ret := _m.Called(ctx, in)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetUsersV1UseCase")
+	}
+
+	var r0 model.GetUsersV1Response
+	var r1 *error_v1.ErrorResponse
+	if rf, ok := ret.Get(0).(func(context.Context, model.GetUsersV1Request) (model.GetUsersV1Response, *error_v1.ErrorResponse)); ok {
+		return rf(ctx, in)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, model.GetUsersV1Request) model.GetUsersV1Response); ok {
+		r0 = rf(ctx, in)
+	} else {
+		r0 = ret.Get(0).(model.GetUsersV1Response)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, model.GetUsersV1Request) *error_v1.ErrorResponse); ok {
+		r1 = rf(ctx, in)
+	} else {
+		if ret.Get(1) != nil {
+			r1 = ret.Get(1).(*error_v1.ErrorResponse)
+		}
+	}
+
+	return r0, r1
+}
+
 // RefreshTokenV1UseCase provides a mock function with given fields: ctx, in
 func (_m *AuthUseCase) RefreshTokenV1UseCase(ctx context.Context, in model.RefreshTokenV1Request) (model.RefreshTokenV1Response, *error_v1.ErrorResponse) {
 	ret := _m.Called(ctx, in)

@@ -37,8 +37,9 @@ type AuthUseCase interface {
 //go:generate go run github.com/vektra/mockery/v2@v2.45.1 --name=PaymentUseCase
 type PaymentUseCase interface {
 	CreateAccountV1UseCase(ctx context.Context, in model.CreateAccountV1Request, userID string) (model.CreateAccountV1Response, *error_v1.ErrorResponse)
-	CreatePaymentV1UseCase(ctx context.Context, in model.CreatePaymentV1Request) (model.CreatePaymentV1Response, *error_v1.ErrorResponse)
-	ConfirmationPaymentV1UseCase(ctx context.Context, in model.ConfirmationPaymentV1Request) (model.VerifyPaymentV1Response, *error_v1.ErrorResponse)
+	CreatePaymentV1UseCase(ctx context.Context, in model.CreatePaymentV1Request, userID string) (model.CreatePaymentV1Response, *error_v1.ErrorResponse)
+	ConfirmationPaymentV1UseCase(ctx context.Context, in model.ConfirmationPaymentV1Request, userID string) (model.VerifyPaymentV1Response, *error_v1.ErrorResponse)
+	GetPaymentV1UseCase(ctx context.Context, in model.GetPaymentV1Request, userID string) (model.GetPaymentV1Response, *error_v1.ErrorResponse)
 }
 
 //go:generate go run github.com/vektra/mockery/v2@v2.45.1 --name=CreditUseCase

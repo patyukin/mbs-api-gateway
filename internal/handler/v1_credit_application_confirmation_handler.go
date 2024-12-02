@@ -8,6 +8,17 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// CreditApplicationConfirmationV1Handler godoc
+// @Summary Подтверждение заявки на кредит
+// @Description Подтверждение заявки на кредит
+// @Tags Credit
+// @Accept  json
+// @Produce json
+// @Param   body body model.CreditApplicationConfirmationV1Request true "CreditApplicationConfirmationV1Request"
+// @Success 201  {object}  model.CreditApplicationConfirmationV1Response "Заявка на кредит подтверждена"
+// @Failure 400  {object} model.ErrorResponse "Invalid request body"
+// @Failure 500  {object} model.ErrorResponse "Internal server error"
+// @Router /v1/credit-applications/confirmation [post].
 func (h *Handler) CreditApplicationConfirmationV1Handler(w http.ResponseWriter, r *http.Request) {
 	var req model.CreditApplicationConfirmationV1Request
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {

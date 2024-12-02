@@ -41,9 +41,412 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "201": {
-                        "description": "Registration successfully",
+                        "description": "Банковский счет успешно добавлен",
                         "schema": {
                             "$ref": "#/definitions/model.CreateAccountV1Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/confirmation-payment": {
+            "post": {
+                "description": "Подтверждение платежа",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Payment"
+                ],
+                "summary": "Подтверждение платежа",
+                "parameters": [
+                    {
+                        "description": "ConfirmationPaymentData Request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ConfirmationPaymentV1Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Registration successfully",
+                        "schema": {
+                            "$ref": "#/definitions/model.ConfirmationPaymentV1Request"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/create-payment": {
+            "post": {
+                "description": "Создание платежа",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Payment"
+                ],
+                "summary": "Создание платежа",
+                "parameters": [
+                    {
+                        "description": "CreatePaymentData Request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CreatePaymentV1Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Registration successfully",
+                        "schema": {
+                            "$ref": "#/definitions/model.CreatePaymentV1Request"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/credit-applications": {
+            "post": {
+                "description": "Добавление заявки на кредит",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Credit"
+                ],
+                "summary": "Добавление заявки на кредит",
+                "parameters": [
+                    {
+                        "description": "CreateCreditApplicationV1Request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CreateCreditApplicationV1Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Заявка на кредит добавлена",
+                        "schema": {
+                            "$ref": "#/definitions/model.CreateCreditApplicationV1Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/credit-applications/confirmation": {
+            "post": {
+                "description": "Подтверждение заявки на кредит",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Credit"
+                ],
+                "summary": "Подтверждение заявки на кредит",
+                "parameters": [
+                    {
+                        "description": "CreditApplicationConfirmationV1Request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CreditApplicationConfirmationV1Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Заявка на кредит подтверждена",
+                        "schema": {
+                            "$ref": "#/definitions/model.CreditApplicationConfirmationV1Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/credit-applications/{id}": {
+            "get": {
+                "description": "Получение заявки на кредит",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Credit"
+                ],
+                "summary": "Получение заявки на кредит",
+                "responses": {
+                    "200": {
+                        "description": "Заявка на кредит получена",
+                        "schema": {
+                            "$ref": "#/definitions/model.GetCreditApplicationV1Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Обновление статуса заявки на кредит",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Credit"
+                ],
+                "summary": "Обновление статуса заявки на кредит",
+                "parameters": [
+                    {
+                        "description": "UpdateCreditApplicationStatusV1Request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UpdateCreditApplicationStatusV1Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Статус заявки на кредит обновлен",
+                        "schema": {
+                            "$ref": "#/definitions/model.UpdateCreditApplicationStatusV1Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/credits": {
+            "get": {
+                "description": "Получение списка кредитов",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Credit"
+                ],
+                "summary": "Получение списка кредитов",
+                "responses": {
+                    "200": {
+                        "description": "Список кредитов получен",
+                        "schema": {
+                            "$ref": "#/definitions/model.GetListUserCreditsV1Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/credits/{id}": {
+            "get": {
+                "description": "Получение информации о кредите",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Credit"
+                ],
+                "summary": "Получение информации о кредите",
+                "responses": {
+                    "200": {
+                        "description": "Информация о кредите получена",
+                        "schema": {
+                            "$ref": "#/definitions/model.GetCreditV1Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/credits/{id}/payment-schedule": {
+            "get": {
+                "description": "Получение расписания платежей",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Payment"
+                ],
+                "summary": "Получение расписания платежей",
+                "responses": {
+                    "200": {
+                        "description": "Расписание платежей получено",
+                        "schema": {
+                            "$ref": "#/definitions/model.GetPaymentScheduleV1Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/log-reports": {
+            "get": {
+                "description": "Получение логов",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Logger"
+                ],
+                "summary": "Получение логов",
+                "responses": {
+                    "200": {
+                        "description": "Логи получены",
+                        "schema": {
+                            "$ref": "#/definitions/model.GetLogReportV1Response"
                         }
                     },
                     "400": {
@@ -90,6 +493,41 @@ const docTemplate = `{
                         "description": "Registration successfully",
                         "schema": {
                             "$ref": "#/definitions/model.RefreshTokenV1Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/reports": {
+            "get": {
+                "description": "Получение отчета",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Report"
+                ],
+                "summary": "Получение отчета",
+                "responses": {
+                    "200": {
+                        "description": "Отчет получен",
+                        "schema": {
+                            "$ref": "#/definitions/model.GetUserReportV1Response"
                         }
                     },
                     "400": {
@@ -403,6 +841,14 @@ const docTemplate = `{
                 }
             }
         },
+        "model.ConfirmationPaymentV1Request": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                }
+            }
+        },
         "model.CreateAccountV1Request": {
             "type": "object",
             "properties": {
@@ -422,11 +868,184 @@ const docTemplate = `{
                 }
             }
         },
+        "model.CreateCreditApplicationV1Request": {
+            "type": "object",
+            "required": [
+                "end_date",
+                "interest_rate",
+                "requested_amount",
+                "start_date"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "maxLength": 500
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "interest_rate": {
+                    "type": "integer"
+                },
+                "requested_amount": {
+                    "type": "integer"
+                },
+                "start_date": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.CreateCreditApplicationV1Response": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.CreatePaymentV1Request": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer"
+                },
+                "currency": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "receiver_account_id": {
+                    "type": "string"
+                },
+                "sender_account_id": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.CreditApplicationConfirmationV1Request": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.CreditApplicationConfirmationV1Response": {
+            "type": "object",
+            "properties": {
+                "application_id": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.CreditV1": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer"
+                },
+                "credit_id": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "interest_rate": {
+                    "type": "integer"
+                },
+                "remaining_amount": {
+                    "type": "integer"
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
         "model.ErrorResponse": {
             "type": "object",
             "properties": {
                 "error": {
                     "type": "string"
+                }
+            }
+        },
+        "model.GetCreditApplicationV1Response": {
+            "type": "object",
+            "properties": {
+                "application_id": {
+                    "type": "string"
+                },
+                "approved_amount": {
+                    "type": "integer"
+                },
+                "decision_date": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.GetCreditV1Response": {
+            "type": "object",
+            "properties": {
+                "credit": {
+                    "$ref": "#/definitions/model.CreditV1"
+                }
+            }
+        },
+        "model.GetListUserCreditsV1Response": {
+            "type": "object",
+            "properties": {
+                "credits": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.CreditV1"
+                    }
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.GetLogReportV1Response": {
+            "type": "object",
+            "properties": {
+                "file_url": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.GetPaymentScheduleV1Response": {
+            "type": "object",
+            "properties": {
+                "payments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.PaymentSchedule"
+                    }
                 }
             }
         },
@@ -443,6 +1062,14 @@ const docTemplate = `{
             "properties": {
                 "user": {
                     "$ref": "#/definitions/model.UserInfoV1"
+                }
+            }
+        },
+        "model.GetUserReportV1Response": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
                 }
             }
         },
@@ -468,6 +1095,23 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/model.UserInfoV1"
                     }
+                }
+            }
+        },
+        "model.PaymentSchedule": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer"
+                },
+                "due_date": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
                 }
             }
         },
@@ -571,6 +1215,28 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "telegram_login": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.UpdateCreditApplicationStatusV1Request": {
+            "type": "object",
+            "properties": {
+                "application_id": {
+                    "type": "string"
+                },
+                "decision_notes": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.UpdateCreditApplicationStatusV1Response": {
+            "type": "object",
+            "properties": {
+                "message": {
                     "type": "string"
                 }
             }
