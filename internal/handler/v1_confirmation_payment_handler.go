@@ -29,8 +29,8 @@ func (h *Handler) ConfirmationPaymentV1Handler(w http.ResponseWriter, r *http.Re
 
 	userID := r.Header.Get(HeaderUserID)
 	if err := confirmationPaymentV1Request.Validate(userID); err != nil {
-		log.Error().Msgf("failed to validate confirmationPaymentV1Request: %v", err.Description)
-		h.HandleError(w, int(err.Code), err.Message)
+		log.Error().Msgf("failed to validate confirmationPaymentV1Request: %v", err.GetDescription())
+		h.HandleError(w, int(err.GetCode()), err.GetMessage())
 		return
 	}
 

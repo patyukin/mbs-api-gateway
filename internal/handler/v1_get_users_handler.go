@@ -2,9 +2,10 @@ package handler
 
 import (
 	"encoding/json"
+	"net/http"
+
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"github.com/rs/zerolog/log"
-	"net/http"
 )
 
 // GetUsersV1Handler godoc
@@ -18,7 +19,7 @@ import (
 // @Success 200 {object} model.GetUsersV1Response
 // @Failure 400 {object} model.ErrorResponse
 // @Failure 500 {object} model.ErrorResponse
-// @Router /v1/users [get]
+// @Router /v1/users [get].
 func (h *Handler) GetUsersV1Handler(w http.ResponseWriter, r *http.Request) {
 	var in model.GetUsersV1Request
 	if err := json.NewDecoder(r.Body).Decode(&in); err != nil {

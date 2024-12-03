@@ -2,11 +2,12 @@ package model
 
 import (
 	"fmt"
+	"net/http"
+	"regexp"
+
 	"github.com/google/uuid"
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
 	"github.com/patyukin/mbs-pkg/pkg/validator"
-	"net/http"
-	"regexp"
 )
 
 const minPasswordLength = 8
@@ -280,7 +281,8 @@ func (req *SignInConfirmationV1Request) Validate() *error_v1.ErrorResponse {
 		return &error_v1.ErrorResponse{
 			Code:        http.StatusBadRequest,
 			Message:     "code: required",
-			Description: "code is required"}
+			Description: "code is required",
+		}
 	}
 
 	return nil

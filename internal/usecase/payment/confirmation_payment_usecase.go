@@ -27,5 +27,5 @@ func (u *UseCase) ConfirmationPaymentV1UseCase(ctx context.Context, in model.Con
 		return model.VerifyPaymentV1Response{}, result.GetError()
 	}
 
-	return model.VerifyPaymentV1Response{Message: result.Message}, nil
+	return model.VerifyPaymentV1Response{Message: result.GetMessage()}, nil
 }

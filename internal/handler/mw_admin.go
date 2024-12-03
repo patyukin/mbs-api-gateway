@@ -1,8 +1,9 @@
 package handler
 
 import (
-	"github.com/rs/zerolog/log"
 	"net/http"
+
+	"github.com/rs/zerolog/log"
 )
 
 func (h *Handler) Admin(next http.Handler) http.Handler {

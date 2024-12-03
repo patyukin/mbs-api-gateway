@@ -31,5 +31,5 @@ func (u *UseCase) CreatePaymentV1UseCase(ctx context.Context, in model.CreatePay
 		return model.CreatePaymentV1Response{}, result.GetError()
 	}
 
-	return model.CreatePaymentV1Response{Message: result.Message}, nil
+	return model.CreatePaymentV1Response{Message: result.GetMessage()}, nil
 }

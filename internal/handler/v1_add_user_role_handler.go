@@ -2,10 +2,11 @@ package handler
 
 import (
 	"encoding/json"
+	"net/http"
+
 	"github.com/patyukin/mbs-api-gateway/internal/metrics"
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"github.com/rs/zerolog/log"
-	"net/http"
 )
 
 // AddUserRoleV1Handler docs
@@ -18,7 +19,7 @@ import (
 // @Success 200 {object} model.AddUserRoleV1Response "Успешно добавлено"
 // @Failure 400 {object} model.ErrorResponse "Invalid request"
 // @Failure 500 {object} model.ErrorResponse "Internal server error"
-// @Router /v1/users-roles [post]
+// @Router /v1/users-roles [post].
 func (h *Handler) AddUserRoleV1Handler(w http.ResponseWriter, r *http.Request) {
 	var in model.AddUserRoleV1Request
 

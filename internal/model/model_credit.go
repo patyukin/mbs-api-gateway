@@ -2,10 +2,11 @@ package model
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/google/uuid"
 	"github.com/patyukin/mbs-pkg/pkg/mapping/creditmapper"
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
-	"net/http"
 )
 
 type CreateCreditApplicationV1Request struct {

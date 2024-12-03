@@ -3,9 +3,10 @@ package auth
 import (
 	"context"
 	"fmt"
+	"net/http"
+
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
-	"net/http"
 )
 
 func (uc *UseCase) GetUserByIDV1UseCase(ctx context.Context, in model.GetUserByIDV1Request) (model.GetUserByIDV1Response, *error_v1.ErrorResponse) {
@@ -19,8 +20,8 @@ func (uc *UseCase) GetUserByIDV1UseCase(ctx context.Context, in model.GetUserByI
 		}
 	}
 
-	if response.Error != nil {
-		return model.GetUserByIDV1Response{}, response.Error
+	if response.GetError() != nil {
+		return model.GetUserByIDV1Response{}, response.GetError()
 	}
 
 	return model.ToModelGetUserByIDV1Response(response), nil

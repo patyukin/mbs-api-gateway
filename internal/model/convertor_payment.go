@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+
 	"github.com/patyukin/mbs-pkg/pkg/mapping/paymentmapper"
 	paymentpb "github.com/patyukin/mbs-pkg/pkg/proto/payment_v1"
 )

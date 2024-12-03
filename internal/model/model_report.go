@@ -2,9 +2,10 @@ package model
 
 import (
 	"fmt"
-	"github.com/google/uuid"
 	"net/http"
 
+
+	"github.com/google/uuid"
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
 	"github.com/patyukin/mbs-pkg/pkg/validator"
 )

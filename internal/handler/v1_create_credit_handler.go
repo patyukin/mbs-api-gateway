@@ -2,9 +2,10 @@ package handler
 
 import (
 	"encoding/json"
+	"net/http"
+
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"github.com/rs/zerolog/log"
-	"net/http"
 )
 
 // CreateCreditV1Handler godoc
@@ -53,5 +54,4 @@ func (h *Handler) CreateCreditV1Handler(w http.ResponseWriter, r *http.Request) 
 		h.HandleError(w, http.StatusInternalServerError, encodeError.Error())
 		return
 	}
-
 }

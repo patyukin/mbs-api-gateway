@@ -3,9 +3,10 @@ package auth
 import (
 	"context"
 	"fmt"
-	"github.com/rs/zerolog/log"
+
 
 	"github.com/patyukin/mbs-api-gateway/internal/model"
+	"github.com/rs/zerolog/log"
 )
 
 func (uc *UseCase) AuthorizeUserV1UseCase(ctx context.Context, in model.AuthorizeUserV1Request) error {

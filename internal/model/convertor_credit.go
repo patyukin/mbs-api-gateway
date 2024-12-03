@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+
 	"github.com/patyukin/mbs-pkg/pkg/mapping/creditmapper"
 	creditpb "github.com/patyukin/mbs-pkg/pkg/proto/credit_v1"
 )

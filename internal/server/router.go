@@ -54,7 +54,7 @@ type Handler interface {
 // @version 1.0
 // @description Auth API for microservices
 // @host http://0.0.0.0:5002
-// @BasePath /
+// @BasePath /.
 func Init(h Handler, cfg *config.Config, srvAddress string) http.Handler {
 	mux := http.NewServeMux()
 

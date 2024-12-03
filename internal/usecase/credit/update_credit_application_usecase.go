@@ -28,7 +28,7 @@ func (u *UseCase) UpdateCreditApplicationStatusV1UseCase(ctx context.Context, in
 		}
 	}
 
-	if response.Error != nil {
+	if response.GetError() != nil {
 		return model.UpdateCreditApplicationStatusV1Response{}, response.GetError()
 	}
 

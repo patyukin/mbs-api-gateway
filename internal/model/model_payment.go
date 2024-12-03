@@ -1,9 +1,10 @@
 package model
 
 import (
+	"net/http"
+
 	"github.com/google/uuid"
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
-	"net/http"
 )
 
 type CreateAccountV1Request struct {

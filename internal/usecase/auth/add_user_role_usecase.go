@@ -3,9 +3,10 @@ package auth
 import (
 	"context"
 	"fmt"
+	"net/http"
+
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
-	"net/http"
 )
 
 func (uc *UseCase) AddUserRoleV1UseCase(ctx context.Context, in model.AddUserRoleV1Request) (model.AddUserRoleV1Response, *error_v1.ErrorResponse) {
