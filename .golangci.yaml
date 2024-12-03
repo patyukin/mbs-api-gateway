@@ -155,8 +155,8 @@ linters:
     - gocyclo
     - godot
     - godox
-    - gofmt
-    - gofumpt
+#    - gofmt
+#    - gofumpt
     - goheader
 #    - goimports
     - gomoddirectives

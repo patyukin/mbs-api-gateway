@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 
-
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
 	"github.com/rs/zerolog/log"

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 
-
 	"github.com/patyukin/mbs-api-gateway/internal/metrics"
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"github.com/rs/zerolog/log"
