@@ -9,7 +9,9 @@ import (
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
 )
 
-func (u *UseCase) UpdateCreditApplicationStatusV1UseCase(ctx context.Context, in model.UpdateCreditApplicationStatusV1Request, applicationID string) (model.UpdateCreditApplicationStatusV1Response, *error_v1.ErrorResponse) {
+func (u *UseCase) UpdateCreditApplicationStatusV1UseCase(
+	ctx context.Context, in model.UpdateCreditApplicationStatusV1Request, applicationID string,
+) (model.UpdateCreditApplicationStatusV1Response, *error_v1.ErrorResponse) {
 	mpb, err := model.ToProtoV1UpdateCreditApplicationStatusRequest(in, applicationID)
 	if err != nil {
 		return model.UpdateCreditApplicationStatusV1Response{}, &error_v1.ErrorResponse{

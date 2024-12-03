@@ -9,7 +9,9 @@ import (
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
 )
 
-func (uc *UseCase) SignInConfirmationV1UseCase(ctx context.Context, in model.SignInConfirmationV1Request) (model.SignInConfirmationV1Response, *error_v1.ErrorResponse) {
+func (uc *UseCase) SignInConfirmationV1UseCase(ctx context.Context, in model.SignInConfirmationV1Request) (
+	model.SignInConfirmationV1Response, *error_v1.ErrorResponse,
+) {
 	pbm := model.ToProtoV1SignInConfirmationRequest(in)
 	tokens, err := uc.authClient.SignInConfirmation(ctx, &pbm)
 	if err != nil {

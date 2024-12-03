@@ -12,47 +12,52 @@ import (
 )
 
 func (h *Handler) Auth(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		accessToken, err := GetBearerToken(r)
-		if err != nil {
-			log.Error().Msgf("failed GetBearerToken: %v", err)
-			h.HandleError(w, http.StatusUnauthorized, err.Error())
-			return
-		}
-
-		token, err := jwt.Parse(accessToken, func(token *jwt.Token) (interface{}, error) {
-			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-				return nil, errors.New(fmt.Sprintf("unexpected signing method: %v", token.Header["alg"]))
+	return http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			accessToken, err := GetBearerToken(r)
+			if err != nil {
+				log.Error().Msgf("failed GetBearerToken: %v", err)
+				h.HandleError(w, http.StatusUnauthorized, err.Error())
+				return
 			}
 
-			return h.auc.GetJWTToken(), nil
-		})
+			token, err := jwt.Parse(
+				accessToken, func(token *jwt.Token) (interface{}, error) {
+					if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+						return nil, errors.New(fmt.Sprintf("unexpected signing method: %v", token.Header["alg"]))
+					}
 
-		log.Debug().Msgf("token is valid: %v", token.Valid)
+					return h.auc.GetJWTToken(), nil
+				},
+			)
 
-		if err != nil || !token.Valid {
-			h.HandleError(w, http.StatusUnauthorized, err.Error())
-			return
-		}
+			log.Debug().Msgf("token is valid: %v", token.Valid)
 
-		id := token.Claims.(jwt.MapClaims)["id"].(string)
-		role := token.Claims.(jwt.MapClaims)["role"].(string)
-		err = h.auc.AuthorizeUserV1UseCase(r.Context(), model.AuthorizeUserV1Request{
-			UserID:    id,
-			RoutePath: r.URL.Path,
-			Method:    r.Method,
-		})
-		if err != nil {
-			log.Error().Msgf("failed h.auc.AuthorizeUserV1UseCase: %v", err)
-			h.HandleError(w, http.StatusUnauthorized, "Unauthorized")
-			return
-		}
+			if err != nil || !token.Valid {
+				h.HandleError(w, http.StatusUnauthorized, err.Error())
+				return
+			}
 
-		r.Header.Set(HeaderUserID, id)
-		r.Header.Set(HeaderUserRole, role)
+			id := token.Claims.(jwt.MapClaims)["id"].(string)
+			role := token.Claims.(jwt.MapClaims)["role"].(string)
+			err = h.auc.AuthorizeUserV1UseCase(
+				r.Context(), model.AuthorizeUserV1Request{
+					UserID:    id,
+					RoutePath: r.URL.Path,
+					Method:    r.Method,
+				},
+			)
+			if err != nil {
+				log.Error().Msgf("failed h.auc.AuthorizeUserV1UseCase: %v", err)
+				h.HandleError(w, http.StatusUnauthorized, "Unauthorized")
+				return
+			}
 
-		next.ServeHTTP(w, r)
-	},
+			r.Header.Set(HeaderUserID, id)
+			r.Header.Set(HeaderUserRole, role)
+
+			next.ServeHTTP(w, r)
+		},
 	)
 }
 

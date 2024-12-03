@@ -10,7 +10,9 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (u *UseCase) CreateAccountV1UseCase(ctx context.Context, in model.CreateAccountV1Request, userID string) (model.CreateAccountV1Response, *error_v1.ErrorResponse) {
+func (u *UseCase) CreateAccountV1UseCase(ctx context.Context, in model.CreateAccountV1Request, userID string) (
+	model.CreateAccountV1Response, *error_v1.ErrorResponse,
+) {
 	pbm := model.ToProtoCreateAccountFromRequest(in, userID)
 	result, err := u.paymentClient.CreateAccount(ctx, &pbm)
 

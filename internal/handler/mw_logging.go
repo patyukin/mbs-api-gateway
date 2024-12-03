@@ -50,33 +50,35 @@ func redactPassword(body []byte) (string, error) {
 }
 
 func (h *Handler) LoggingMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		path := r.URL.Path
-		queryParams := r.URL.RawQuery
+	return http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			path := r.URL.Path
+			queryParams := r.URL.RawQuery
 
-		body, err := readBody(r)
-		if err != nil {
-			log.Info().Msgf("unable to read request body in LoggingMiddleware: %v", err)
-			h.HandleError(w, http.StatusInternalServerError, "Unable to read request body")
-			return
-		}
+			body, err := readBody(r)
+			if err != nil {
+				log.Info().Msgf("unable to read request body in LoggingMiddleware: %v", err)
+				h.HandleError(w, http.StatusInternalServerError, "Unable to read request body")
+				return
+			}
 
-		requestID := "unknown-request-id"
-		if tempRequestID, ok := r.Context().Value(RequestID).(string); ok {
-			requestID = tempRequestID
-		}
+			requestID := "unknown-request-id"
+			if tempRequestID, ok := r.Context().Value(RequestID).(string); ok {
+				requestID = tempRequestID
+			}
 
-		traceID := "unknown-trace-id"
-		if tempTraceID, ok := r.Context().Value(TraceID).(string); ok {
-			traceID = tempTraceID
-		}
+			traceID := "unknown-trace-id"
+			if tempTraceID, ok := r.Context().Value(TraceID).(string); ok {
+				traceID = tempTraceID
+			}
 
-		log.Info().Msgf("Request ID: %s, Trace ID: %s, Path: %s, Query Params: %s, Body: %s", requestID, traceID, path, queryParams, body)
+			log.Info().Msgf("Request ID: %s, Trace ID: %s, Path: %s, Query Params: %s, Body: %s", requestID, traceID, path, queryParams, body)
 
-		startTime := time.Now()
-		next.ServeHTTP(w, r)
-		duration := time.Since(startTime)
+			startTime := time.Now()
+			next.ServeHTTP(w, r)
+			duration := time.Since(startTime)
 
-		log.Info().Msgf("Completed Request ID: %s, Trace ID: %s in %v", requestID, traceID, duration)
-	})
+			log.Info().Msgf("Completed Request ID: %s, Trace ID: %s in %v", requestID, traceID, duration)
+		},
+	)
 }

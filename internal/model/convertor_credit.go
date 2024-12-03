@@ -16,7 +16,9 @@ func ToProtoV1CreateCreditApplicationRequest(in CreateCreditApplicationV1Request
 	}
 }
 
-func ToProtoV1CreditApplicationConfirmationRequest(in CreditApplicationConfirmationV1Request, userID string) creditpb.CreditApplicationConfirmationRequest {
+func ToProtoV1CreditApplicationConfirmationRequest(
+	in CreditApplicationConfirmationV1Request, userID string,
+) creditpb.CreditApplicationConfirmationRequest {
 	return creditpb.CreditApplicationConfirmationRequest{
 		Code:   in.Code,
 		UserId: userID,
@@ -33,7 +35,9 @@ func ToModelGetCreditApplicationV1Response(in *creditpb.GetCreditApplicationResp
 	}
 }
 
-func ToProtoV1UpdateCreditApplicationStatusRequest(in UpdateCreditApplicationStatusV1Request, applicationID string) (creditpb.UpdateCreditApplicationSolutionRequest, error) {
+func ToProtoV1UpdateCreditApplicationStatusRequest(
+	in UpdateCreditApplicationStatusV1Request, applicationID string,
+) (creditpb.UpdateCreditApplicationSolutionRequest, error) {
 	status, err := creditmapper.StringToEnumCreditApplicationStatus(in.Status)
 	if err != nil {
 		return creditpb.UpdateCreditApplicationSolutionRequest{}, fmt.Errorf("failed creditmapper.StringToEnumCreditApplicationStatus: %w", err)

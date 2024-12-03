@@ -9,7 +9,9 @@ import (
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
 )
 
-func (u *UseCase) CreateCreditApplicationV1UseCase(ctx context.Context, in model.CreateCreditApplicationV1Request, userID string) (model.CreateCreditApplicationV1Response, *error_v1.ErrorResponse) {
+func (u *UseCase) CreateCreditApplicationV1UseCase(
+	ctx context.Context, in model.CreateCreditApplicationV1Request, userID string,
+) (model.CreateCreditApplicationV1Response, *error_v1.ErrorResponse) {
 	mpb := model.ToProtoV1CreateCreditApplicationRequest(in, userID)
 	response, err := u.creditClient.CreateCreditApplication(ctx, &mpb)
 	if err != nil {

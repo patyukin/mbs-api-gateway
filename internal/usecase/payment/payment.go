@@ -10,7 +10,9 @@ import (
 type ProtoPaymentClient interface {
 	CreateAccount(ctx context.Context, request *paymentpb.CreateAccountRequest, opts ...grpc.CallOption) (*paymentpb.CreateAccountResponse, error)
 	CreatePayment(ctx context.Context, request *paymentpb.CreatePaymentRequest, opts ...grpc.CallOption) (*paymentpb.CreatePaymentResponse, error)
-	ConfirmationPayment(ctx context.Context, request *paymentpb.ConfirmationPaymentRequest, opts ...grpc.CallOption) (*paymentpb.ConfirmationPaymentResponse, error)
+	ConfirmationPayment(
+		ctx context.Context, request *paymentpb.ConfirmationPaymentRequest, opts ...grpc.CallOption,
+	) (*paymentpb.ConfirmationPaymentResponse, error)
 	GetPayment(ctx context.Context, request *paymentpb.GetPaymentRequest, opts ...grpc.CallOption) (*paymentpb.GetPaymentResponse, error)
 }
 

@@ -9,7 +9,9 @@ import (
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
 )
 
-func (u *UseCase) GetPaymentV1UseCase(ctx context.Context, in model.GetPaymentV1Request, userID string) (model.GetPaymentV1Response, *error_v1.ErrorResponse) {
+func (u *UseCase) GetPaymentV1UseCase(ctx context.Context, in model.GetPaymentV1Request, userID string) (
+	model.GetPaymentV1Response, *error_v1.ErrorResponse,
+) {
 	pbm := model.ToProtoGetPaymentFromRequest(in, userID)
 	result, err := u.paymentClient.GetPayment(ctx, &pbm)
 	if err != nil {

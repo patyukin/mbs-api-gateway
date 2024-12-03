@@ -10,7 +10,9 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (u *UseCase) CreatePaymentV1UseCase(ctx context.Context, in model.CreatePaymentV1Request, userID string) (model.CreatePaymentV1Response, *error_v1.ErrorResponse) {
+func (u *UseCase) CreatePaymentV1UseCase(ctx context.Context, in model.CreatePaymentV1Request, userID string) (
+	model.CreatePaymentV1Response, *error_v1.ErrorResponse,
+) {
 	pbm := model.ToProtoCreatePaymentFromRequest(in, userID)
 
 	log.Debug().Msgf("pbm: %v", &pbm)

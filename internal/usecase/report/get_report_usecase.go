@@ -10,7 +10,9 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (u *UseCase) GetUserReportV1UseCase(ctx context.Context, in model.GetUserReportV1Request) (model.GetUserReportV1Response, *error_v1.ErrorResponse) {
+func (u *UseCase) GetUserReportV1UseCase(ctx context.Context, in model.GetUserReportV1Request) (
+	model.GetUserReportV1Response, *error_v1.ErrorResponse,
+) {
 	pbm := model.ToProtoGetUserReport(in)
 	result, err := u.reportClient.GetUserReport(ctx, &pbm)
 	if err != nil {

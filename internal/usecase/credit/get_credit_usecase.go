@@ -11,10 +11,12 @@ import (
 )
 
 func (u *UseCase) GetCreditV1UseCase(ctx context.Context, creditID, userID string) (model.GetCreditV1Response, *error_v1.ErrorResponse) {
-	response, err := u.creditClient.GetCredit(ctx, &creditpb.GetCreditRequest{
-		CreditId: creditID,
-		UserId:   userID,
-	})
+	response, err := u.creditClient.GetCredit(
+		ctx, &creditpb.GetCreditRequest{
+			CreditId: creditID,
+			UserId:   userID,
+		},
+	)
 	if err != nil {
 		return model.GetCreditV1Response{}, &error_v1.ErrorResponse{
 			Code:        http.StatusInternalServerError,

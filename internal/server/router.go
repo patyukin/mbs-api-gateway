@@ -62,9 +62,11 @@ func Init(h Handler, cfg *config.Config, srvAddress string) http.Handler {
 	mux.Handle("/metrics", promhttp.Handler())
 
 	// swagger route
-	mux.Handle("/swagger/", httpSwagger.Handler(
-		httpSwagger.URL(fmt.Sprintf("http://%s/swagger/doc.json", srvAddress)),
-	))
+	mux.Handle(
+		"/swagger/", httpSwagger.Handler(
+			httpSwagger.URL(fmt.Sprintf("http://%s/swagger/doc.json", srvAddress)),
+		),
+	)
 
 	// auth service routes
 	mux.Handle("POST /v1/sign-up", http.HandlerFunc(h.SignUpV1Handler))

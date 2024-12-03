@@ -10,7 +10,9 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (u *UseCase) CreditApplicationConfirmationV1UseCase(ctx context.Context, in model.CreditApplicationConfirmationV1Request, userID string) (model.CreditApplicationConfirmationV1Response, *error_v1.ErrorResponse) {
+func (u *UseCase) CreditApplicationConfirmationV1UseCase(
+	ctx context.Context, in model.CreditApplicationConfirmationV1Request, userID string,
+) (model.CreditApplicationConfirmationV1Response, *error_v1.ErrorResponse) {
 	mpb := model.ToProtoV1CreditApplicationConfirmationRequest(in, userID)
 	response, err := u.creditClient.CreditApplicationConfirmation(ctx, &mpb)
 	if err != nil {
