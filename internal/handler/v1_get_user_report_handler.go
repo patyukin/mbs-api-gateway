@@ -24,13 +24,6 @@ func (h *Handler) GetUserReportV1Handler(w http.ResponseWriter, r *http.Request)
 	var in model.GetUserReportV1Request
 
 	in.UserID = r.Header.Get(HeaderUserID)
-	if in.UserID == "" {
-		metrics.FailedLogReport.Inc()
-		log.Error().Msg("GetUserReportV1Handler missing userID")
-		h.HandleError(w, http.StatusUnauthorized, "Unauthorized")
-		return
-	}
-
 	in.StartDate = r.URL.Query().Get("start_date")
 	in.EndDate = r.URL.Query().Get("end_date")
 	if err := in.Validate(); err != nil {

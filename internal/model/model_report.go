@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"github.com/google/uuid"
 	"net/http"
 
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
@@ -38,6 +39,15 @@ func (r *GetUserReportV1Request) Validate() *error_v1.ErrorResponse {
 			Code:        http.StatusBadRequest,
 			Message:     "end_date: Invalid",
 			Description: fmt.Sprintf("failed to parse end_date: %v", err),
+		}
+	}
+
+	_, err = uuid.Parse(r.UserID)
+	if err != nil {
+		return &error_v1.ErrorResponse{
+			Code:        http.StatusBadRequest,
+			Message:     "user_id: Invalid",
+			Description: fmt.Sprintf("failed to parse user_id: %v", err),
 		}
 	}
 
