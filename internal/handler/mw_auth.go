@@ -64,12 +64,12 @@ func (h *Handler) Auth(next http.Handler) http.Handler {
 func GetBearerToken(r *http.Request) (string, error) {
 	authHeader := r.Header.Get(HeaderAuthorization)
 	if authHeader == "" {
-		return "", fmt.Errorf("authorization header is missing")
+		return "", errors.New("authorization header is missing")
 	}
 
 	const bearerPrefix = "Bearer "
 	if !strings.HasPrefix(authHeader, bearerPrefix) {
-		return "", fmt.Errorf("authorization header does not start with 'Bearer '")
+		return "", errors.New("authorization header does not start with 'Bearer '")
 	}
 
 	token := strings.TrimPrefix(authHeader, bearerPrefix)

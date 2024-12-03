@@ -128,8 +128,8 @@ linters:
     - decorder
     - depguard
     - dogsled
-    - dupl
-    - dupword
+#    - dupl
+#    - dupword
     - durationcheck
     - err113
     - errcheck

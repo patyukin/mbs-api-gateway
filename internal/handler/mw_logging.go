@@ -12,6 +12,10 @@ import (
 )
 
 func readBody(r *http.Request) (string, error) {
+	if r.Body == nil {
+		return "", nil
+	}
+
 	var buf bytes.Buffer
 	tee := io.TeeReader(r.Body, &buf)
 
@@ -20,11 +24,15 @@ func readBody(r *http.Request) (string, error) {
 		return "", fmt.Errorf("failed to read request body: %w", err)
 	}
 
+	if len(body) == 0 {
+		return "", nil
+	}
+
 	r.Body = io.NopCloser(&buf)
 
 	redactedBody, err := redactPassword(body)
 	if err != nil {
-		return string(body), nil
+		return string(body), fmt.Errorf("failed to redact password: %w", err)
 	}
 
 	return redactedBody, nil
@@ -48,7 +56,6 @@ func redactPassword(body []byte) (string, error) {
 
 	return string(redactedBody), nil
 }
-
 func (h *Handler) LoggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {

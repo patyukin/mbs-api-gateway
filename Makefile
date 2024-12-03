@@ -9,6 +9,7 @@ test:
 	go test ./...
 
 lint:
+	golangci-lint cache clean
 	golangci-lint run ./...
 
 lint-fix:
