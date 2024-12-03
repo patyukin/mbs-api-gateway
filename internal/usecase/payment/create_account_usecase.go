@@ -28,5 +28,5 @@ func (u *UseCase) CreateAccountV1UseCase(ctx context.Context, in model.CreateAcc
 		return model.CreateAccountV1Response{}, result.GetError()
 	}
 
-	return model.CreateAccountV1Response{}, nil
+	return model.CreateAccountV1Response{Message: result.Message}, nil
 }

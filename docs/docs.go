@@ -357,6 +357,50 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "description": "Создание кредитной заявки",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Credit"
+                ],
+                "summary": "Создание кредитной заявки",
+                "parameters": [
+                    {
+                        "description": "CreateCreditData Request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CreateCreditV1Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Registration successfully",
+                        "schema": {
+                            "$ref": "#/definitions/model.CreateCreditV1Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
             }
         },
         "/v1/credits/{id}": {
@@ -903,6 +947,28 @@ const docTemplate = `{
                 }
             }
         },
+        "model.CreateCreditV1Request": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "application_id": {
+                    "type": "string"
+                },
+                "credit_term_months": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.CreateCreditV1Response": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "model.CreatePaymentV1Request": {
             "type": "object",
             "properties": {
@@ -937,13 +1003,7 @@ const docTemplate = `{
         "model.CreditApplicationConfirmationV1Response": {
             "type": "object",
             "properties": {
-                "application_id": {
-                    "type": "string"
-                },
                 "message": {
-                    "type": "string"
-                },
-                "status": {
                     "type": "string"
                 }
             }
@@ -1222,7 +1282,10 @@ const docTemplate = `{
         "model.UpdateCreditApplicationStatusV1Request": {
             "type": "object",
             "properties": {
-                "application_id": {
+                "approved_amount": {
+                    "type": "integer"
+                },
+                "decision_date": {
                     "type": "string"
                 },
                 "decision_notes": {

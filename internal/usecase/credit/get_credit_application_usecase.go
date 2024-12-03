@@ -25,7 +25,7 @@ func (u *UseCase) GetCreditApplicationV1UseCase(ctx context.Context, application
 		}
 	}
 
-	if response == nil {
+	if response.Error != nil {
 		return model.GetCreditApplicationV1Response{}, &error_v1.ErrorResponse{
 			Code:        http.StatusInternalServerError,
 			Message:     "Internal Server Error",

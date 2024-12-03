@@ -34,7 +34,7 @@ func (h *Handler) ConfirmationPaymentV1Handler(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	_, err := h.puc.ConfirmationPaymentV1UseCase(r.Context(), confirmationPaymentV1Request, userID)
+	result, err := h.puc.ConfirmationPaymentV1UseCase(r.Context(), confirmationPaymentV1Request, userID)
 	if err != nil {
 		log.Error().Msgf("failed to sign in verify, code: %d, message: %s, error: %v", err.GetCode(), err.GetMessage(), err.GetDescription())
 		h.HandleError(w, int(err.GetCode()), err.GetMessage())
@@ -43,4 +43,10 @@ func (h *Handler) ConfirmationPaymentV1Handler(w http.ResponseWriter, r *http.Re
 
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusCreated)
+
+	if encodeError := json.NewEncoder(w).Encode(result); encodeError != nil {
+		log.Error().Msgf("SignInV1Handler EncodeError: %v", encodeError)
+		h.HandleError(w, http.StatusInternalServerError, encodeError.Error())
+		return
+	}
 }

@@ -36,5 +36,5 @@ func (u *UseCase) CreateCreditApplicationV1UseCase(ctx context.Context, in model
 		}
 	}
 
-	return model.CreateCreditApplicationV1Response{}, nil
+	return model.CreateCreditApplicationV1Response{Message: response.Message}, nil
 }

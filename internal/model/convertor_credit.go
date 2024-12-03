@@ -11,8 +11,6 @@ func ToProtoV1CreateCreditApplicationRequest(in CreateCreditApplicationV1Request
 		UserId:          userID,
 		RequestedAmount: in.RequestedAmount,
 		InterestRate:    in.InterestRate,
-		StartDate:       in.StartDate,
-		EndDate:         in.EndDate,
 		Description:     in.Description,
 	}
 }
@@ -34,16 +32,17 @@ func ToModelGetCreditApplicationV1Response(in *creditpb.GetCreditApplicationResp
 	}
 }
 
-func ToProtoV1UpdateCreditApplicationStatusRequest(in UpdateCreditApplicationStatusV1Request) (creditpb.UpdateCreditApplicationSolutionRequest, error) {
+func ToProtoV1UpdateCreditApplicationStatusRequest(in UpdateCreditApplicationStatusV1Request, applicationID string) (creditpb.UpdateCreditApplicationSolutionRequest, error) {
 	status, err := creditmapper.StringToEnumCreditApplicationStatus(in.Status)
 	if err != nil {
 		return creditpb.UpdateCreditApplicationSolutionRequest{}, fmt.Errorf("failed creditmapper.StringToEnumCreditApplicationStatus: %w", err)
 	}
 
 	return creditpb.UpdateCreditApplicationSolutionRequest{
-		ApplicationId: in.ApplicationID,
-		Status:        status,
-		DecisionNotes: in.DecisionNotes,
+		ApplicationId:  applicationID,
+		Status:         status,
+		DecisionNotes:  in.DecisionNotes,
+		ApprovedAmount: in.ApprovedAmount,
 	}, nil
 }
 
@@ -105,9 +104,11 @@ func ToModelGetPaymentScheduleResponse(in *creditpb.GetPaymentScheduleResponse) 
 	}
 }
 
-func ToProtoV1CreateCreditRequest(in CreateCreditV1Request) creditpb.CreateCreditRequest {
+func ToProtoV1CreateCreditRequest(in CreateCreditV1Request, userID string) creditpb.CreateCreditRequest {
 	return creditpb.CreateCreditRequest{
-		UserId:        in.UserID,
-		ApplicationId: in.ApplicationID,
+		UserId:           userID,
+		ApplicationId:    in.ApplicationID,
+		CreditTermMonths: in.CreditTermMonths,
+		AccountId:        in.AccountID,
 	}
 }

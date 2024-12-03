@@ -44,11 +44,11 @@ type PaymentUseCase interface {
 
 //go:generate go run github.com/vektra/mockery/v2@v2.45.1 --name=CreditUseCase
 type CreditUseCase interface {
-	CreateCreditV1UseCase(ctx context.Context, in model.CreateCreditV1Request) (model.CreateCreditV1Response, *error_v1.ErrorResponse)
+	CreateCreditV1UseCase(ctx context.Context, in model.CreateCreditV1Request, userID string) (model.CreateCreditV1Response, *error_v1.ErrorResponse)
 	CreateCreditApplicationV1UseCase(ctx context.Context, in model.CreateCreditApplicationV1Request, userID string) (model.CreateCreditApplicationV1Response, *error_v1.ErrorResponse)
 	CreditApplicationConfirmationV1UseCase(ctx context.Context, in model.CreditApplicationConfirmationV1Request, userID string) (model.CreditApplicationConfirmationV1Response, *error_v1.ErrorResponse)
 	GetCreditApplicationV1UseCase(ctx context.Context, applicationID, userID string) (model.GetCreditApplicationV1Response, *error_v1.ErrorResponse)
-	UpdateCreditApplicationStatusV1UseCase(ctx context.Context, in model.UpdateCreditApplicationStatusV1Request) (model.UpdateCreditApplicationStatusV1Response, *error_v1.ErrorResponse)
+	UpdateCreditApplicationStatusV1UseCase(ctx context.Context, in model.UpdateCreditApplicationStatusV1Request, applicationID string) (model.UpdateCreditApplicationStatusV1Response, *error_v1.ErrorResponse)
 	GetCreditV1UseCase(ctx context.Context, creditID, userID string) (model.GetCreditV1Response, *error_v1.ErrorResponse)
 	GetListUserCreditsV1UseCase(ctx context.Context, in model.GetListUserCreditsV1Request) (model.GetListUserCreditsV1Response, *error_v1.ErrorResponse)
 	GetPaymentScheduleV1UseCase(ctx context.Context, userID, creditID string) (model.GetPaymentScheduleV1Response, *error_v1.ErrorResponse)

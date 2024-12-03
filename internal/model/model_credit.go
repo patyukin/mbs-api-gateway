@@ -1,87 +1,50 @@
 package model
 
 import (
-	"errors"
 	"fmt"
-	"net/http"
-	"time"
-
-	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 	"github.com/patyukin/mbs-pkg/pkg/mapping/creditmapper"
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
+	"net/http"
 )
 
 type CreateCreditApplicationV1Request struct {
-	RequestedAmount int64  `json:"requested_amount" validate:"required,gt=0"`
-	InterestRate    int32  `json:"interest_rate"    validate:"required,gt=0"`
-	StartDate       string `json:"start_date"       validate:"required,datetime=2006-01-02T15:04:05Z07:00"`
-	EndDate         string `json:"end_date"         validate:"required,datetime=2006-01-02T15:04:05Z07:00"`
-	Description     string `json:"description"      validate:"omitempty,max=500"`
+	RequestedAmount int64  `json:"requested_amount"`
+	InterestRate    int32  `json:"interest_rate"`
+	Description     string `json:"description"`
 }
 
-func (req *CreateCreditApplicationV1Request) Validate() *error_v1.ErrorResponse {
-	validate := validator.New()
-
-	endDate, err := time.Parse(time.RFC3339, req.EndDate)
+func (req *CreateCreditApplicationV1Request) Validate(userID string) *error_v1.ErrorResponse {
+	_, err := uuid.Parse(userID)
 	if err != nil {
 		return &error_v1.ErrorResponse{
 			Code:        http.StatusBadRequest,
-			Message:     "end_date: Invalid",
-			Description: fmt.Sprintf("failed to parse end_date: %v", err),
+			Message:     "user_id: Invalid",
+			Description: fmt.Sprintf("failed to parse user_id: %v", err),
 		}
 	}
 
-	startDate, err := time.Parse(time.RFC3339, req.StartDate)
-	if err != nil {
+	if req.RequestedAmount <= 0 {
 		return &error_v1.ErrorResponse{
 			Code:        http.StatusBadRequest,
-			Message:     "start_date: Invalid",
-			Description: fmt.Sprintf("failed to parse start_date: %v", err),
+			Message:     "requested_amount: Invalid",
+			Description: "requested_amount is invalid",
 		}
 	}
 
-	if endDate.After(startDate) {
+	if req.InterestRate <= 0 || req.InterestRate >= 100 {
 		return &error_v1.ErrorResponse{
 			Code:        http.StatusBadRequest,
-			Message:     "end_date: end_date must be after start_date",
-			Description: "end_date must be after start_date",
+			Message:     "interest_rate: Invalid",
+			Description: "interest_rate is invalid",
 		}
 	}
 
-	err = validate.Struct(req)
-	if err != nil {
-		var invalidValidationError *validator.InvalidValidationError
-		if errors.As(err, &invalidValidationError) {
-			return &error_v1.ErrorResponse{
-				Code:        http.StatusBadRequest,
-				Message:     "Invalid Data",
-				Description: fmt.Sprintf("failed to validate request: %v", err),
-			}
-		}
-
-		var validationErrors validator.ValidationErrors
-		errors.As(err, &validationErrors)
-		errorMessages := ""
-		for _, fieldErr := range validationErrors {
-			switch fieldErr.Tag() {
-			case "required":
-				errorMessages += fmt.Sprintf("Field '%s' is required.\n", fieldErr.Field())
-			case "gt":
-				errorMessages += fmt.Sprintf("Field '%s' must be greater than zero.\n", fieldErr.Field())
-			case "datetime":
-				errorMessages += fmt.Sprintf("Field '%s' must be in RFC3339 format.\n", fieldErr.Field())
-			case "max":
-				errorMessages += fmt.Sprintf("Field '%s' must be less than or equal to 500 characters.\n", fieldErr.Field())
-			default:
-				errorMessages += fmt.Sprintf("Field '%s' is invalid.\n", fieldErr.Field())
-			}
-		}
-
+	if req.Description == "" {
 		return &error_v1.ErrorResponse{
 			Code:        http.StatusBadRequest,
-			Message:     "Invalid Data",
-			Description: fmt.Sprintf("failed to validate request: %s", errorMessages),
+			Message:     "description: required",
+			Description: "description is required",
 		}
 	}
 
@@ -93,8 +56,64 @@ type CreateCreditApplicationV1Response struct {
 }
 
 type CreateCreditV1Request struct {
-	ApplicationID string `json:"application_id"`
-	UserID        string `json:"user_id"`
+	ApplicationID    string `json:"application_id"`
+	AccountID        string `json:"account_id"`
+	CreditTermMonths int32  `json:"credit_term_months"`
+}
+
+func (in *CreateCreditV1Request) Validate(userID string) *error_v1.ErrorResponse {
+	if in.ApplicationID == "" {
+		return &error_v1.ErrorResponse{
+			Code:        http.StatusBadRequest,
+			Message:     "application_id: required",
+			Description: "application_id is required",
+		}
+	}
+
+	_, err := uuid.Parse(in.ApplicationID)
+	if err != nil {
+		return &error_v1.ErrorResponse{
+			Code:        http.StatusBadRequest,
+			Message:     "application_id: Invalid",
+			Description: "application_id is invalid",
+		}
+	}
+
+	_, err = uuid.Parse(userID)
+	if err != nil {
+		return &error_v1.ErrorResponse{
+			Code:        http.StatusBadRequest,
+			Message:     "user_id: Invalid",
+			Description: "user_id is invalid",
+		}
+	}
+
+	if in.AccountID == "" {
+		return &error_v1.ErrorResponse{
+			Code:        http.StatusBadRequest,
+			Message:     "account_id: required",
+			Description: "account_id is required",
+		}
+	}
+
+	_, err = uuid.Parse(in.AccountID)
+	if err != nil {
+		return &error_v1.ErrorResponse{
+			Code:        http.StatusBadRequest,
+			Message:     "account_id: Invalid",
+			Description: "account_id is invalid",
+		}
+	}
+
+	if in.CreditTermMonths <= 0 {
+		return &error_v1.ErrorResponse{
+			Code:        http.StatusBadRequest,
+			Message:     "credit_term_months: required",
+			Description: "credit_term_months is required",
+		}
+	}
+
+	return nil
 }
 
 type CreateCreditV1Response struct {
@@ -118,9 +137,7 @@ func (req *CreditApplicationConfirmationV1Request) Validate() *error_v1.ErrorRes
 }
 
 type CreditApplicationConfirmationV1Response struct {
-	ApplicationID string `json:"application_id"`
-	Message       string `json:"message"`
-	Status        string `json:"status"`
+	Message string `json:"message"`
 }
 
 type GetCreditApplicationV1Request struct {
@@ -136,18 +153,43 @@ type GetCreditApplicationV1Response struct {
 }
 
 type UpdateCreditApplicationStatusV1Request struct {
-	ApplicationID string `json:"application_id"`
-	Status        string `json:"status"`
-	DecisionNotes string `json:"decision_notes"`
+	Status         string `json:"status"`
+	DecisionNotes  string `json:"decision_notes"`
+	ApprovedAmount int64  `json:"approved_amount"`
 }
 
-func (r *UpdateCreditApplicationStatusV1Request) Validate() *error_v1.ErrorResponse {
-	_, err := uuid.Parse(r.ApplicationID)
+func (r *UpdateCreditApplicationStatusV1Request) Validate(userID, applicationID string) *error_v1.ErrorResponse {
+	_, err := uuid.Parse(applicationID)
 	if err != nil {
 		return &error_v1.ErrorResponse{
 			Code:        http.StatusBadRequest,
 			Message:     "application_id: Invalid",
 			Description: fmt.Sprintf("failed to parse application_id: %v", err),
+		}
+	}
+
+	_, err = uuid.Parse(userID)
+	if err != nil {
+		return &error_v1.ErrorResponse{
+			Code:        http.StatusBadRequest,
+			Message:     "user_id: Invalid",
+			Description: fmt.Sprintf("failed to parse user_id: %v", err),
+		}
+	}
+
+	if r.DecisionNotes == "" {
+		return &error_v1.ErrorResponse{
+			Code:        http.StatusBadRequest,
+			Message:     "decision_notes: required",
+			Description: "decision_notes is required",
+		}
+	}
+
+	if r.Status == "" {
+		return &error_v1.ErrorResponse{
+			Code:        http.StatusBadRequest,
+			Message:     "status: required",
+			Description: "status is required",
 		}
 	}
 
@@ -157,6 +199,14 @@ func (r *UpdateCreditApplicationStatusV1Request) Validate() *error_v1.ErrorRespo
 			Code:        http.StatusBadRequest,
 			Message:     "status: Invalid",
 			Description: fmt.Sprintf("failed to validate status: %v", err),
+		}
+	}
+
+	if r.ApprovedAmount < 0 {
+		return &error_v1.ErrorResponse{
+			Code:        http.StatusBadRequest,
+			Message:     "approved_amount: Invalid",
+			Description: "approved_amount must be greater than zero",
 		}
 	}
 

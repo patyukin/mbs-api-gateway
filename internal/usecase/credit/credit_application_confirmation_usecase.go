@@ -3,6 +3,7 @@ package credit
 import (
 	"context"
 	"fmt"
+	"github.com/rs/zerolog/log"
 	"net/http"
 
 	"github.com/patyukin/mbs-api-gateway/internal/model"
@@ -20,7 +21,7 @@ func (u *UseCase) CreditApplicationConfirmationV1UseCase(ctx context.Context, in
 		}
 	}
 
-	if response == nil {
+	if response.Error != nil {
 		return model.CreditApplicationConfirmationV1Response{}, &error_v1.ErrorResponse{
 			Code:        http.StatusInternalServerError,
 			Message:     "Internal Server Error",
@@ -28,9 +29,7 @@ func (u *UseCase) CreditApplicationConfirmationV1UseCase(ctx context.Context, in
 		}
 	}
 
-	return model.CreditApplicationConfirmationV1Response{
-		ApplicationID: response.GetApplicationId(),
-		Message:       response.GetMessage(),
-		Status:        response.GetStatus().String(),
-	}, nil
+	log.Debug().Msgf("response: %v", response)
+
+	return model.CreditApplicationConfirmationV1Response{Message: response.GetMessage()}, nil
 }

@@ -52,6 +52,20 @@ definitions:
       message:
         type: string
     type: object
+  model.CreateCreditV1Request:
+    properties:
+      account_id:
+        type: string
+      application_id:
+        type: string
+      credit_term_months:
+        type: integer
+    type: object
+  model.CreateCreditV1Response:
+    properties:
+      message:
+        type: string
+    type: object
   model.CreatePaymentV1Request:
     properties:
       amount:
@@ -74,11 +88,7 @@ definitions:
     type: object
   model.CreditApplicationConfirmationV1Response:
     properties:
-      application_id:
-        type: string
       message:
-        type: string
-      status:
         type: string
     type: object
   model.CreditV1:
@@ -257,7 +267,9 @@ definitions:
     type: object
   model.UpdateCreditApplicationStatusV1Request:
     properties:
-      application_id:
+      approved_amount:
+        type: integer
+      decision_date:
         type: string
       decision_notes:
         type: string
@@ -504,6 +516,35 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Получение списка кредитов
+      tags:
+      - Credit
+    post:
+      consumes:
+      - application/json
+      description: Создание кредитной заявки
+      parameters:
+      - description: CreateCreditData Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateCreditV1Request'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Registration successfully
+          schema:
+            $ref: '#/definitions/model.CreateCreditV1Response'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Создание кредитной заявки
       tags:
       - Credit
   /v1/credits/{id}:

@@ -39,6 +39,7 @@ type Handler interface {
 	CreditApplicationConfirmationV1Handler(w http.ResponseWriter, r *http.Request)
 	GetCreditApplicationV1Handler(w http.ResponseWriter, r *http.Request)
 	UpdateCreditApplicationStatusV1Handler(w http.ResponseWriter, r *http.Request)
+	CreateCreditV1Handler(w http.ResponseWriter, r *http.Request)
 	GetCreditV1Handler(w http.ResponseWriter, r *http.Request)
 	GetListUserCreditsV1Handler(w http.ResponseWriter, r *http.Request)
 	GetPaymentScheduleV1Handler(w http.ResponseWriter, r *http.Request)
@@ -86,6 +87,7 @@ func Init(h Handler, cfg *config.Config, srvAddress string) http.Handler {
 	mux.Handle("GET /v1/credit-applications/{id}", h.Auth(http.HandlerFunc(h.GetCreditApplicationV1Handler)))
 	mux.Handle("PATCH /v1/credit-applications/{id}", h.Auth(http.HandlerFunc(h.UpdateCreditApplicationStatusV1Handler)))
 	mux.Handle("GET /v1/credits/{id}", h.Auth(http.HandlerFunc(h.GetCreditV1Handler)))
+	mux.Handle("POST /v1/credits", h.Auth(http.HandlerFunc(h.CreateCreditV1Handler)))
 	mux.Handle("GET /v1/credits", h.Auth(http.HandlerFunc(h.GetListUserCreditsV1Handler)))
 	mux.Handle("GET /v1/credits/{id}/payment-schedule", h.Auth(http.HandlerFunc(h.GetPaymentScheduleV1Handler)))
 
