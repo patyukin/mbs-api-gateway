@@ -40,7 +40,7 @@ run:
   # Define the Go version limit.
   # Mainly related to generics support since go1.18.
   # Default: use Go version from the go.mod file, fallback on the env var `GOVERSION`, fallback on 1.17
-  go: '1.22.1'
+  go: '1.23.2'
 
 # output configuration options
 output:
@@ -155,10 +155,10 @@ linters:
     - gocyclo
     - godot
     - godox
-#    - gofmt
+    - gofmt
 #    - gofumpt
     - goheader
-#    - goimports
+    - goimports
     - gomoddirectives
     - gomodguard
     - goprintffuncname
@@ -167,7 +167,7 @@ linters:
     - gosmopolitan
     - govet
     - grouper
-#    - importas
+    - importas
     - inamedparam
     - ineffassign
     - interfacebloat
@@ -544,7 +544,7 @@ linters-settings:
     # Max line length, lines longer will be reported.
     # '\t' is counted as 1 character by default, and can be changed with the tab-width option.
     # Default: 120.
-    line-length: 230
+    line-length: 150
     # Tab width in spaces.
     # Default: 1
     tab-width: 2
@@ -565,7 +565,4 @@ linters-settings:
       # Inappropriate key in call to 'context.WithValue'.
       # https://staticcheck.dev/docs/checks/#SA1029
       - SA1029
-
-
-
 
