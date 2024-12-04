@@ -9,9 +9,10 @@ import (
 type Config struct {
 	MinLogLevel string `validate:"oneof=debug info warn error fatal panic" yaml:"min_log_level"`
 	HTTPServer  struct {
-		Port         int `validate:"min=1,max=65535" yaml:"port"`
-		ReadTimeout  int `validate:"min=1,max=65535" yaml:"read_timeout"`
-		WriteTimeout int `validate:"min=1,max=65535" yaml:"write_timeout"`
+		Port         int    `validate:"min=1,max=65535" yaml:"port"`
+		SwaggerHost  string `validate:"required" yaml:"swagger_host"`
+		ReadTimeout  int    `validate:"min=1,max=65535" yaml:"read_timeout"`
+		WriteTimeout int    `validate:"min=1,max=65535" yaml:"write_timeout"`
 		RateLimit    struct {
 			Rps   float64 `validate:"min=1,max=65535" yaml:"rps"`
 			Burst int     `validate:"min=1,max=65535" yaml:"burst"`

@@ -64,7 +64,7 @@ func Init(h Handler, cfg *config.Config, srvAddress string) http.Handler {
 	// swagger route
 	mux.Handle(
 		"/swagger/", httpSwagger.Handler(
-			httpSwagger.URL(fmt.Sprintf("http://%s/swagger/doc.json", srvAddress)),
+			httpSwagger.URL(fmt.Sprintf("http://%s/swagger/doc.json", cfg.HTTPServer.SwaggerHost)),
 		),
 	)
 
