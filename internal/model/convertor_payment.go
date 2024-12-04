@@ -15,8 +15,8 @@ func ToProtoCreateAccountFromRequest(in CreateAccountV1Request, userID string) p
 	}
 }
 
-func ToProtoCreatePaymentFromRequest(in CreatePaymentV1Request, userID string) paymentpb.CreatePaymentRequest {
-	return paymentpb.CreatePaymentRequest{
+func ToProtoCreatePaymentFromRequest(in *CreatePaymentV1Request, userID string) *paymentpb.CreatePaymentRequest {
+	return &paymentpb.CreatePaymentRequest{
 		SenderAccountId:   in.SenderAccountID,
 		ReceiverAccountId: in.ReceiverAccountID,
 		Amount:            in.Amount,

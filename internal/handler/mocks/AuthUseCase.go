@@ -236,7 +236,7 @@ func (_m *AuthUseCase) SignInV1UseCase(ctx context.Context, in model.SignInV1Req
 }
 
 // SignUpV1UseCase provides a mock function with given fields: ctx, in
-func (_m *AuthUseCase) SignUpV1UseCase(ctx context.Context, in model.SignUpV1Request) (model.SignUpV1Response, *error_v1.ErrorResponse) {
+func (_m *AuthUseCase) SignUpV1UseCase(ctx context.Context, in *model.SignUpV1Request) (model.SignUpV1Response, *error_v1.ErrorResponse) {
 	ret := _m.Called(ctx, in)
 
 	if len(ret) == 0 {
@@ -245,16 +245,16 @@ func (_m *AuthUseCase) SignUpV1UseCase(ctx context.Context, in model.SignUpV1Req
 
 	var r0 model.SignUpV1Response
 	var r1 *error_v1.ErrorResponse
-	if rf, ok := ret.Get(0).(func(context.Context, model.SignUpV1Request) (model.SignUpV1Response, *error_v1.ErrorResponse)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, *model.SignUpV1Request) (model.SignUpV1Response, *error_v1.ErrorResponse)); ok {
 		return rf(ctx, in)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, model.SignUpV1Request) model.SignUpV1Response); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, *model.SignUpV1Request) model.SignUpV1Response); ok {
 		r0 = rf(ctx, in)
 	} else {
 		r0 = ret.Get(0).(model.SignUpV1Response)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, model.SignUpV1Request) *error_v1.ErrorResponse); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *model.SignUpV1Request) *error_v1.ErrorResponse); ok {
 		r1 = rf(ctx, in)
 	} else {
 		if ret.Get(1) != nil {

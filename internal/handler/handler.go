@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/patyukin/mbs-api-gateway/internal/metrics"
@@ -17,14 +18,20 @@ const (
 	HeaderUserRole      string = "X-User-Role"
 	RequestID           string = "X-Request-Id"
 	TraceID             string = "X-Trace-Id"
-	minLimit                   = 10
+	minLimit            int32  = 10
 	SysAdmin                   = "sys-admin"
+)
+
+var (
+	ErrUnexpectedSigningMethod          = errors.New("unexpected signing method")
+	ErrMissingAuthorizationHeader       = errors.New("authorization header is missing")
+	ErrInvalidAuthorizationHeaderFormat = errors.New("authorization header does not start with 'Bearer '")
 )
 
 //go:generate go run github.com/vektra/mockery/v2@v2.45.1 --name=AuthUseCase
 type AuthUseCase interface {
 	GetJWTToken() []byte
-	SignUpV1UseCase(ctx context.Context, in model.SignUpV1Request) (model.SignUpV1Response, *error_v1.ErrorResponse)
+	SignUpV1UseCase(ctx context.Context, in *model.SignUpV1Request) (model.SignUpV1Response, *error_v1.ErrorResponse)
 	SignInV1UseCase(ctx context.Context, in model.SignInV1Request) (model.SignInV1Response, *error_v1.ErrorResponse)
 	SignInConfirmationV1UseCase(ctx context.Context, in model.SignInConfirmationV1Request) (model.SignInConfirmationV1Response, *error_v1.ErrorResponse)
 	GetUserByIDV1UseCase(ctx context.Context, in model.GetUserByIDV1Request) (model.GetUserByIDV1Response, *error_v1.ErrorResponse)
@@ -37,7 +44,9 @@ type AuthUseCase interface {
 //go:generate go run github.com/vektra/mockery/v2@v2.45.1 --name=PaymentUseCase
 type PaymentUseCase interface {
 	CreateAccountV1UseCase(ctx context.Context, in model.CreateAccountV1Request, userID string) (model.CreateAccountV1Response, *error_v1.ErrorResponse)
-	CreatePaymentV1UseCase(ctx context.Context, in model.CreatePaymentV1Request, userID string) (model.CreatePaymentV1Response, *error_v1.ErrorResponse)
+	CreatePaymentV1UseCase(ctx context.Context, in *model.CreatePaymentV1Request, userID string) (
+		model.CreatePaymentV1Response, *error_v1.ErrorResponse,
+	)
 	ConfirmationPaymentV1UseCase(ctx context.Context, in model.ConfirmationPaymentV1Request, userID string) (
 		model.VerifyPaymentV1Response, *error_v1.ErrorResponse,
 	)

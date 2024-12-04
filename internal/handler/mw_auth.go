@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 	"strings"
@@ -24,7 +23,7 @@ func (h *Handler) Auth(next http.Handler) http.Handler {
 			token, err := jwt.Parse(
 				accessToken, func(token *jwt.Token) (interface{}, error) {
 					if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-						return nil, errors.New(fmt.Sprintf("unexpected signing method: %v", token.Header["alg"]))
+						return nil, fmt.Errorf("%w: %v", ErrUnexpectedSigningMethod, token.Header["alg"])
 					}
 
 					return h.auc.GetJWTToken(), nil
@@ -38,8 +37,35 @@ func (h *Handler) Auth(next http.Handler) http.Handler {
 				return
 			}
 
-			id := token.Claims.(jwt.MapClaims)["id"].(string)
-			role := token.Claims.(jwt.MapClaims)["role"].(string)
+			claims, ok := token.Claims.(jwt.MapClaims)
+			if !ok {
+				log.Error().Msg("failed to get claims from token")
+				h.HandleError(w, http.StatusUnauthorized, "Unauthorized")
+				return
+			}
+
+			idValue, idExists := claims["id"]
+			roleValue, roleExists := claims["role"]
+			if !idExists || !roleExists {
+				log.Error().Msg("failed to get id or role from claims")
+				h.HandleError(w, http.StatusUnauthorized, "Unauthorized")
+				return
+			}
+
+			id, ok := idValue.(string)
+			if !ok {
+				log.Error().Msg("failed to get id from claims")
+				h.HandleError(w, http.StatusUnauthorized, "Unauthorized")
+				return
+			}
+
+			role, ok := roleValue.(string)
+			if !ok {
+				log.Error().Msg("failed to get role from claims")
+				h.HandleError(w, http.StatusUnauthorized, "Unauthorized")
+				return
+			}
+
 			err = h.auc.AuthorizeUserV1UseCase(
 				r.Context(), model.AuthorizeUserV1Request{
 					UserID:    id,
@@ -64,12 +90,12 @@ func (h *Handler) Auth(next http.Handler) http.Handler {
 func GetBearerToken(r *http.Request) (string, error) {
 	authHeader := r.Header.Get(HeaderAuthorization)
 	if authHeader == "" {
-		return "", errors.New("authorization header is missing")
+		return "", ErrMissingAuthorizationHeader
 	}
 
 	const bearerPrefix = "Bearer "
 	if !strings.HasPrefix(authHeader, bearerPrefix) {
-		return "", errors.New("authorization header does not start with 'Bearer '")
+		return "", ErrInvalidAuthorizationHeaderFormat
 	}
 
 	token := strings.TrimPrefix(authHeader, bearerPrefix)

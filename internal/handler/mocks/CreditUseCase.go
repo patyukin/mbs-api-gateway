@@ -47,9 +47,9 @@ func (_m *CreditUseCase) CreateCreditApplicationV1UseCase(ctx context.Context, i
 	return r0, r1
 }
 
-// CreateCreditV1UseCase provides a mock function with given fields: ctx, in
-func (_m *CreditUseCase) CreateCreditV1UseCase(ctx context.Context, in model.CreateCreditV1Request) (model.CreateCreditV1Response, *error_v1.ErrorResponse) {
-	ret := _m.Called(ctx, in)
+// CreateCreditV1UseCase provides a mock function with given fields: ctx, in, userID
+func (_m *CreditUseCase) CreateCreditV1UseCase(ctx context.Context, in model.CreateCreditV1Request, userID string) (model.CreateCreditV1Response, *error_v1.ErrorResponse) {
+	ret := _m.Called(ctx, in, userID)
 
 	if len(ret) == 0 {
 		panic("no return value specified for CreateCreditV1UseCase")
@@ -57,17 +57,17 @@ func (_m *CreditUseCase) CreateCreditV1UseCase(ctx context.Context, in model.Cre
 
 	var r0 model.CreateCreditV1Response
 	var r1 *error_v1.ErrorResponse
-	if rf, ok := ret.Get(0).(func(context.Context, model.CreateCreditV1Request) (model.CreateCreditV1Response, *error_v1.ErrorResponse)); ok {
-		return rf(ctx, in)
+	if rf, ok := ret.Get(0).(func(context.Context, model.CreateCreditV1Request, string) (model.CreateCreditV1Response, *error_v1.ErrorResponse)); ok {
+		return rf(ctx, in, userID)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, model.CreateCreditV1Request) model.CreateCreditV1Response); ok {
-		r0 = rf(ctx, in)
+	if rf, ok := ret.Get(0).(func(context.Context, model.CreateCreditV1Request, string) model.CreateCreditV1Response); ok {
+		r0 = rf(ctx, in, userID)
 	} else {
 		r0 = ret.Get(0).(model.CreateCreditV1Response)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, model.CreateCreditV1Request) *error_v1.ErrorResponse); ok {
-		r1 = rf(ctx, in)
+	if rf, ok := ret.Get(1).(func(context.Context, model.CreateCreditV1Request, string) *error_v1.ErrorResponse); ok {
+		r1 = rf(ctx, in, userID)
 	} else {
 		if ret.Get(1) != nil {
 			r1 = ret.Get(1).(*error_v1.ErrorResponse)
@@ -227,9 +227,9 @@ func (_m *CreditUseCase) GetPaymentScheduleV1UseCase(ctx context.Context, userID
 	return r0, r1
 }
 
-// UpdateCreditApplicationStatusV1UseCase provides a mock function with given fields: ctx, in
-func (_m *CreditUseCase) UpdateCreditApplicationStatusV1UseCase(ctx context.Context, in model.UpdateCreditApplicationStatusV1Request) (model.UpdateCreditApplicationStatusV1Response, *error_v1.ErrorResponse) {
-	ret := _m.Called(ctx, in)
+// UpdateCreditApplicationStatusV1UseCase provides a mock function with given fields: ctx, in, applicationID
+func (_m *CreditUseCase) UpdateCreditApplicationStatusV1UseCase(ctx context.Context, in model.UpdateCreditApplicationStatusV1Request, applicationID string) (model.UpdateCreditApplicationStatusV1Response, *error_v1.ErrorResponse) {
+	ret := _m.Called(ctx, in, applicationID)
 
 	if len(ret) == 0 {
 		panic("no return value specified for UpdateCreditApplicationStatusV1UseCase")
@@ -237,17 +237,17 @@ func (_m *CreditUseCase) UpdateCreditApplicationStatusV1UseCase(ctx context.Cont
 
 	var r0 model.UpdateCreditApplicationStatusV1Response
 	var r1 *error_v1.ErrorResponse
-	if rf, ok := ret.Get(0).(func(context.Context, model.UpdateCreditApplicationStatusV1Request) (model.UpdateCreditApplicationStatusV1Response, *error_v1.ErrorResponse)); ok {
-		return rf(ctx, in)
+	if rf, ok := ret.Get(0).(func(context.Context, model.UpdateCreditApplicationStatusV1Request, string) (model.UpdateCreditApplicationStatusV1Response, *error_v1.ErrorResponse)); ok {
+		return rf(ctx, in, applicationID)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, model.UpdateCreditApplicationStatusV1Request) model.UpdateCreditApplicationStatusV1Response); ok {
-		r0 = rf(ctx, in)
+	if rf, ok := ret.Get(0).(func(context.Context, model.UpdateCreditApplicationStatusV1Request, string) model.UpdateCreditApplicationStatusV1Response); ok {
+		r0 = rf(ctx, in, applicationID)
 	} else {
 		r0 = ret.Get(0).(model.UpdateCreditApplicationStatusV1Response)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, model.UpdateCreditApplicationStatusV1Request) *error_v1.ErrorResponse); ok {
-		r1 = rf(ctx, in)
+	if rf, ok := ret.Get(1).(func(context.Context, model.UpdateCreditApplicationStatusV1Request, string) *error_v1.ErrorResponse); ok {
+		r1 = rf(ctx, in, applicationID)
 	} else {
 		if ret.Get(1) != nil {
 			r1 = ret.Get(1).(*error_v1.ErrorResponse)

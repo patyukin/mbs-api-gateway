@@ -7,6 +7,7 @@ import (
 	"github.com/patyukin/mbs-api-gateway/internal/handler/mocks"
 	"github.com/patyukin/mbs-api-gateway/internal/metrics"
 	"github.com/patyukin/mbs-api-gateway/internal/model"
+	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 	"net/http"

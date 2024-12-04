@@ -32,7 +32,7 @@ type SignUpV1Request struct {
 
 func (req *SignUpV1Request) Validate() *error_v1.ErrorResponse {
 	re := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
-	if re.MatchString(req.Email) == false {
+	if !re.MatchString(req.Email) {
 		return &error_v1.ErrorResponse{
 			Code:        http.StatusBadRequest,
 			Message:     "email: Invalid",
@@ -128,7 +128,7 @@ func (req *SignInV1Request) Validate() *error_v1.ErrorResponse {
 	}
 
 	re := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
-	if re.MatchString(req.Login) == false {
+	if !re.MatchString(req.Login) {
 		return &error_v1.ErrorResponse{
 			Code:        http.StatusBadRequest,
 			Message:     "login: Invalid",
@@ -269,7 +269,7 @@ func (req *SignInConfirmationV1Request) Validate() *error_v1.ErrorResponse {
 	}
 
 	re := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
-	if re.MatchString(req.Login) == false {
+	if !re.MatchString(req.Login) {
 		return &error_v1.ErrorResponse{
 			Code:        http.StatusBadRequest,
 			Message:     "login: Invalid",

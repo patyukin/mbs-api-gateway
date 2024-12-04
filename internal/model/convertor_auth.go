@@ -4,8 +4,8 @@ import (
 	authpb "github.com/patyukin/mbs-pkg/pkg/proto/auth_v1"
 )
 
-func ToProtoV1SignUpRequest(in SignUpV1Request) authpb.SignUpRequest {
-	return authpb.SignUpRequest{
+func ToProtoV1SignUpRequest(in *SignUpV1Request) *authpb.SignUpRequest {
+	return &authpb.SignUpRequest{
 		Email:         in.Email,
 		Password:      string(in.Password),
 		TelegramLogin: in.TelegramLogin,
@@ -107,7 +107,7 @@ func ToProtoGetUsersV1Request(in GetUsersV1Request) authpb.GetUsersRequest {
 }
 
 func ToModelUsersV1(in []*authpb.UserInfo) []UserInfoV1 {
-	var users []UserInfoV1
+	users := make([]UserInfoV1, 0, len(in))
 	for _, user := range in {
 		users = append(users, ToModelUserInfoV1(user))
 	}

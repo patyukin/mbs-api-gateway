@@ -15,7 +15,13 @@ func (h *Handler) TracingMiddleware(next http.Handler) http.Handler {
 			span := opentracing.GlobalTracer().StartSpan("start-request")
 			defer span.Finish()
 
-			traceID := span.Context().(jaeger.SpanContext).TraceID().String()
+			jaegerCtx, ok := span.Context().(jaeger.SpanContext)
+			if !ok {
+				h.HandleError(w, http.StatusInternalServerError, "Internal Server Error: failed to retrieve trace context")
+				return
+			}
+
+			traceID := jaegerCtx.TraceID().String()
 			ctx := context.WithValue(r.Context(), TraceID, traceID)
 
 			requestID := uuid.New().String()

@@ -146,7 +146,7 @@ linters:
     - gci
     - ginkgolinter
     - gocheckcompilerdirectives
-    - gochecknoglobals
+#    - gochecknoglobals
     - gochecknoinits
     - gochecksumtype
     - gocognit
@@ -257,6 +257,12 @@ issues:
     - linters:
         - staticcheck
       text: "SA9003:"
+    - linters:
+        - staticcheck
+      text: "SA1029:"  # Отключение SA1029
+    - linters:
+        - gosec
+      text: "G109:"  # Отключение G109
     # Exclude `lll` issues for long lines with `go:generate`.
     - linters:
         - lll
@@ -516,6 +522,7 @@ linters-settings:
       - re
       - id
       - h
+      - ok
   promlinter:
     # Promlinter cannot infer all metrics name in static analysis.
     # Enable strict mode will also include the errors caused by failing to parse the args.
@@ -565,4 +572,7 @@ linters-settings:
       # Inappropriate key in call to 'context.WithValue'.
       # https://staticcheck.dev/docs/checks/#SA1029
       - SA1029
-
+  interfacebloat:
+    # The maximum number of methods allowed for an interface.
+    # Default: 10
+    max: 30

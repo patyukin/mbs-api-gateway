@@ -78,7 +78,7 @@ func (_m *PaymentUseCase) CreateAccountV1UseCase(ctx context.Context, in model.C
 }
 
 // CreatePaymentV1UseCase provides a mock function with given fields: ctx, in, userID
-func (_m *PaymentUseCase) CreatePaymentV1UseCase(ctx context.Context, in model.CreatePaymentV1Request, userID string) (model.CreatePaymentV1Response, *error_v1.ErrorResponse) {
+func (_m *PaymentUseCase) CreatePaymentV1UseCase(ctx context.Context, in *model.CreatePaymentV1Request, userID string) (model.CreatePaymentV1Response, *error_v1.ErrorResponse) {
 	ret := _m.Called(ctx, in, userID)
 
 	if len(ret) == 0 {
@@ -87,16 +87,16 @@ func (_m *PaymentUseCase) CreatePaymentV1UseCase(ctx context.Context, in model.C
 
 	var r0 model.CreatePaymentV1Response
 	var r1 *error_v1.ErrorResponse
-	if rf, ok := ret.Get(0).(func(context.Context, model.CreatePaymentV1Request, string) (model.CreatePaymentV1Response, *error_v1.ErrorResponse)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, *model.CreatePaymentV1Request, string) (model.CreatePaymentV1Response, *error_v1.ErrorResponse)); ok {
 		return rf(ctx, in, userID)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, model.CreatePaymentV1Request, string) model.CreatePaymentV1Response); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, *model.CreatePaymentV1Request, string) model.CreatePaymentV1Response); ok {
 		r0 = rf(ctx, in, userID)
 	} else {
 		r0 = ret.Get(0).(model.CreatePaymentV1Response)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, model.CreatePaymentV1Request, string) *error_v1.ErrorResponse); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *model.CreatePaymentV1Request, string) *error_v1.ErrorResponse); ok {
 		r1 = rf(ctx, in, userID)
 	} else {
 		if ret.Get(1) != nil {

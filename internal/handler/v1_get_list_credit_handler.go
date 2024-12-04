@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"math"
 	"net/http"
 	"strconv"
 
@@ -31,7 +32,7 @@ func (h *Handler) GetListUserCreditsV1Handler(w http.ResponseWriter, r *http.Req
 	var limit, page int32
 	limitRequest := r.URL.Query().Get("limit")
 	if limitRequest != "" {
-		limit = int32(minLimit)
+		limit = minLimit
 	} else {
 		limitParsed, err := strconv.Atoi(limitRequest)
 		if err != nil {
@@ -39,6 +40,15 @@ func (h *Handler) GetListUserCreditsV1Handler(w http.ResponseWriter, r *http.Req
 			h.HandleError(w, http.StatusBadRequest, "invalid data")
 			return
 		}
+
+		// Check if the parsed value is within the bounds of int32
+		if limitParsed < math.MinInt32 || limitParsed > math.MaxInt32 {
+			log.Error().Msg("parsed limit is out of range for int32")
+			h.HandleError(w, http.StatusBadRequest, "limit value is out of range")
+			return
+		}
+
+		// Safely assign the parsed value to limit
 		limit = int32(limitParsed)
 	}
 
@@ -52,6 +62,13 @@ func (h *Handler) GetListUserCreditsV1Handler(w http.ResponseWriter, r *http.Req
 			h.HandleError(w, http.StatusBadRequest, "invalid data")
 			return
 		}
+
+		if pageParsed < math.MinInt32 || pageParsed > math.MaxInt32 {
+			log.Error().Msg("parsed page is out of range for int32")
+			h.HandleError(w, http.StatusBadRequest, "page value is out of range")
+			return
+		}
+
 		page = int32(pageParsed)
 	}
 

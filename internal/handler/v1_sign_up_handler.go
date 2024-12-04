@@ -38,7 +38,7 @@ func (h *Handler) SignUpV1Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	msg, err := h.auc.SignUpV1UseCase(r.Context(), in)
+	msg, err := h.auc.SignUpV1UseCase(r.Context(), &in)
 	if err != nil {
 		metrics.FailedRegistrations.Inc()
 		log.Error().Msgf("SignUpV1Handler UseCaseError: %v", err)
