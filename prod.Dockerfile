@@ -12,6 +12,5 @@ FROM alpine:3.20
 WORKDIR /app
 COPY --from=builder /app/bin/api_gateway .
 ENV YAML_CONFIG_FILE_PATH=config.yaml
-COPY config.yaml config.yaml
 
 CMD ["./api_gateway"]
