@@ -3,13 +3,14 @@ package handler
 import (
 	"bytes"
 	"encoding/json"
+	"net/http"
+	"net/http/httptest"
+	"testing"
+
 	"github.com/patyukin/mbs-api-gateway/internal/handler/mocks"
 	"github.com/patyukin/mbs-api-gateway/internal/metrics"
 	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
-	"net/http"
-	"net/http/httptest"
-	"testing"
 
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
@@ -70,7 +71,7 @@ func (suite *SignUpV1TestSuite) TestSignUpV1_Success() {
 
 	responseData := model.SignUpV1Response{Message: "success"}
 
-	suite.mockAUC.On("SignUpV1UseCase", mock.Anything, requestData).Return(responseData, nil)
+	suite.mockAUC.On("SignUpV1UseCase", mock.Anything, &requestData).Return(responseData, nil)
 
 	body, err := json.Marshal(requestData)
 	suite.NoError(err)
@@ -176,7 +177,7 @@ func (suite *SignUpV1TestSuite) TestSignUpV1_UseCaseError() {
 		Message: "use case error",
 	}
 
-	suite.mockAUC.On("SignUpV1UseCase", mock.Anything, requestData).Return(model.SignUpV1Response{}, useCaseError)
+	suite.mockAUC.On("SignUpV1UseCase", mock.Anything, &requestData).Return(model.SignUpV1Response{}, useCaseError)
 
 	body, err := json.Marshal(requestData)
 	suite.NoError(err)

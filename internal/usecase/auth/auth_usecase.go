@@ -7,6 +7,7 @@ import (
 	"google.golang.org/grpc"
 )
 
+//go:generate go run github.com/vektra/mockery/v2@v2.45.1 --name=ProtoClient
 type ProtoClient interface {
 	SignUp(ctx context.Context, in *authpb.SignUpRequest, opts ...grpc.CallOption) (*authpb.SignUpResponse, error)
 	SignIn(ctx context.Context, in *authpb.SignInRequest, opts ...grpc.CallOption) (*authpb.SignInResponse, error)
