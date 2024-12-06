@@ -1,0 +1,27 @@
+{
+  "details": {
+    "endpoint": "http://localhost:5002",
+    "path": "/v1/sign-up",
+    "method": "POST",
+    "importedOperationId": "POST /v1/sign-up",
+    "headers": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "pathParams": [],
+    "disableServerCertificateValidation": true,
+    "disableAutoRedirect": false
+  },
+  "requests": [
+    {
+      "location": "POST sign-up-request.json",
+      "contentType": "json"
+    }
+  ],
+  "operationType": "unary",
+  "invokerName": "rest",
+  "typeHint": "POST",
+  "importStreamId": "55132319-793b-408d-89a3-2555bf430216"
+}

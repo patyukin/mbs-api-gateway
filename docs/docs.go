@@ -448,7 +448,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Payment"
+                    "Credit"
                 ],
                 "summary": "Получение расписания платежей",
                 "responses": {
@@ -914,18 +914,8 @@ const docTemplate = `{
         },
         "model.CreateCreditApplicationV1Request": {
             "type": "object",
-            "required": [
-                "end_date",
-                "interest_rate",
-                "requested_amount",
-                "start_date"
-            ],
             "properties": {
                 "description": {
-                    "type": "string",
-                    "maxLength": 500
-                },
-                "end_date": {
                     "type": "string"
                 },
                 "interest_rate": {
@@ -933,9 +923,6 @@ const docTemplate = `{
                 },
                 "requested_amount": {
                     "type": "integer"
-                },
-                "start_date": {
-                    "type": "string"
                 }
             }
         },
@@ -1284,9 +1271,6 @@ const docTemplate = `{
             "properties": {
                 "approved_amount": {
                     "type": "integer"
-                },
-                "decision_date": {
-                    "type": "string"
                 },
                 "decision_notes": {
                     "type": "string"

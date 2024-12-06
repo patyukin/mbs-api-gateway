@@ -1,0 +1,11 @@
+{
+  "address": "Cape Verde",
+  "date_of_birth": "1980-01-01",
+  "email": "{{ faker.internet.example_email }}",
+  "first_name": "{{ faker.name.first_name }}",
+  "last_name": "qwerty123@example.com",
+  "password": "qwerty123",
+  "patronymic": "Quality",
+  "phone": "{{ faker.phone.phone_number }}",
+  "telegram_login": "patyukin"
+}

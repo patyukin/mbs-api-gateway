@@ -1,0 +1,16 @@
+{
+  "details": {
+    "path": "/v1/credits/{id}/payment-schedule",
+    "method": "GET",
+    "importedOperationId": "GET /v1/credits/{id}/payment-schedule"
+  },
+  "requests": [
+    {
+      "contentType": "none"
+    }
+  ],
+  "operationType": "unary",
+  "invokerName": "rest",
+  "typeHint": "GET",
+  "importStreamId": "55132319-793b-408d-89a3-2555bf430216"
+}

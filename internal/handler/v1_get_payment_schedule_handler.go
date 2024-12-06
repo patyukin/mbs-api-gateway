@@ -10,7 +10,7 @@ import (
 // GetPaymentScheduleV1Handler godoc
 // @Summary Получение расписания платежей
 // @Description Получение расписания платежей
-// @Tags Payment
+// @Tags Credit
 // @Accept  json
 // @Produce json
 // @Success 200  {object}  model.GetPaymentScheduleV1Response "Расписание платежей получено"

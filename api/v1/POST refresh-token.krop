@@ -1,0 +1,23 @@
+{
+  "details": {
+    "path": "/v1/refresh-token",
+    "method": "POST",
+    "importedOperationId": "POST /v1/refresh-token",
+    "headers": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ]
+  },
+  "requests": [
+    {
+      "location": "POST refresh-token-request.json",
+      "contentType": "json"
+    }
+  ],
+  "operationType": "unary",
+  "invokerName": "rest",
+  "typeHint": "POST",
+  "importStreamId": "55132319-793b-408d-89a3-2555bf430216"
+}

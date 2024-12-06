@@ -1,0 +1,23 @@
+{
+  "details": {
+    "path": "/v1/users/{id}",
+    "method": "GET",
+    "importedOperationId": "GET /v1/users/{id}",
+    "headers": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ]
+  },
+  "requests": [
+    {
+      "location": "GET {id}-request.json",
+      "contentType": "json"
+    }
+  ],
+  "operationType": "unary",
+  "invokerName": "rest",
+  "typeHint": "GET",
+  "importStreamId": "55132319-793b-408d-89a3-2555bf430216"
+}

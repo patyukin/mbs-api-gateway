@@ -1,0 +1,7 @@
+{
+  "id": "e213bf81-8894-4aff-94c9-5c39c4b7c18a",
+  "color": "#60A5FA",
+  "globalContent": {
+    "endpoint": "http://0.0.0.0:5002/"
+  }
+}

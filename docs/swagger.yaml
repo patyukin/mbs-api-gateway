@@ -31,21 +31,11 @@ definitions:
   model.CreateCreditApplicationV1Request:
     properties:
       description:
-        maxLength: 500
-        type: string
-      end_date:
         type: string
       interest_rate:
         type: integer
       requested_amount:
         type: integer
-      start_date:
-        type: string
-    required:
-    - end_date
-    - interest_rate
-    - requested_amount
-    - start_date
     type: object
   model.CreateCreditApplicationV1Response:
     properties:
@@ -269,8 +259,6 @@ definitions:
     properties:
       approved_amount:
         type: integer
-      decision_date:
-        type: string
       decision_notes:
         type: string
       status:
@@ -592,7 +580,7 @@ paths:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Получение расписания платежей
       tags:
-      - Payment
+      - Credit
   /v1/log-reports:
     get:
       consumes:
