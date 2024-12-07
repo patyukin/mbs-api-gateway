@@ -1,8 +1,0 @@
-{
-  "amount": 202,
-  "currency": "{{ faker.finance.currency }}",
-  "description": "Cambridgeshire invoice compressing",
-  "receiver_account_id": "{{ faker.random.uuid }}",
-  "sender_account_id": "{{ faker.random.uuid }}",
-  "user_id": "{{ faker.random.uuid }}"
-}

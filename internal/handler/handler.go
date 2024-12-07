@@ -20,6 +20,7 @@ const (
 	TraceID             string = "X-Trace-Id"
 	minLimit            int32  = 10
 	SysAdmin                   = "sys-admin"
+	Manager                    = "manager"
 )
 
 var (

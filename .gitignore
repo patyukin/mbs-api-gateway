@@ -6,3 +6,4 @@ config-local.yaml
 /bin/*
 *.drawio.bkp
 report.xml
+/api/*

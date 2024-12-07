@@ -1,5 +1,0 @@
-{
-  "account_id": "{{ faker.random.uuid }}",
-  "application_id": "{{ faker.random.uuid }}",
-  "credit_term_months": 216
-}

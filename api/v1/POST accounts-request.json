@@ -1,4 +1,0 @@
-{
-  "balance": 813,
-  "currency": "{{ faker.finance.currency }}"
-}

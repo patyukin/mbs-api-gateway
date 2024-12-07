@@ -1,4 +1,0 @@
-{
-  "role_id": "{{ faker.random.uuid }}",
-  "user_id": "{{ faker.random.uuid }}"
-}

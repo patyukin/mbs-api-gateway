@@ -33,6 +33,7 @@ func (h *Handler) Auth(next http.Handler) http.Handler {
 			log.Debug().Msgf("token is valid: %v", token.Valid)
 
 			if err != nil || !token.Valid {
+				log.Error().Msgf("failed to parse token: %v", err)
 				h.HandleError(w, http.StatusUnauthorized, err.Error())
 				return
 			}
