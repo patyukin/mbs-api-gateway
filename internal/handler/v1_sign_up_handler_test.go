@@ -3,13 +3,14 @@ package handler
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
-	"github.com/patyukin/mbs-api-gateway/internal/handler/mocks"
-	"github.com/patyukin/mbs-api-gateway/internal/metrics"
-	"github.com/patyukin/mbs-api-gateway/internal/model"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/patyukin/mbs-api-gateway/internal/handler/mocks"
+	"github.com/patyukin/mbs-api-gateway/internal/metrics"
+	"github.com/patyukin/mbs-api-gateway/internal/model"
+	"github.com/patyukin/mbs-pkg/pkg/proto/error_v1"
 
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
@@ -18,16 +19,23 @@ import (
 type SignUpV1TestSuite struct {
 	suite.Suite
 	handler                     *Handler
-	mockUC                      *mocks.AuthUseCase
+	mockAUC                     *mocks.AuthUseCase
+	mockLUC                     *mocks.LoggerUseCase
+	mockPUC                     *mocks.PaymentUseCase
+	mockCUC                     *mocks.CreditUseCase
+	mockRUC                     *mocks.ReportUseCase
 	mockTotalRegistrations      *mocks.Counter
 	mockFailedRegistrations     *mocks.Counter
 	mockSuccessfulRegistrations *mocks.Counter
 }
 
-// SetupTest выполняется перед каждым тестом
 func (suite *SignUpV1TestSuite) SetupTest() {
-	suite.mockUC = &mocks.AuthUseCase{}
-	suite.handler = New(suite.mockUC)
+	suite.mockAUC = &mocks.AuthUseCase{}
+	suite.mockLUC = &mocks.LoggerUseCase{}
+	suite.mockPUC = &mocks.PaymentUseCase{}
+	suite.mockCUC = &mocks.CreditUseCase{}
+	suite.mockRUC = &mocks.ReportUseCase{}
+	suite.handler = New(suite.mockAUC, suite.mockLUC, suite.mockPUC, suite.mockCUC, suite.mockRUC)
 
 	suite.mockTotalRegistrations = new(mocks.Counter)
 	suite.mockFailedRegistrations = new(mocks.Counter)
@@ -49,8 +57,6 @@ func (suite *SignUpV1TestSuite) TearDownTest() {
 }
 
 func (suite *SignUpV1TestSuite) TestSignUpV1_Success() {
-	suite.mockUC.On("SignUpV1", mock.Anything, mock.Anything).Return(nil)
-
 	requestData := model.SignUpV1Request{
 		Email:         "john.doe@example.com",
 		Password:      "securepassword123",
@@ -63,36 +69,65 @@ func (suite *SignUpV1TestSuite) TestSignUpV1_Success() {
 		Address:       "Moscow, Russia, 1, 1, 1",
 	}
 
-	body, _ := json.Marshal(requestData)
+	responseData := model.SignUpV1Response{Message: "success"}
+
+	suite.mockAUC.On("SignUpV1UseCase", mock.Anything, &requestData).Return(responseData, nil)
+
+	body, err := json.Marshal(requestData)
+	suite.NoError(err)
+
 	req, err := http.NewRequest(http.MethodPost, "/sign-up", bytes.NewReader(body))
 	suite.NoError(err)
+	req.Header.Set("Content-Type", "application/json")
 
 	rr := httptest.NewRecorder()
 
-	suite.handler.SignUpV1(rr, req)
-
+	suite.handler.SignUpV1Handler(rr, req)
 	suite.Equal(http.StatusCreated, rr.Code)
+
 	suite.Equal("application/json; charset=UTF-8", rr.Header().Get("Content-Type"))
-	suite.mockUC.AssertExpectations(suite.T())
+
+	var resp model.SignUpV1Response
+	err = json.Unmarshal(rr.Body.Bytes(), &resp)
+	suite.NoError(err)
+	suite.Equal(responseData, resp)
+
+	suite.mockAUC.AssertExpectations(suite.T())
+	suite.mockTotalRegistrations.AssertCalled(suite.T(), "Inc")
+	suite.mockSuccessfulRegistrations.AssertCalled(suite.T(), "Inc")
+	suite.mockFailedRegistrations.AssertNotCalled(suite.T(), "Inc")
 }
 
 func (suite *SignUpV1TestSuite) TestSignUpV1_DecodeError() {
+	// Создание запроса с некорректным JSON
 	req, err := http.NewRequest(http.MethodPost, "/sign-up", bytes.NewReader([]byte("invalid json")))
 	suite.NoError(err)
+	req.Header.Set("Content-Type", "application/json")
 
+	// Создание рекордера ответа
 	rr := httptest.NewRecorder()
 
-	suite.handler.SignUpV1(rr, req)
+	// Вызов обработчика
+	suite.handler.SignUpV1Handler(rr, req)
 
+	// Проверка кода статуса
 	suite.Equal(http.StatusBadRequest, rr.Code)
 
-	suite.mockUC.AssertNotCalled(suite.T(), "SignUpV1", mock.Anything, mock.Anything)
+	// Проверка тела ответа
+	expectedBody := `{"error":"invalid data"}`
+	suite.JSONEq(expectedBody, rr.Body.String())
+
+	// Проверка, что UseCase не был вызван
+	suite.mockAUC.AssertNotCalled(suite.T(), "SignUpV1UseCase", mock.Anything, mock.Anything)
+	suite.mockFailedRegistrations.AssertCalled(suite.T(), "Inc")
+	suite.mockTotalRegistrations.AssertCalled(suite.T(), "Inc")
+	suite.mockSuccessfulRegistrations.AssertNotCalled(suite.T(), "Inc")
 }
 
 func (suite *SignUpV1TestSuite) TestSignUpV1_ValidationError() {
 	requestData := model.SignUpV1Request{
 		Email:         "john.doeexample.com",
-		Password:      "securepassword123",
+		Password:      "short",
 		TelegramLogin: "johndoe_telegram",
 		FirstName:     "John",
 		LastName:      "Doe",
@@ -102,20 +137,29 @@ func (suite *SignUpV1TestSuite) TestSignUpV1_ValidationError() {
 		Address:       "Moscow, Russia, 1, 1, 1",
 	}
 
-	body, _ := json.Marshal(requestData)
+	body, err := json.Marshal(requestData)
+	suite.NoError(err)
+
 	req, err := http.NewRequest(http.MethodPost, "/sign-up", bytes.NewReader(body))
 	suite.NoError(err)
+	req.Header.Set("Content-Type", "application/json")
 
 	rr := httptest.NewRecorder()
 
-	suite.handler.SignUpV1(rr, req)
+	suite.handler.SignUpV1Handler(rr, req)
+
 	suite.Equal(http.StatusBadRequest, rr.Code)
-	suite.mockUC.AssertNotCalled(suite.T(), "SignUpV1", mock.Anything, mock.Anything)
+
+	expectedBody := `{"error":"email: Invalid"}`
+	suite.JSONEq(expectedBody, rr.Body.String())
+
+	suite.mockAUC.AssertNotCalled(suite.T(), "SignUpV1UseCase", mock.Anything, mock.Anything)
+	suite.mockFailedRegistrations.AssertCalled(suite.T(), "Inc")
+	suite.mockTotalRegistrations.AssertCalled(suite.T(), "Inc")
+	suite.mockSuccessfulRegistrations.AssertNotCalled(suite.T(), "Inc")
 }
 
 func (suite *SignUpV1TestSuite) TestSignUpV1_UseCaseError() {
-	suite.mockUC.On("SignUpV1", mock.Anything, mock.Anything).Return(errors.New("use case error"))
-
 	requestData := model.SignUpV1Request{
 		Email:         "john.doe@example.com",
 		Password:      "securepassword123",
@@ -128,16 +172,34 @@ func (suite *SignUpV1TestSuite) TestSignUpV1_UseCaseError() {
 		Address:       "Moscow, Russia, 1, 1, 1",
 	}
 
-	body, _ := json.Marshal(requestData)
+	useCaseError := &error_v1.ErrorResponse{
+		Code:    http.StatusInternalServerError,
+		Message: "use case error",
+	}
+
+	suite.mockAUC.On("SignUpV1UseCase", mock.Anything, &requestData).Return(model.SignUpV1Response{}, useCaseError)
+
+	body, err := json.Marshal(requestData)
+	suite.NoError(err)
+
 	req, err := http.NewRequest(http.MethodPost, "/sign-up", bytes.NewReader(body))
 	suite.NoError(err)
+	req.Header.Set("Content-Type", "application/json")
 
 	rr := httptest.NewRecorder()
 
-	suite.handler.SignUpV1(rr, req)
-	suite.Equal(http.StatusInternalServerError, rr.Code)
+	suite.handler.SignUpV1Handler(rr, req)
 
-	suite.mockUC.AssertExpectations(suite.T())
+	suite.Equal(useCaseError.Code, int32(rr.Code))
+
+	expectedBody := `{"error":"use case error"}`
+	suite.JSONEq(expectedBody, rr.Body.String())
+
+	// Проверка вызовов моков
+	suite.mockAUC.AssertExpectations(suite.T())
+	suite.mockFailedRegistrations.AssertCalled(suite.T(), "Inc")
+	suite.mockTotalRegistrations.AssertCalled(suite.T(), "Inc")
+	suite.mockSuccessfulRegistrations.AssertNotCalled(suite.T(), "Inc")
 }
 
 func TestSignUpV1TestSuite(t *testing.T) {

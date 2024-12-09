@@ -1,11 +1,11 @@
 ### SignUp user
-POST http://0.0.0.0:5001/v1/sign-up
+POST http://localhost:5002/v1/sign-up
 Content-Type: application/json
 
 {
   "email": "john.doe@example.com",
   "password": "securepassword123",
-  "telegram_login": "johndoe_telegram",
+  "telegram_login": "qwerty",
   "first_name": "John",
   "last_name": "Doe",
   "patronymic": "Jonathan",

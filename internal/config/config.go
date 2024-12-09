@@ -2,56 +2,38 @@ package config
 
 import (
 	"fmt"
-	"github.com/go-playground/validator/v10"
-	"gopkg.in/yaml.v3"
-	"log"
-	"os"
+
+	configLoader "github.com/patyukin/mbs-pkg/pkg/config"
 )
 
 type Config struct {
-	MinLogLevel string `yaml:"min_log_level" validate:"oneof=debug info warn error fatal panic"`
-	HttpServer  struct {
-		Port         int `yaml:"port" validate:"min=1,max=65535"`
-		ReadTimeout  int `yaml:"read_timeout" validate:"min=1,max=65535"`
-		WriteTimeout int `yaml:"write_timeout" validate:"min=1,max=65535"`
+	MinLogLevel string `validate:"oneof=debug info warn error fatal panic" yaml:"min_log_level"`
+	HTTPServer  struct {
+		Port         int    `validate:"min=1,max=65535" yaml:"port"`
+		SwaggerHost  string `validate:"required" yaml:"swagger_host"`
+		ReadTimeout  int    `validate:"min=1,max=65535" yaml:"read_timeout"`
+		WriteTimeout int    `validate:"min=1,max=65535" yaml:"write_timeout"`
 		RateLimit    struct {
-			Rps   float64 `yaml:"rps" validate:"min=1,max=65535"`
-			Burst int     `yaml:"burst" validate:"min=1,max=65535"`
+			Rps   float64 `validate:"min=1,max=65535" yaml:"rps"`
+			Burst int     `validate:"min=1,max=65535" yaml:"burst"`
 		} `yaml:"rate_limit"`
 	} `yaml:"server"`
-	JwtSecret  string `yaml:"jwt_secret" validate:"required"`
-	TracerHost string `yaml:"tracer_host" validate:"required"`
+	JwtSecret  string `validate:"required" yaml:"jwt_secret"`
+	TracerHost string `validate:"required" yaml:"tracer_host"`
 	GRPC       struct {
-		AuthServicePort int `yaml:"auth_service_port" validate:"min=1,max=65535"`
+		AuthService    string `validate:"required" yaml:"auth_service"`
+		LoggerService  string `validate:"required" yaml:"logger_service"`
+		PaymentService string `validate:"required" yaml:"payment_service"`
+		CreditService  string `validate:"required" yaml:"credit_service"`
+		ReportService  string `validate:"required" yaml:"report_service"`
 	} `yaml:"grpc"`
 }
 
 func LoadConfig() (*Config, error) {
-	yamlConfigFilePath := os.Getenv("YAML_CONFIG_FILE_PATH")
-	if yamlConfigFilePath == "" {
-		return nil, fmt.Errorf("yaml config file path is not set")
-	}
-
-	f, err := os.Open(yamlConfigFilePath)
-	if err != nil {
-		return nil, fmt.Errorf("unable to open config file: %w", err)
-	}
-
-	defer func(f *os.File) {
-		if err = f.Close(); err != nil {
-			log.Printf("unable to close config file: %v", err)
-		}
-	}(f)
-
 	var config Config
-	decoder := yaml.NewDecoder(f)
-	if err = decoder.Decode(&config); err != nil {
-		return nil, fmt.Errorf("unable to decode config file: %w", err)
-	}
-
-	validate := validator.New()
-	if err = validate.Struct(&config); err != nil {
-		return nil, fmt.Errorf("config validation failed: %w", err)
+	err := configLoader.LoadConfig(&config)
+	if err != nil {
+		return nil, fmt.Errorf("error loading config: %w", err)
 	}
 
 	return &config, nil

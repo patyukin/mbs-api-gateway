@@ -3,22 +3,33 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
 	"github.com/patyukin/mbs-api-gateway/internal/config"
 	"github.com/patyukin/mbs-api-gateway/internal/handler"
 	"github.com/patyukin/mbs-api-gateway/internal/metrics"
 	"github.com/patyukin/mbs-api-gateway/internal/server"
 	"github.com/patyukin/mbs-api-gateway/internal/usecase/auth"
-	"github.com/patyukin/mbs-api-gateway/pkg/grpc_client"
-	"github.com/patyukin/mbs-api-gateway/pkg/tracer"
-	authpb "github.com/patyukin/mbs-api-gateway/proto/auth"
+	"github.com/patyukin/mbs-api-gateway/internal/usecase/credit"
+	"github.com/patyukin/mbs-api-gateway/internal/usecase/logger"
+	"github.com/patyukin/mbs-api-gateway/internal/usecase/payment"
+	"github.com/patyukin/mbs-api-gateway/internal/usecase/report"
+	"github.com/patyukin/mbs-pkg/pkg/grpc_client"
+	authpb "github.com/patyukin/mbs-pkg/pkg/proto/auth_v1"
+	creditpb "github.com/patyukin/mbs-pkg/pkg/proto/credit_v1"
+	loggerpb "github.com/patyukin/mbs-pkg/pkg/proto/logger_v1"
+	paymentpb "github.com/patyukin/mbs-pkg/pkg/proto/payment_v1"
+	reportpb "github.com/patyukin/mbs-pkg/pkg/proto/report_v1"
+	"github.com/patyukin/mbs-pkg/pkg/tracing"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
-	"os"
-	"os/signal"
-	"syscall"
-	"time"
 )
+
+const ServiceName = "ApiGateway"
 
 func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
@@ -32,7 +43,14 @@ func main() {
 		log.Fatal().Msgf("unable to load config: %v", err)
 	}
 
-	srvAddress := fmt.Sprintf(":%d", cfg.HttpServer.Port)
+	level, err := zerolog.ParseLevel(cfg.MinLogLevel)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Invalid log level")
+	}
+
+	zerolog.SetGlobalLevel(level)
+
+	srvAddress := fmt.Sprintf("0.0.0.0:%d", cfg.HTTPServer.Port)
 
 	// register metrics
 	err = metrics.RegisterMetrics()
@@ -40,13 +58,15 @@ func main() {
 		log.Fatal().Msgf("failed to register metrics: %v", err)
 	}
 
-	traceProvider, err := tracer.Init(fmt.Sprintf("%s/api/traces", cfg.TracerHost), "Api Gateway")
+	_, closer, err := tracing.InitJaeger(cfg.TracerHost, ServiceName)
 	if err != nil {
-		log.Fatal().Msgf("failed init tracer, err: %v", err)
+		log.Fatal().Msgf("failed to initialize tracer: %v", err)
 	}
 
+	defer closer()
+
 	// auth service init
-	authConn, err := grpc_client.NewGRPCClientServiceConn(cfg.GRPC.AuthServicePort)
+	authConn, err := grpc_client.NewGRPCClientServiceConn(cfg.GRPC.AuthService)
 	if err != nil {
 		log.Fatal().Msgf("failed to connect to auth service: %v", err)
 	}
@@ -60,14 +80,74 @@ func main() {
 	authClient := authpb.NewAuthServiceClient(authConn)
 	authUseCase := auth.New([]byte(cfg.JwtSecret), authClient)
 
-	h := handler.New(authUseCase)
-	r := server.InitRouterWithTrace(h, cfg, srvAddress)
+	// payment service init
+	paymentConn, err := grpc_client.NewGRPCClientServiceConn(cfg.GRPC.PaymentService)
+	if err != nil {
+		log.Fatal().Msgf("failed to connect to payment service: %v", err)
+	}
+
+	defer func(paymentConn *grpc.ClientConn) {
+		if err = paymentConn.Close(); err != nil {
+			log.Error().Msgf("failed to close auth service connection: %v", err)
+		}
+	}(paymentConn)
+
+	paymentClient := paymentpb.NewPaymentServiceClient(paymentConn)
+	paymentUseCase := payment.New(paymentClient)
+
+	// credit service init
+	creditConn, err := grpc_client.NewGRPCClientServiceConn(cfg.GRPC.CreditService)
+	if err != nil {
+		log.Fatal().Msgf("failed to connect to CreditService: %v", err)
+	}
+
+	defer func(creditConn *grpc.ClientConn) {
+		if err = creditConn.Close(); err != nil {
+			log.Error().Msgf("failed to close creditConn service connection: %v", err)
+		}
+	}(creditConn)
+
+	creditClient := creditpb.NewCreditsServiceV1Client(creditConn)
+	creditUseCase := credit.New(creditClient)
+
+	// logger service init
+	loggerConn, err := grpc_client.NewGRPCClientServiceConn(cfg.GRPC.LoggerService)
+	if err != nil {
+		log.Fatal().Msgf("failed to connect to auth service: %v", err)
+	}
+
+	defer func(loggerConn *grpc.ClientConn) {
+		if err = loggerConn.Close(); err != nil {
+			log.Error().Msgf("failed to close auth service connection: %v", err)
+		}
+	}(loggerConn)
+
+	loggerClient := loggerpb.NewLoggerServiceClient(loggerConn)
+	loggerUseCase := logger.New(loggerClient)
+
+	// report service init
+	reportConn, err := grpc_client.NewGRPCClientServiceConn(cfg.GRPC.ReportService)
+	if err != nil {
+		log.Fatal().Msgf("failed to connect to report service: %v", err)
+	}
+
+	defer func(conn *grpc.ClientConn) {
+		if err = conn.Close(); err != nil {
+			log.Error().Msgf("failed to close report service connection: %v", err)
+		}
+	}(reportConn)
+
+	reportClient := reportpb.NewReportServiceClient(reportConn)
+	reportUseCase := report.New(reportClient)
+
+	h := handler.New(authUseCase, loggerUseCase, paymentUseCase, creditUseCase, reportUseCase)
+	r := server.Init(h, cfg, srvAddress)
 	srv := server.New(r)
 
 	errCh := make(chan error)
 
 	go func() {
-		log.Info().Msgf("starting server on %d", cfg.HttpServer.Port)
+		log.Info().Msgf("starting http server on %d", cfg.HTTPServer.Port)
 		if err = srv.Run(srvAddress, cfg); err != nil {
 			log.Error().Msgf("failed starting server: %v", err)
 			errCh <- err
@@ -92,9 +172,5 @@ func main() {
 
 	if err = srv.Shutdown(ctx); err != nil {
 		log.Error().Msgf("failed server shutting down: %s", err.Error())
-	}
-
-	if err = traceProvider.Shutdown(ctx); err != nil {
-		log.Error().Msgf("Error shutting down tracer provider: %v", err)
 	}
 }
