@@ -27,12 +27,8 @@ func (u *UseCase) GetPaymentScheduleV1UseCase(ctx context.Context, userID, credi
 		}
 	}
 
-	if response == nil {
-		return model.GetPaymentScheduleV1Response{}, &error_v1.ErrorResponse{
-			Code:        http.StatusInternalServerError,
-			Message:     "Internal Server Error",
-			Description: fmt.Sprintf("failed to CreateCreditApplication: %v", err),
-		}
+	if response.Error != nil {
+		return model.GetPaymentScheduleV1Response{}, response.Error
 	}
 
 	return model.ToModelGetPaymentScheduleResponse(response), nil

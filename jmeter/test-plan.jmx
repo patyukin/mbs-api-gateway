@@ -21,8 +21,8 @@
       </ThreadGroup>
       <hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="SignIn" enabled="true">
-          <stringProp name="HTTPSampler.domain">0.0.0.0</stringProp>
-          <stringProp name="HTTPSampler.port">5002</stringProp>
+          <stringProp name="HTTPSampler.domain">176.124.219.25</stringProp>
+          <stringProp name="HTTPSampler.port">5072</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.path">/v1/sign-in</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>

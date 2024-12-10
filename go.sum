@@ -91,8 +91,8 @@ github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822/go.mod h1:+n7T8m
 github.com/opentracing/opentracing-go v1.1.0/go.mod h1:UkNAQd3GIcIGf0SeVgPpRdFStlNbqXla1AfSYxPUl2o=
 github.com/opentracing/opentracing-go v1.2.0 h1:uEJPy/1a5RIPAJ0Ov+OIO8OxWu77jEv+1B0VhjKrZUs=
 github.com/opentracing/opentracing-go v1.2.0/go.mod h1:GxEUsuufX4nBwe+T+Wl9TAgYrxe9dPLANfrWvHYVTgc=
-github.com/patyukin/mbs-pkg v1.1.170 h1:nSifU+P9B/42j/aoYNm/aDzUkJq4h5IvEsryvNJZupg=
-github.com/patyukin/mbs-pkg v1.1.170/go.mod h1:VCSWZvSwRSwaGi8zvf1yn0V6m2x3yMwi5r5poxFiSEY=
+github.com/patyukin/mbs-pkg v1.1.172 h1:HaGKgxxScQYunIVvLwDrwSFAXjkEs7iU/RrV0jq2/90=
+github.com/patyukin/mbs-pkg v1.1.172/go.mod h1:VCSWZvSwRSwaGi8zvf1yn0V6m2x3yMwi5r5poxFiSEY=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
 github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=

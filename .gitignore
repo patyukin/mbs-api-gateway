@@ -7,3 +7,5 @@ config-local.yaml
 *.drawio.bkp
 report.xml
 /api/*
+/jmeter/*.csv
+/jmeter/*.log
